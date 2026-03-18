@@ -19,6 +19,7 @@
     "vite": "^8.0.0"
   },
   "dependencies": {
+    "easystarjs": "^0.4.4",
     "parse-tmx": "^2.19.2"
   }
 }

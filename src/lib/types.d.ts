@@ -1,3 +1,11 @@
+export type Grid = number[][]
+
+export type Player = {
+  name: string
+  position: Vec2
+  origin: Vec2
+}
+
 export interface Position {
   x: number
   y: number

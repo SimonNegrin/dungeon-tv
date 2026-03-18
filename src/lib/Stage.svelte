@@ -1,19 +1,9 @@
 <script lang="ts">
+  import { setContext } from "svelte"
   import { loadSpritesheet } from "./common"
   import Rogue from "./Rogue.svelte"
-  import type { MapTileAttributes, Position, Spritesheet } from "./types"
+  import type { Grid, MapTileAttributes, Player, Spritesheet } from "./types"
   import Vec2 from "./Vec2"
-
-  const TILE_FLOOR = "floor"
-  const TILE_DOOR = "door"
-  const TILE_WALL = "wall"
-
-  type CellType = typeof TILE_FLOOR | typeof TILE_DOOR | typeof TILE_WALL
-  type Grid = CellType[][]
-  type Player = {
-    name: string
-    position: Vec2
-  }
 
   let {
     name,
@@ -24,23 +14,28 @@
   let stagePromise = $derived(loadSpritesheet<MapTileAttributes>(name))
   let spritesheet = $derived(`/${name}/spritesheet.png`)
   let grid: Grid = $state([])
+  let showPlayers = $state(false)
   let players = $state<Player[]>([
     {
       name: "Krom",
       position: new Vec2(1, 1),
+      origin: new Vec2(1, 1),
     },
   ])
 
+  setContext("getGrid", () => grid)
+
   $effect(() => {
     stagePromise.then((stage) => {
-      grid = getGrid(stage)
+      grid = createGrid(stage)
+      showPlayers = true
     })
   })
 
-  function getGrid(stage: Spritesheet<MapTileAttributes>): Grid {
+  function createGrid(stage: Spritesheet<MapTileAttributes>): Grid {
     const lines: Grid = []
     for (let y = 0; y < stage.mapHeight; y++) {
-      const line: CellType[] = Array(stage.mapWidth).fill("floor")
+      const line: number[] = Array(stage.mapWidth).fill(0)
       lines.push(line)
     }
 
@@ -48,32 +43,14 @@
       if (!layer.collider) return
       layer.tiles.forEach((tile) => {
         if (!tile.attributes?.door) {
-          lines[tile.y][tile.x] = TILE_WALL
+          lines[tile.y][tile.x] = 1
         }
       })
     })
 
     return lines
   }
-
-  function windowOnkeydown(event: KeyboardEvent): void {
-    const movements: Record<string, Vec2> = {
-      ArrowRight: new Vec2(1, 0),
-      ArrowLeft: new Vec2(-1, 0),
-      ArrowDown: new Vec2(0, 1),
-      ArrowUp: new Vec2(0, -1),
-    }
-
-    const movement = movements[event.key]
-    if (!movement) return
-
-    players.forEach((player) => {
-      player.position = player.position.add(movement)
-    })
-  }
 </script>
-
-<svelte:window onkeydown={windowOnkeydown} />
 
 {#await stagePromise then stage}
   <div
@@ -111,16 +88,18 @@
         {#each line as cell, x}
           <div
             class="cell"
-            class:wall={cell === TILE_WALL}
+            class:wall={cell === 1}
             style:left="{x * stage.tileSize}px"
             style:top="{y * stage.tileSize}px"
           ></div>
         {/each}
       {/each}
 
-      {#each players as player}
-        <Rogue name={player.name} position={player.position} />
-      {/each}
+      {#if showPlayers}
+        {#each players as _, index}
+          <Rogue bind:player={players[index]} />
+        {/each}
+      {/if}
     </div>
   </div>
 {/await}
