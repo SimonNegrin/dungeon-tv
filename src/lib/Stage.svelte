@@ -1,6 +1,7 @@
 <script lang="ts">
-  import { loadStage } from "./common"
-  import type { GameMap } from "./types"
+  import { loadSpritesheet } from "./common"
+  import Rogue from "./Rogue.svelte"
+  import type { MapTileAttributes, Position, Spritesheet } from "./types"
 
   const TILE_FLOOR = "floor"
   const TILE_DOOR = "door"
@@ -8,6 +9,10 @@
 
   type CellType = typeof TILE_FLOOR | typeof TILE_DOOR | typeof TILE_WALL
   type Grid = CellType[][]
+  type Player = {
+    name: string
+    position: Position
+  }
 
   let {
     name,
@@ -15,9 +20,15 @@
     name: string
   } = $props()
 
-  let stagePromise = $derived(loadStage(name))
+  let stagePromise = $derived(loadSpritesheet<MapTileAttributes>(name))
   let spritesheet = $derived(`/${name}/spritesheet.png`)
   let grid: Grid = $state([])
+  let players = $state<Player[]>([
+    {
+      name: "Krom",
+      position: { x: 1, y: 1 },
+    },
+  ])
 
   $effect(() => {
     stagePromise.then((stage) => {
@@ -25,7 +36,7 @@
     })
   })
 
-  function getGrid(stage: GameMap): Grid {
+  function getGrid(stage: Spritesheet<MapTileAttributes>): Grid {
     const lines: Grid = []
     for (let y = 0; y < stage.mapHeight; y++) {
       const line: CellType[] = Array(stage.mapWidth).fill("floor")
@@ -86,6 +97,10 @@
             style:top="{y * stage.tileSize}px"
           ></div>
         {/each}
+      {/each}
+
+      {#each players as player}
+        <Rogue name={player.name} position={player.position} />
       {/each}
     </div>
   </div>

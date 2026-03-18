@@ -1,12 +1,22 @@
-export interface TileAttributes {
+export interface Position {
+  x: number
+  y: number
+}
+
+export interface MapTileAttributes {
   door?: boolean
   spawn?: boolean
+}
+
+export interface RogueTileAttributes {
+  name: string
+  kind: string
 }
 
 /**
  * Representa un tile individual en el mapa
  */
-export interface MapTile {
+export interface Tile<T> {
   /** ID del tile en el spritesheet */
   id: string
 
@@ -14,7 +24,7 @@ export interface MapTile {
   spriteX: number
   spriteY: number
 
-  attributes?: TileAttributes
+  attributes?: T
 
   /** Posición X en el grid del mapa */
   x: number
@@ -25,11 +35,11 @@ export interface MapTile {
 /**
  * Representa una capa del mapa (ej: Collition, Decoration, Floor)
  */
-export interface MapLayer {
+export interface Layer<T> {
   /** Nombre de la capa */
   name: string
   /** Array de tiles que componen esta capa */
-  tiles: MapTile[]
+  tiles: Tile<T>[]
   /** Indica si esta capa tiene colisiones */
   collider: boolean
 }
@@ -37,7 +47,7 @@ export interface MapLayer {
 /**
  * Representa la estructura completa del mapa del juego
  */
-export interface GameMap {
+export interface Spritesheet<T> {
   /** Tamaño de cada tile en píxeles */
   tileSize: number
   /** Ancho del mapa en número de tiles */
@@ -45,5 +55,5 @@ export interface GameMap {
   /** Alto del mapa en número de tiles */
   mapHeight: number
   /** Capas del mapa (se renderizan en orden) */
-  layers: MapLayer[]
+  layers: Layer<T>[]
 }

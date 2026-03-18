@@ -1,27 +1,32 @@
-import type { GameMap } from "./types"
+import type {
+  Spritesheet,
+  MapTileAttributes,
+  RogueTileAttributes,
+} from "./types"
 
 /**
  * Carga los datos del mapa de un stage desde su archivo JSON
- * @param stageName - Nombre del stage a cargar (ej: "Stage_1")
+ * @param spritesheetName - Nombre del stage a cargar (ej: "Stage_1")
  * @returns Promise con los datos del mapa del juego
  * @throws Error si no se puede cargar el archivo del mapa
  */
-export async function loadStage(stageName: string): Promise<GameMap> {
-  const response = await fetch(`/${stageName}/map.json`)
+export async function loadSpritesheet<T>(
+  spritesheetName: string,
+): Promise<Spritesheet<T>> {
+  const response = await fetch(`/${spritesheetName}/map.json`)
 
   if (!response.ok) {
-    throw new Error(`No se pudo cargar el stage: ${stageName}`)
+    throw new Error(`No se pudo cargar el stage: ${spritesheetName}`)
   }
 
-  const mapData: GameMap = await response.json()
+  const spritesheet: Spritesheet<T> = await response.json()
 
-  mapData.layers.forEach((layer) => {
+  spritesheet.layers.forEach((layer) => {
     layer.tiles.forEach((tile) => {
       const id = Number(tile.id)
       tile.spriteX = id % 8
       tile.spriteY = Math.floor(id / 8)
     })
   })
-
-  return mapData
+  return spritesheet
 }
