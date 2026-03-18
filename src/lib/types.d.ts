@@ -2,6 +2,7 @@ export type Grid = number[][]
 
 export type Player = {
   name: string
+  steps: number
   position: Vec2
   origin: Vec2
 }

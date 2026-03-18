@@ -20,6 +20,7 @@
       name: "Krom",
       position: new Vec2(1, 1),
       origin: new Vec2(1, 1),
+      steps: 8,
     },
   ])
 

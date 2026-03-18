@@ -18,24 +18,26 @@
   const getGrid: () => Grid = getContext("getGrid")
 
   let tile = $derived(getRogueTile(player.name))
-  let steps = $state(0)
+  let steps = $state(player.steps)
 
-  $effect(() => {
-    const easystar = new EasyStar.js()
-    easystar.disableDiagonals()
-    easystar.setGrid(getGrid())
-    easystar.setAcceptableTiles([0])
-    easystar.findPath(
-      player.position.x,
-      player.position.y,
-      player.origin.x,
-      player.origin.y,
-      (path) => {
-        steps = Math.max(0, path.length - 1)
-      },
-    )
-    easystar.calculate()
-  })
+  function calcDistanceBetween(a: Vec2, b: Vec2): Promise<number> {
+    return new Promise((resolve) => {
+      const easystar = new EasyStar.js()
+      easystar.disableDiagonals()
+      easystar.setGrid(getGrid())
+      easystar.setAcceptableTiles([0])
+      easystar.findPath(a.x, a.y, b.x, b.y, (path) => {
+        const distance = Math.max(0, path.length - 1)
+        resolve(distance)
+      })
+      easystar.calculate()
+    })
+  }
+
+  function canWalk(position: Vec2): boolean {
+    const grid = getGrid()
+    return grid[position.y][position.x] === 0
+  }
 
   function getRogueTile(name: string): Tile<RogueTileAttributes> {
     const layer = roguesSpritesheet.layers[0]
@@ -48,7 +50,7 @@
     return tile
   }
 
-  function windowOnkeydown(event: KeyboardEvent): void {
+  async function windowOnkeydown(event: KeyboardEvent): Promise<void> {
     const movements: Record<string, Vec2> = {
       ArrowRight: new Vec2(1, 0),
       ArrowLeft: new Vec2(-1, 0),
@@ -57,9 +59,16 @@
     }
 
     const movement = movements[event.key]
-    if (movement) {
-      player.position = player.position.add(movement)
-    }
+    if (!movement) return
+
+    const position = player.position.add(movement)
+    if (!canWalk(position)) return
+
+    const distance = await calcDistanceBetween(player.origin, position)
+    if (distance > player.steps) return
+
+    steps = player.steps - distance
+    player.position = position
   }
 </script>
 
