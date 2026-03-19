@@ -1,9 +1,9 @@
 <script lang="ts" module>
-  import { getContext } from "svelte"
   import { loadSpritesheet } from "./common"
   import type { Grid, Player, RogueTileAttributes, Tile } from "./types"
   import EasyStar from "easystarjs"
   import Vec2 from "./Vec2"
+  import { grid } from "./state"
 
   const roguesSpritesheet = await loadSpritesheet<RogueTileAttributes>("Rogues")
 </script>
@@ -15,16 +15,17 @@
     player: Player
   } = $props()
 
-  const getGrid: () => Grid = getContext("getGrid")
-
   let tile = $derived(getRogueTile(player.name))
   let steps = $state(player.steps)
 
   function calcDistanceBetween(a: Vec2, b: Vec2): Promise<number> {
     return new Promise((resolve) => {
+      if (!$grid) {
+        return resolve(0)
+      }
       const easystar = new EasyStar.js()
       easystar.disableDiagonals()
-      easystar.setGrid(getGrid())
+      easystar.setGrid($grid)
       easystar.setAcceptableTiles([0])
       easystar.findPath(a.x, a.y, b.x, b.y, (path) => {
         const distance = Math.max(0, path.length - 1)
@@ -35,8 +36,7 @@
   }
 
   function canWalk(position: Vec2): boolean {
-    const grid = getGrid()
-    return grid[position.y][position.x] === 0
+    return $grid?.[position.y][position.x] === 0
   }
 
   function getRogueTile(name: string): Tile<RogueTileAttributes> {
@@ -51,6 +51,8 @@
   }
 
   async function windowOnkeydown(event: KeyboardEvent): Promise<void> {
+    event.preventDefault()
+
     const movements: Record<string, Vec2> = {
       ArrowRight: new Vec2(1, 0),
       ArrowLeft: new Vec2(-1, 0),
@@ -99,24 +101,29 @@
     transition-duration: 200ms;
   }
   .steps {
+    --size: 12px;
     position: absolute;
-    bottom: calc(100% - 4px);
-    left: calc(50% - 4px);
-    width: 8px;
-    height: 8px;
-    font-size: 6px;
-    line-height: 8px;
+    bottom: calc(100% - 0px);
+    left: calc(50% - var(--size) / 2);
+    width: var(--size);
+    height: var(--size);
+    font-size: calc(var(--size) * 0.75);
+    line-height: var(--size);
     text-align: center;
     border-radius: 100%;
     background-color: red;
     color: white;
   }
   .mask {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     overflow: hidden;
   }
   .sprite {
+    position: absolute;
     image-rendering: pixelated;
   }
 </style>

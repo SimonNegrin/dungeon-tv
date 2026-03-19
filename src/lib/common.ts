@@ -1,8 +1,4 @@
-import type {
-  Spritesheet,
-  MapTileAttributes,
-  RogueTileAttributes,
-} from "./types"
+import type { Spritesheet } from "./types"
 
 /**
  * Carga los datos del mapa de un stage desde su archivo JSON
