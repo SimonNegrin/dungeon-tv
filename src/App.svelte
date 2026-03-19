@@ -21,7 +21,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: rgb(22, 22, 22);
+    background-color: var(--main-background-color);
   }
   .game-container {
     width: 100%;

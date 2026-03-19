@@ -74,7 +74,7 @@
     bottom: -1px;
     right: -1px;
     border-radius: var(--border-radius);
-    box-shadow: inset 0 0 6px 3px #000;
+    box-shadow: inset 0 0 6px 3px var(--main-background-color);
   }
 
   @keyframes flicker {
