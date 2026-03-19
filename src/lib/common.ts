@@ -1,4 +1,8 @@
+import EasyStar from "easystarjs"
 import type { Spritesheet } from "./types"
+import type Vec2 from "./Vec2"
+import { grid } from "./state"
+import { get } from "svelte/store"
 
 /**
  * Carga los datos del mapa de un stage desde su archivo JSON
@@ -25,4 +29,22 @@ export async function loadSpritesheet<T>(
     })
   })
   return spritesheet
+}
+
+export function calcDistanceBetween(a: Vec2, b: Vec2): Promise<number> {
+  return new Promise((resolve) => {
+    const currentGrid = get(grid)
+    if (!currentGrid) {
+      return resolve(0)
+    }
+    const easystar = new EasyStar.js()
+    easystar.disableDiagonals()
+    easystar.setGrid(currentGrid)
+    easystar.setAcceptableTiles([0])
+    easystar.findPath(a.x, a.y, b.x, b.y, (path) => {
+      const distance = Math.max(0, path.length - 1)
+      resolve(distance)
+    })
+    easystar.calculate()
+  })
 }

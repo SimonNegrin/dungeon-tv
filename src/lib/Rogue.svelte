@@ -1,9 +1,9 @@
 <script lang="ts" module>
-  import { loadSpritesheet } from "./common"
-  import type { Grid, Player, RogueTileAttributes, Tile } from "./types"
-  import EasyStar from "easystarjs"
+  import { calcDistanceBetween, loadSpritesheet } from "./common"
+  import type { Player, RogueTileAttributes, Tile } from "./types"
   import Vec2 from "./Vec2"
   import { grid } from "./state"
+  import WalkSound from "./WalkSound.svelte"
 
   const roguesSpritesheet = await loadSpritesheet<RogueTileAttributes>("Rogues")
 </script>
@@ -17,26 +17,10 @@
 
   let tile = $derived(getRogueTile(player.name))
   let steps = $state(player.steps)
-
-  function calcDistanceBetween(a: Vec2, b: Vec2): Promise<number> {
-    return new Promise((resolve) => {
-      if (!$grid) {
-        return resolve(0)
-      }
-      const easystar = new EasyStar.js()
-      easystar.disableDiagonals()
-      easystar.setGrid($grid)
-      easystar.setAcceptableTiles([0])
-      easystar.findPath(a.x, a.y, b.x, b.y, (path) => {
-        const distance = Math.max(0, path.length - 1)
-        resolve(distance)
-      })
-      easystar.calculate()
-    })
-  }
+  let walkSound: WalkSound
 
   function canWalk(position: Vec2): boolean {
-    return $grid?.[position.y][position.x] === 0
+    return $grid?.[position.y]?.[position.x] === 0
   }
 
   function getRogueTile(name: string): Tile<RogueTileAttributes> {
@@ -71,6 +55,7 @@
 
     steps = player.steps - distance
     player.position = position
+    walkSound.play()
   }
 </script>
 
@@ -94,6 +79,8 @@
     />
   </div>
 </div>
+
+<WalkSound bind:this={walkSound} />
 
 <style>
   .rogue {
