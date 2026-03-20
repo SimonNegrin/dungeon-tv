@@ -1,10 +1,25 @@
-export type Grid = number[][]
+import type Vec2 from "./Vec2"
 
-export type Player = {
+export type Grid = (0 | 1)[][]
+
+export type Character = {
   name: string
   steps: number
   position: Vec2
   origin: Vec2
+  items?: Item[]
+}
+
+export interface Item {
+  name: string
+  desc: string
+  ethereal?: true
+  magic?: true
+  lifetime?: number
+  attack?: number
+  attackDistance?: number
+  defence?: number
+  damage?: number
 }
 
 export interface Position {
@@ -25,7 +40,7 @@ export interface RogueTileAttributes {
 /**
  * Representa un tile individual en el mapa
  */
-export interface Tile<T> {
+export interface Tile<TileAttributesType> {
   /** ID del tile en el spritesheet */
   id: string
 
@@ -33,7 +48,7 @@ export interface Tile<T> {
   spriteX: number
   spriteY: number
 
-  attributes?: T
+  attributes?: TileAttributesType
 
   /** Posición X en el grid del mapa */
   x: number
@@ -44,11 +59,11 @@ export interface Tile<T> {
 /**
  * Representa una capa del mapa (ej: Collition, Decoration, Floor)
  */
-export interface Layer<T> {
+export interface Layer<TileAttributesType> {
   /** Nombre de la capa */
   name: string
   /** Array de tiles que componen esta capa */
-  tiles: Tile<T>[]
+  tiles: Tile<TileAttributesType>[]
   /** Indica si esta capa tiene colisiones */
   collider: boolean
 }
@@ -56,7 +71,9 @@ export interface Layer<T> {
 /**
  * Representa la estructura completa del mapa del juego
  */
-export interface Spritesheet<T> {
+export interface Spritesheet<TileAttributesType> {
+  spritesheetUrl: string
+
   /** Tamaño de cada tile en píxeles */
   tileSize: number
   /** Ancho del mapa en número de tiles */
@@ -64,5 +81,7 @@ export interface Spritesheet<T> {
   /** Alto del mapa en número de tiles */
   mapHeight: number
   /** Capas del mapa (se renderizan en orden) */
-  layers: Layer<T>[]
+  layers: Layer<TileAttributesType>[]
 }
+
+export type Stage = Spritesheet<MapTileAttributes>

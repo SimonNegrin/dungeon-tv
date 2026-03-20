@@ -1,12 +1,12 @@
 <script lang="ts" module>
   import {
-    calcDistanceBetween,
+    calcCharacterDistanceBetween,
     canWalkToPosition,
+    isEthereal,
     loadSpritesheet,
   } from "./common"
-  import type { Player, RogueTileAttributes, Tile } from "./types"
+  import type { Character, RogueTileAttributes, Tile } from "./types"
   import Vec2 from "./Vec2"
-  import { grid } from "./state"
   import WalkSound from "./WalkSound.svelte"
 
   const roguesSpritesheet = await loadSpritesheet<RogueTileAttributes>("Rogues")
@@ -16,12 +16,13 @@
   let {
     player = $bindable(),
   }: {
-    player: Player
+    player: Character
   } = $props()
 
   let tile = $derived(getRogueTile(player.name))
   let steps = $state(player.steps)
   let walkSound: WalkSound
+  let ethereal = $derived(isEthereal(player))
 
   function getRogueTile(name: string): Tile<RogueTileAttributes> {
     const layer = roguesSpritesheet.layers[0]
@@ -48,10 +49,14 @@
     if (!movement) return
 
     const position = player.position.add(movement)
-    if (!canWalkToPosition(position)) return
+    if (!canWalkToPosition(player, position)) return
 
-    const distance = await calcDistanceBetween(player.origin, position)
-    if (distance > player.steps) return
+    const distance = await calcCharacterDistanceBetween(
+      player,
+      player.origin,
+      position,
+    )
+    if (distance === null || distance > player.steps) return
 
     steps = player.steps - distance
     player.position = position
@@ -72,6 +77,7 @@
   <div class="mask">
     <img
       class="sprite"
+      class:ethereal
       src="/Rogues/spritesheet.png"
       style:left="{tile.spriteX * -roguesSpritesheet.tileSize}px"
       style:top="{tile.spriteY * -roguesSpritesheet.tileSize}px"
@@ -112,5 +118,9 @@
   .sprite {
     position: absolute;
     image-rendering: pixelated;
+  }
+  .ethereal {
+    filter: drop-shadow(0 0 1px white);
+    opacity: 0.8;
   }
 </style>

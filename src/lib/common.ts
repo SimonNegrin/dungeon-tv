@@ -1,8 +1,11 @@
 import EasyStar from "easystarjs"
-import type { Spritesheet } from "./types"
+import type { Character, Grid, Spritesheet } from "./types"
 import type Vec2 from "./Vec2"
-import { grid } from "./state"
 import { get } from "svelte/store"
+import { stage } from "./state"
+
+export const TILE_FLOOR = 0
+export const TILE_BLOCK = 1
 
 /**
  * Carga los datos del mapa de un stage desde su archivo JSON
@@ -21,6 +24,8 @@ export async function loadSpritesheet<T>(
 
   const spritesheet: Spritesheet<T> = await response.json()
 
+  spritesheet.spritesheetUrl = `/${spritesheetName}/spritesheet.png`
+
   spritesheet.layers.forEach((layer) => {
     layer.tiles.forEach((tile) => {
       const id = Number(tile.id)
@@ -31,16 +36,20 @@ export async function loadSpritesheet<T>(
   return spritesheet
 }
 
-export function calcDistanceBetween(a: Vec2, b: Vec2): Promise<number> {
+export function calcCharacterDistanceBetween(
+  character: Character,
+  a: Vec2,
+  b: Vec2,
+): Promise<number | null> {
   return new Promise((resolve) => {
-    const currentGrid = get(grid)
-    if (!currentGrid) {
-      return resolve(0)
+    const grid = createGrid(character)
+    if (!grid) {
+      return resolve(null)
     }
     const easystar = new EasyStar.js()
     easystar.disableDiagonals()
-    easystar.setGrid(currentGrid)
-    easystar.setAcceptableTiles([0])
+    easystar.setGrid(grid)
+    easystar.setAcceptableTiles([0, 1])
     easystar.findPath(a.x, a.y, b.x, b.y, (path) => {
       const distance = Math.max(0, path.length - 1)
       resolve(distance)
@@ -49,7 +58,62 @@ export function calcDistanceBetween(a: Vec2, b: Vec2): Promise<number> {
   })
 }
 
-export function canWalkToPosition(position: Vec2): boolean {
-  const currentGrid = get(grid)
-  return currentGrid?.[position.y]?.[position.x] === 0
+export function canWalkToPosition(
+  character: Character,
+  position: Vec2,
+): boolean {
+  // TODO: The character can't accupy the same place that another character
+
+  // If the character is ethereal can move to any place
+  if (isEthereal(character)) {
+    return true
+  }
+
+  // Check the collition layer
+  const grid = createGrid(character)
+  return grid?.[position.y]?.[position.x] === 0
+}
+
+export function isEthereal(character: Character): boolean {
+  if (!character.items) {
+    return false
+  }
+  return character.items.some((item) => {
+    return item.ethereal === true
+  })
+}
+
+// Creates a ad-hoc grid for the given character
+export function createGrid(character: Character): Grid | null {
+  const currentStage = get(stage)
+  if (!currentStage) {
+    return null
+  }
+
+  const grid: Grid = []
+  for (let y = 0; y < currentStage.mapHeight; y++) {
+    const line: (typeof TILE_FLOOR)[] = Array(currentStage.mapWidth).fill(
+      TILE_FLOOR,
+    )
+    grid.push(line)
+  }
+
+  // TODO: Block all tiles occupied by characters
+
+  // If the character is ethereal it can move to any tile
+  if (isEthereal(character)) {
+    return grid
+  }
+
+  // Block all tiles from the collider layers
+  currentStage.layers.forEach((layer) => {
+    if (!layer.collider) return
+    layer.tiles.forEach((tile) => {
+      if (!tile.attributes?.door) {
+        grid[tile.y][tile.x] = TILE_BLOCK
+      }
+    })
+  })
+
+  return grid
 }

@@ -1,13 +1,19 @@
 <script lang="ts">
-  import Stage from "./lib/Stage.svelte"
+  import GameMap from "./lib/GameMap.svelte"
   import AspectRatio from "./lib/AspectRatio.svelte"
+  import { onMount } from "svelte"
+  import { loadStage } from "./lib/state"
+
+  onMount(() => {
+    loadStage("Stage_1")
+  })
 </script>
 
 <main>
   <AspectRatio ratio={16 / 9}>
     <div class="game-container">
       <div class="screen-container">
-        <Stage name="Stage_1" />
+        <GameMap />
       </div>
       <div class="game-info"></div>
     </div>
