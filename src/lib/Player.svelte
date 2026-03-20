@@ -10,7 +10,7 @@
   import Vec2 from "./Vec2"
   import WalkSound from "./WalkSound.svelte"
 
-  const roguesSpritesheet = await loadSpritesheet<RogueTileAttributes>("Rogues")
+  const spritesheet = await loadSpritesheet<RogueTileAttributes>("Rogues")
 </script>
 
 <script lang="ts">
@@ -20,14 +20,37 @@
     playerIndex: number
   } = $props()
 
+  let canvas: HTMLCanvasElement
+  let walkSound: WalkSound
+
   let player = $derived($players[playerIndex])
   let tile = $derived(getRogueTile(player.name))
   let steps = $derived(player.steps)
-  let walkSound: WalkSound
+  let walkRight = $state(false)
   let ethereal = $derived(isEthereal(player))
 
+  $effect(() => {
+    const img = document.createElement("img") as HTMLImageElement
+    img.src = spritesheet.spritesheetUrl
+
+    img.onload = () => {
+      const ctx = canvas.getContext("2d")!
+      ctx.drawImage(
+        img,
+        tile.spriteX * spritesheet.tileSize,
+        tile.spriteY * spritesheet.tileSize,
+        spritesheet.tileSize,
+        spritesheet.tileSize,
+        0,
+        0,
+        spritesheet.tileSize,
+        spritesheet.tileSize,
+      )
+    }
+  })
+
   function getRogueTile(name: string): Tile<RogueTileAttributes> {
-    const layer = roguesSpritesheet.layers[0]
+    const layer = spritesheet.layers[0]
     const tile = layer.tiles.find((tile) => {
       return tile.attributes?.name === name
     })
@@ -61,6 +84,9 @@
     if (distance === null || distance > player.steps) return
 
     steps = player.steps - distance
+    if (position.x !== player.position.x) {
+      walkRight = position.x >= player.position.x
+    }
     player.position = position
     walkSound.play()
   }
@@ -70,22 +96,20 @@
 
 <div
   class="rogue"
-  style:width="{roguesSpritesheet.tileSize}px"
-  style:height="{roguesSpritesheet.tileSize}px"
-  style:left="{player.position.x * roguesSpritesheet.tileSize}px"
-  style:top="{player.position.y * roguesSpritesheet.tileSize}px"
+  style:width="{spritesheet.tileSize}px"
+  style:height="{spritesheet.tileSize}px"
+  style:left="{player.position.x * spritesheet.tileSize}px"
+  style:top="{player.position.y * spritesheet.tileSize}px"
 >
   <div class="steps">{steps}</div>
-  <div class="mask">
-    <img
-      class="sprite"
-      class:ethereal
-      src="/Rogues/spritesheet.png"
-      style:left="{tile.spriteX * -roguesSpritesheet.tileSize}px"
-      style:top="{tile.spriteY * -roguesSpritesheet.tileSize}px"
-      alt=""
-    />
-  </div>
+  <canvas
+    bind:this={canvas}
+    class="sprite"
+    class:ethereal
+    class:walk-right={walkRight}
+    width={spritesheet.tileSize}
+    height={spritesheet.tileSize}
+  ></canvas>
 </div>
 
 <WalkSound bind:this={walkSound} />
@@ -109,20 +133,16 @@
     background-color: red;
     color: white;
   }
-  .mask {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-  }
   .sprite {
-    position: absolute;
     image-rendering: pixelated;
-  }
-  .ethereal {
-    filter: drop-shadow(0 0 1px white);
-    opacity: 0.8;
+
+    &.ethereal {
+      filter: drop-shadow(0 0 1px white);
+      opacity: 0.8;
+    }
+
+    &.walk-right {
+      transform: scaleX(-1);
+    }
   }
 </style>

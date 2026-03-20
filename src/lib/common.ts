@@ -2,7 +2,7 @@ import EasyStar from "easystarjs"
 import type { Character, Grid, Spritesheet } from "./types"
 import type Vec2 from "./Vec2"
 import { get } from "svelte/store"
-import { stage } from "./state"
+import { players, stage } from "./state"
 
 export const TILE_FLOOR = 0
 export const TILE_BLOCK = 1
@@ -62,7 +62,17 @@ export function canWalkToPosition(
   character: Character,
   position: Vec2,
 ): boolean {
-  // TODO: The character can't accupy the same place that another character
+  // The character can't accupy the same place that a player
+  const currentPlayers = get(players)
+  if (
+    currentPlayers.some((player) => {
+      return player !== character && player.position.isSame(position)
+    })
+  ) {
+    return false
+  }
+
+  // TODO: The character can't accupy the same place that another NPC
 
   // If the character is ethereal can move to any place
   if (isEthereal(character)) {
