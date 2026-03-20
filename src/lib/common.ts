@@ -1,6 +1,6 @@
 import EasyStar from "easystarjs"
 import type { Character, Grid, Spritesheet } from "./types"
-import type Vec2 from "./Vec2"
+import Vec2 from "./Vec2"
 import { get } from "svelte/store"
 import { players, stage } from "./state"
 
@@ -36,6 +36,35 @@ export async function loadSpritesheet<T>(
   return spritesheet
 }
 
+export function getCharacterPathTo(
+  character: Character,
+  target: Vec2,
+): Promise<Vec2[] | null> {
+  return new Promise((resolve) => {
+    const grid = createGrid(character)
+    if (!grid) {
+      return resolve(null)
+    }
+    const easystar = new EasyStar.js()
+    easystar.disableDiagonals()
+    easystar.setGrid(grid)
+    easystar.setAcceptableTiles(0)
+    easystar.findPath(
+      character.position.x,
+      character.position.y,
+      target.x,
+      target.y,
+      (path) => {
+        if (!Array.isArray(path)) {
+          return resolve(null)
+        }
+        resolve(path.map((c) => new Vec2(c.x, c.y)))
+      },
+    )
+    easystar.calculate()
+  })
+}
+
 export function calcCharacterDistanceBetween(
   character: Character,
   a: Vec2,
@@ -49,8 +78,11 @@ export function calcCharacterDistanceBetween(
     const easystar = new EasyStar.js()
     easystar.disableDiagonals()
     easystar.setGrid(grid)
-    easystar.setAcceptableTiles([0, 1])
+    easystar.setAcceptableTiles(0)
     easystar.findPath(a.x, a.y, b.x, b.y, (path) => {
+      if (!Array.isArray(path)) {
+        return resolve(null)
+      }
       const distance = Math.max(0, path.length - 1)
       resolve(distance)
     })
@@ -58,7 +90,7 @@ export function calcCharacterDistanceBetween(
   })
 }
 
-export function canWalkToPosition(
+export function canOccupyPosition(
   character: Character,
   position: Vec2,
 ): boolean {

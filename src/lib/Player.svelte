@@ -1,7 +1,7 @@
 <script lang="ts" module>
   import {
     calcCharacterDistanceBetween,
-    canWalkToPosition,
+    canOccupyPosition,
     isEthereal,
     loadSpritesheet,
   } from "./common"
@@ -74,7 +74,7 @@
     if (!movement) return
 
     const position = player.position.add(movement)
-    if (!canWalkToPosition(player, position)) return
+    if (!canOccupyPosition(player, position)) return
 
     const distance = await calcCharacterDistanceBetween(
       player,
@@ -92,7 +92,7 @@
   }
 </script>
 
-<svelte:window onkeydown={windowOnkeydown} />
+<!-- <svelte:window onkeydown={windowOnkeydown} /> -->
 
 <div
   class="rogue"
