@@ -1,6 +1,6 @@
 <script lang="ts">
   import AspectRatio from "./AspectRatio.svelte"
-  import { canOccupyPosition, getCharacterPathTo } from "./common"
+  import { getCharacterPathTo } from "./common"
   import CrtScreen from "./CrtScreen.svelte"
   import Cursor from "./Cursor.svelte"
   import Loading from "./Loading.svelte"
@@ -45,12 +45,8 @@
 
   async function walkToCursor(): Promise<void> {
     const currentPlayer = getCurrentPlayer()
-    if (!canOccupyPosition(currentPlayer, cursorPosition)) {
-      return
-    }
-
     const path = await getCharacterPathTo(currentPlayer, cursorPosition)
-    if (!path) {
+    if (!path?.length) {
       return
     }
 
@@ -73,7 +69,7 @@
 <svelte:window {onkeydown} />
 
 <AspectRatio ratio={16 / 12}>
-  <CrtScreen>
+  <CrtScreen flickerOpacity={0.7} vhs={false}>
     <div class="game-map" bind:clientWidth>
       {#if !$stage}
         <Loading />

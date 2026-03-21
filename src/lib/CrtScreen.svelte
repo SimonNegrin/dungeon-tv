@@ -4,14 +4,19 @@
   let {
     children,
     flickerOpacity = 0.55,
+    vhs = false,
   }: {
     children: Snippet
     flickerOpacity?: number
+    vhs: boolean
   } = $props()
 </script>
 
 <div class="crt-screen" style:--flicker-opacity={flickerOpacity}>
   <div class="inner-shadow"></div>
+  {#if vhs}
+    <div class="vhs"></div>
+  {/if}
   {@render children()}
 </div>
 
@@ -76,6 +81,23 @@
     right: -1px;
     border-radius: var(--border-radius);
     box-shadow: inset 0 0 6px 3px var(--main-background-color);
+    background-image: url("/images/noise.png");
+    mix-blend-mode: overlay;
+  }
+
+  .vhs {
+    position: absolute;
+    z-index: 999;
+    pointer-events: none;
+    top: -1px;
+    left: -1px;
+    bottom: -1px;
+    right: -1px;
+    background-image: url("/images/vhs.gif");
+    background-repeat: no-repeat;
+    background-size: cover;
+    mix-blend-mode: screen;
+    opacity: 0.3;
   }
 
   @keyframes flicker {

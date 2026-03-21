@@ -1,6 +1,6 @@
 import type { Character, Item, Stage } from "./types"
 import { loadSpritesheet } from "./common"
-import { derived, get, writable, type Readable } from "svelte/store"
+import { get, writable, type Readable } from "svelte/store"
 import Vec2 from "./Vec2"
 
 export const stage = writable<Stage | null>(null)
