@@ -1,5 +1,11 @@
 import EasyStar from "easystarjs"
-import type { Character, Grid, Spritesheet } from "./types"
+import type {
+  Character,
+  Grid,
+  Layer,
+  MapTileAttributes,
+  Spritesheet,
+} from "./types"
 import Vec2 from "./Vec2"
 import { get } from "svelte/store"
 import { players, stage } from "./state"
@@ -97,6 +103,98 @@ export function isEthereal(character: Character): boolean {
   return character.items.some((item) => {
     return item.ethereal === true
   })
+}
+
+export function isInsideGameboard(position: Vec2): boolean {
+  const currentStage = get(stage)
+  if (!currentStage) {
+    return false
+  }
+  return (
+    position.x >= 0 &&
+    position.y >= 0 &&
+    position.x < currentStage.mapWidth &&
+    position.y < currentStage.mapHeight
+  )
+}
+
+export function tileIsFog(position: Vec2): boolean {
+  const currentStage = get(stage)
+  if (!currentStage || !isInsideGameboard(position)) {
+    return false
+  }
+  return currentStage.layers.some((layer) => {
+    if (!layer.name.startsWith("fog")) {
+      return false
+    }
+    return layer.tiles.some((tile) => {
+      return tile.x === position.x && tile.y === position.y
+    })
+  })
+}
+
+export async function removeFog(position: Vec2): Promise<void> {
+  // First check if we have stage and the point is inside the gameboard
+  const currentStage = get(stage)
+  if (!currentStage || !isInsideGameboard(position)) {
+    return
+  }
+
+  const fogLayers = currentStage.layers.filter((layer) => {
+    return layer.name.startsWith("fog")
+  })
+
+  // Find the adjacent fog layer to the point
+  const adjacentFogLayers = fogLayers.filter((layer) => {
+    return layer.tiles.some((tile) => {
+      const xdist = Math.abs(tile.x - position.x)
+      const ydist = Math.abs(tile.y - position.y)
+      return xdist <= 1 && ydist <= 1
+    })
+  })
+
+  if (!adjacentFogLayers.length) {
+    return
+  }
+
+  // If we match two layers it means we can remove al tiles from them
+  if (adjacentFogLayers.length === 2) {
+    adjacentFogLayers.forEach((layer) => {
+      layer.tiles = []
+    })
+    // Update the stage store
+    stage.set(currentStage)
+    return
+  }
+
+  // We have only one adjacent layer
+  const [adjacentFogLayer] = adjacentFogLayers
+
+  // Get all overlaping fog layers with the adjacent one
+  // This is because maybe we have to remove fog partially
+  // from other layers
+  const overlapingFogLayers = fogLayers.filter((layer) => {
+    return layer.tiles.some((a) => {
+      return adjacentFogLayer.tiles.some((b) => {
+        return a.x === b.x && a.y === b.y
+      })
+    })
+  })
+
+  // Remove overlaping tiles from overlaping layers
+  overlapingFogLayers.forEach((overlapingLayer) => {
+    overlapingLayer.tiles = overlapingLayer.tiles.filter((a) => {
+      return !adjacentFogLayer.tiles.some((b) => {
+        return a.x === b.x && a.y === b.y
+      })
+    })
+  })
+
+  // Remove all tiles from adjacent layer
+  adjacentFogLayer.tiles = []
+
+  // Update the stage store
+  stage.set(currentStage)
 }
 
 // Creates a ad-hoc grid for the given character

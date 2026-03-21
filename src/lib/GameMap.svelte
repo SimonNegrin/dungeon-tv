@@ -1,6 +1,12 @@
 <script lang="ts">
+  import { fade } from "svelte/transition"
   import AspectRatio from "./AspectRatio.svelte"
-  import { getCharacterPathTo } from "./common"
+  import {
+    getCharacterPathTo,
+    isInsideGameboard,
+    removeFog,
+    tileIsFog,
+  } from "./common"
   import CrtScreen from "./CrtScreen.svelte"
   import Cursor from "./Cursor.svelte"
   import Loading from "./Loading.svelte"
@@ -38,9 +44,21 @@
       ArrowUp: new Vec2(0, -1),
     }
 
-    if (!movements[event.key]) return
+    if (!movements[event.key]) {
+      return
+    }
 
-    cursorPosition = cursorPosition.add(movements[event.key])
+    const newPosition = cursorPosition.add(movements[event.key])
+
+    if (!isInsideGameboard(newPosition)) {
+      return
+    }
+
+    if (tileIsFog(newPosition)) {
+      return
+    }
+
+    cursorPosition = newPosition
   }
 
   async function walkToCursor(): Promise<void> {
@@ -57,6 +75,8 @@
       cursorPath = cursorPath.slice(1)
     }
     freezePath = false
+
+    await removeFog(currentPlayer.position)
   }
 
   function waitTime(ms: number): Promise<void> {
@@ -69,7 +89,7 @@
 <svelte:window {onkeydown} />
 
 <AspectRatio ratio={16 / 12}>
-  <CrtScreen flickerOpacity={0.7} vhs={false}>
+  <CrtScreen flickerOpacity={0.6} vhs={false}>
     <div class="game-map" bind:clientWidth>
       {#if !$stage}
         <Loading />
@@ -91,6 +111,7 @@
                 {#each layer.tiles as tile}
                   <div
                     class="tile"
+                    out:fade={{ delay: 1000 * Math.random() }}
                     style:left="{tile.x * $stage.tileSize}px"
                     style:top="{tile.y * $stage.tileSize}px"
                   >
