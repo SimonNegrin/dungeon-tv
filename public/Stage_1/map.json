@@ -239,19 +239,16 @@
             "name": "Cofre mugriento",
             "items": [
               {
+                "spriteId": "ethereal_pendant",
                 "name": "Colgante etéreo",
                 "desc": "Inmunidad física",
                 "ethereal": true
               },
               {
+                "spriteId": "short_sword",
                 "name": "Espada corta",
                 "desc": "Ataque +1",
                 "attack": 1
-              },
-              {
-                "name": "Rodela",
-                "desc": "Defensa +1",
-                "defence": 1
               }
             ]
           }

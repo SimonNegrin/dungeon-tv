@@ -31,6 +31,7 @@ export type Character = {
 }
 
 export interface Item {
+  spriteId: string
   name: string
   desc: string
   ethereal?: true
@@ -54,6 +55,10 @@ export interface MapTileAttributes {
   isOpen?: true
   spawn?: boolean
   items?: Item[]
+}
+
+export interface ItemTileAttributes {
+  id: string
 }
 
 export interface RogueTileAttributes {

@@ -12,7 +12,11 @@
   } = $props()
 </script>
 
-<div class="crt-screen" style:--flicker-opacity={flickerOpacity}>
+<div
+  class="crt-screen"
+  class:flicker={flickerOpacity > 0}
+  style:--flicker-opacity={flickerOpacity}
+>
   <div class="inner-shadow"></div>
   {#if vhs}
     <div class="vhs"></div>
@@ -55,7 +59,7 @@
       pointer-events: none;
     }
 
-    &::after {
+    &.flicker::after {
       content: "";
       display: block;
       position: absolute;

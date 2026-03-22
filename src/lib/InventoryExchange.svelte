@@ -1,4 +1,5 @@
 <script lang="ts">
+  import ItemSprite from "./ItemSprite.svelte"
   import OnkeydownCapture from "./OnkeydownCapture.svelte"
   import { gameState } from "./state.svelte"
   import type { Inventory } from "./types"
@@ -92,8 +93,11 @@
             class="item"
             class:selected={leftInventory && indexLeft === index}
           >
-            <div class="name">{item.name}</div>
-            <div class="desc">{item.desc}</div>
+            <ItemSprite id={item.spriteId} />
+            <div>
+              <div class="name">{item.name}</div>
+              <div class="desc">{item.desc}</div>
+            </div>
           </div>
         {/each}
       </div>
@@ -109,8 +113,11 @@
             class="item"
             class:selected={!leftInventory && indexRight === index}
           >
-            <div class="name">{item.name}</div>
-            <div class="desc">{item.desc}</div>
+            <ItemSprite id={item.spriteId} />
+            <div>
+              <div class="name">{item.name}</div>
+              <div class="desc">{item.desc}</div>
+            </div>
           </div>
         {/each}
       </div>
@@ -163,17 +170,37 @@
     padding: 4px 8px;
   }
   .item {
+    display: flex;
+    gap: 4px;
+    position: relative;
     font-family: var(--font-family-1);
-    padding: 4px 8px;
-    display: block;
+    padding: 4px;
     width: 100%;
     text-align: left;
     background-color: transparent;
     color: var(--color-back);
-    border: 2px solid transparent;
+    border: 2px solid var(--color-back);
+    box-shadow: 3px 3px 0 var(--color-back);
 
     &.selected {
-      border: 2px solid var(--color-back);
+      &::before,
+      &::after {
+        content: "";
+        display: block;
+        position: absolute;
+        top: calc(50% - 2px);
+        width: 10px;
+        height: 4px;
+        background-color: var(--color-back);
+      }
+
+      &::before {
+        left: -14px;
+      }
+
+      &::after {
+        right: -18px;
+      }
     }
 
     & .name {

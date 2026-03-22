@@ -78,7 +78,7 @@
 <svelte:window {onkeydown} />
 
 <AspectRatio ratio={16 / 12}>
-  <CrtScreen flickerOpacity={0.6} vhs={false}>
+  <CrtScreen flickerOpacity={0} vhs={false}>
     <div class="game-map" bind:clientWidth>
       {#if !gameState.stage}
         <Loading />
