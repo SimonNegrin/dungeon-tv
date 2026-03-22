@@ -33,7 +33,7 @@
   })
 
   function onkeydown(event: KeyboardEvent): void {
-    if (gameState.openInventory) return
+    if (event.defaultPrevented) return
     if (event.key === " ") {
       action()
       return

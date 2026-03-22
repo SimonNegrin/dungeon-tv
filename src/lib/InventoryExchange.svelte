@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Onkeydown from "./Onkeydown.svelte"
+  import OnkeydownCapture from "./OnkeydownCapture.svelte"
   import { gameState } from "./state.svelte"
   import type { Inventory } from "./types"
 
@@ -69,17 +69,24 @@
   }
 </script>
 
-<Onkeydown key="ArrowDown" handler={moveDown} />
-<Onkeydown key="ArrowUp" handler={moveUp} />
-<Onkeydown key="ArrowLeft,ArrowRight" handler={moveHorizontally} />
-<Onkeydown key=" " handler={exchangeItem} />
-<Onkeydown key="Escape" handler={close} />
+<OnkeydownCapture preventDefault key="ArrowDown" handler={moveDown} />
+<OnkeydownCapture preventDefault key="ArrowUp" handler={moveUp} />
+<OnkeydownCapture
+  preventDefault
+  key="ArrowLeft,ArrowRight"
+  handler={moveHorizontally}
+/>
+<OnkeydownCapture preventDefault key=" " handler={exchangeItem} />
+<OnkeydownCapture preventDefault key="Escape" handler={close} />
 
 <div class="inventory-exchange">
   <div class="inventories">
     <div class="inventory">
       <div class="inventory-name">{inventory.name}</div>
       <div class="inventory-content">
+        {#if !inventory.items.length}
+          <div class="empty">--- Vacio ---</div>
+        {/if}
         {#each inventory.items as item, index}
           <div
             class="item"
@@ -94,6 +101,9 @@
     <div class="inventory">
       <div class="inventory-name">{playerInventory.name}</div>
       <div class="inventory-content">
+        {#if !playerInventory.items.length}
+          <div class="empty">--- Vacio ---</div>
+        {/if}
         {#each playerInventory.items as item, index}
           <div
             class="item"
@@ -148,6 +158,9 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
+  }
+  .empty {
+    padding: 4px 8px;
   }
   .item {
     font-family: var(--font-family-1);

@@ -54,7 +54,7 @@ export default class PlayerAction {
 
     this.gameState.openInventory = inventoryTile.attributes as Inventory
 
-    return false
+    return true
   }
 
   private getTileWithInventory(position: Vec2): Tile<MapTileAttributes> | null {

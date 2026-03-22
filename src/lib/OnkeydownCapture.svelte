@@ -2,18 +2,23 @@
   let {
     key,
     handler,
+    preventDefault = false,
   }: {
     key: string
     handler: (event: KeyboardEvent) => void
+    preventDefault?: boolean
   } = $props()
 
   let keys = $derived(key.split(","))
 
-  function onkeydown(event: KeyboardEvent): void {
+  function onkeydowncapture(event: KeyboardEvent): void {
+    if (preventDefault) {
+      event.preventDefault()
+    }
     if (keys.includes(event.key)) {
       handler(event)
     }
   }
 </script>
 
-<svelte:window {onkeydown} />
+<svelte:window {onkeydowncapture} />
