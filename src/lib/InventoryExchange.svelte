@@ -4,6 +4,7 @@
   import OnkeydownCapture from "./OnkeydownCapture.svelte"
   import { gameState } from "./state.svelte"
   import type { Inventory } from "./types"
+  import { onMount } from "svelte"
 
   let {
     inventory,
@@ -15,6 +16,8 @@
   let leftInventory = $state(true)
   let indexLeft = $state(0)
   let indexRight = $state(0)
+
+  onMount(adjustIndex)
 
   function exchangeItem(): void {
     const [index, from, target] = leftInventory
@@ -160,7 +163,7 @@
   }
   .inventory-name {
     font-size: 1em;
-    border-bottom: 2px solid var(--color-back);
+    border-bottom: 2px dotted var(--color-back);
   }
   .inventory-content {
     display: flex;
