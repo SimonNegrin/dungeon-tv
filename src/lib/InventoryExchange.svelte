@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { fade, fly } from "svelte/transition"
   import ItemSprite from "./ItemSprite.svelte"
   import OnkeydownCapture from "./OnkeydownCapture.svelte"
   import { gameState } from "./state.svelte"
@@ -80,8 +81,8 @@
 <OnkeydownCapture preventDefault key=" " handler={exchangeItem} />
 <OnkeydownCapture preventDefault key="Escape" handler={close} />
 
-<div class="inventory-exchange">
-  <div class="inventories">
+<div class="inventory-exchange" transition:fade>
+  <div class="inventories" transition:fly={{ y: 20 }}>
     <div class="inventory">
       <div class="inventory-name">{inventory.name}</div>
       <div class="inventory-content">
@@ -180,7 +181,7 @@
     background-color: transparent;
     color: var(--color-back);
     border: 2px solid var(--color-back);
-    box-shadow: 3px 3px 0 var(--color-back);
+    box-shadow: 2px 2px 0 var(--color-back);
 
     &.selected {
       &::before,
