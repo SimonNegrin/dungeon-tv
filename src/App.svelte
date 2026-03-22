@@ -3,13 +3,14 @@
   import { loadStage, gameState } from "./lib/state.svelte"
   import Landing from "./lib/Landing.svelte"
   import GameMap from "./lib/GameMap.svelte"
+  import { TILE_SIZE } from "./lib/common"
 
   function onStart(): void {
     loadStage("Stage_1")
   }
 </script>
 
-<main>
+<main style:--tile-size={TILE_SIZE}>
   <AspectRatio ratio={16 / 9}>
     {#if gameState.stage}
       <div class="game-container">

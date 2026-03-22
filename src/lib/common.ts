@@ -2,6 +2,7 @@ import EasyStar from "easystarjs"
 import type {
   Character,
   Grid,
+  Layer,
   MapTileAttributes,
   Spritesheet,
   Tile,
@@ -143,55 +144,74 @@ export async function removeFog(position: Vec2): Promise<void> {
     return
   }
 
-  const fogLayers = gameState.stage.layers.filter((layer) => {
-    return layer.name.startsWith("fog")
+  // Get all fog layers indexes
+  const fogLayersIndx: number[] = []
+  gameState.stage.layers.forEach((layer, index) => {
+    if (layer.name.startsWith("fog")) {
+      fogLayersIndx.push(index)
+    }
   })
 
-  // Find the adjacent fog layer to the point
-  const adjacentFogLayers = fogLayers.filter((layer) => {
-    return layer.tiles.some((tile) => {
+  // Find the adjacent fog layer indexes to the point
+  const adjacentFogLayersIndx: number[] = []
+  fogLayersIndx.forEach((index) => {
+    const layer = gameState.stage!.layers[index]
+    const isAdjacent = layer.tiles.some((tile) => {
       return tile.position.isAdjacent(position)
     })
+    if (isAdjacent) {
+      adjacentFogLayersIndx.push(index)
+    }
   })
 
-  if (!adjacentFogLayers.length) {
+  if (!adjacentFogLayersIndx.length) {
     return
   }
 
   // If we match two layers it means we can remove al tiles from them
   // because the player have visibility of all layers areas
-  if (adjacentFogLayers.length === 2) {
-    adjacentFogLayers.forEach((layer) => {
-      layer.tiles = []
-    })
+  if (adjacentFogLayersIndx.length === 2) {
+    const [a, b] = adjacentFogLayersIndx
+    gameState.stage.layers[a].tiles = []
+    gameState.stage.layers[b].tiles = []
     return
   }
 
   // We have only one adjacent layer
-  const [adjacentFogLayer] = adjacentFogLayers
+  const [adjacentIdx] = adjacentFogLayersIndx
+  const adjacentFogLayer = gameState.stage.layers[adjacentIdx]
 
-  // Get all overlaping fog layers with the adjacent one
+  // Remove all fog tiles from other fog layers that overlaps
+  // with the adjacent fog layer
   // This is because maybe we have to remove fog partially
   // from other layers
-  const overlapingFogLayers = fogLayers.filter((layer) => {
-    return layer.tiles.some((a) => {
-      return adjacentFogLayer.tiles.some((b) => {
-        return a.position.isSame(b.position)
+  fogLayersIndx.forEach((fogLayerIdx) => {
+    if (fogLayerIdx === adjacentIdx) {
+      return
+    }
+    // Is not the adjacent fog layer
+    // Remove the overlaping tiles
+    const overlapingIndxs: number[] = []
+    const fogTiles = gameState.stage!.layers[fogLayerIdx].tiles
+    fogTiles.forEach((tile, index) => {
+      adjacentFogLayer.tiles.forEach((t) => {
+        if (tile.position.isSame(t.position)) {
+          overlapingIndxs.push(index)
+        }
       })
     })
-  })
 
-  // Remove overlaping tiles from overlaping layers
-  overlapingFogLayers.forEach((overlapingLayer) => {
-    overlapingLayer.tiles = overlapingLayer.tiles.filter((a) => {
-      return !adjacentFogLayer.tiles.some((b) => {
-        return a.position.isSame(b.position)
-      })
+    if (overlapingIndxs.length === 0) {
+      return
+    }
+
+    gameState.stage!.layers[fogLayerIdx].tiles = fogTiles.filter((_, index) => {
+      return !overlapingIndxs.includes(index)
     })
   })
 
   // Remove all tiles from adjacent layer
-  adjacentFogLayer.tiles = []
+  gameState.stage.layers[adjacentIdx].tiles = []
 }
 
 // Creates a ad-hoc grid for the given character

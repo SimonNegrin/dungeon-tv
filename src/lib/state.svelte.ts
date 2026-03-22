@@ -19,7 +19,7 @@ const player: Character = {
   name: "Ladelbar",
   position: new Vec2(2, 2),
   steps: 8,
-  items: [],
+  items: [colganteEtereo],
 }
 
 export const gameState = $state<GameState>({

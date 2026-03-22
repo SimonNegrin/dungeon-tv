@@ -13,7 +13,7 @@
 </script>
 
 <div class="layer" data-name={layer.name} style:z-index={zIndex}>
-  {#each layer.tiles as tile}
+  {#each layer.tiles as tile (tile.position.toString())}
     {#if layer.name.startsWith("fog")}
       <Fog position={tile.position} />
     {:else}

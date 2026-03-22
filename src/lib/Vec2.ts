@@ -4,6 +4,10 @@ export default class Vec2 {
     public y: number,
   ) {}
 
+  toString(): string {
+    return `[${this.x},${this.y}]`
+  }
+
   up(): Vec2 {
     return new Vec2(this.x, this.y - 1)
   }
