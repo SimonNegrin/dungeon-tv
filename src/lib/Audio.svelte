@@ -4,7 +4,7 @@
     volume = 0.5,
   }: {
     src: string
-    volume: number
+    volume?: number
   } = $props()
 
   let audioEl: HTMLAudioElement

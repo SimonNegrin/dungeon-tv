@@ -25,6 +25,9 @@
   $effect(() => {
     if (player.position.x !== lastPosition.x) {
       lookRight = player.position.x > lastPosition.x
+    }
+    if (!lastPosition.isEqual(player.position)) {
+      walkSound.play()
       lastPosition = player.position
     }
   })

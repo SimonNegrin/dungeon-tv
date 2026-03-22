@@ -1,6 +1,8 @@
 <script lang="ts">
   import Audio from "./Audio.svelte"
 
+  const volume = 0.15
+
   let step1: Audio
   let step2: Audio
   let left = true
@@ -15,5 +17,5 @@
   }
 </script>
 
-<Audio bind:this={step1} src="/sounds/step_left.mp3" />
-<Audio bind:this={step2} src="/sounds/step_right.mp3" />
+<Audio {volume} bind:this={step1} src="/sounds/step_left.mp3" />
+<Audio {volume} bind:this={step2} src="/sounds/step_right.mp3" />
