@@ -16,7 +16,9 @@
   import MapLayer from "./MapLayer.svelte"
   import PlayerAction from "./PlayerAction"
   import InventoryExchange from "./InventoryExchange.svelte"
+  import Audio from "./Audio.svelte"
 
+  let fogAudio: Audio
   let freezePath = $state(false)
   let clientWidth = $state(0)
   let stageScale = $derived(clientWidth / 512)
@@ -71,11 +73,15 @@
     const action = new PlayerAction(gameState)
     await action.execute()
     freezePath = false
-    await removeFog(gameState.currentPlayer.position)
+    if (await removeFog(gameState.currentPlayer.position)) {
+      fogAudio.play()
+    }
   }
 </script>
 
 <svelte:window {onkeydown} />
+
+<Audio bind:this={fogAudio} src="/sounds/disapear.mp3" volume={0.1} />
 
 <AspectRatio ratio={16 / 12}>
   <CrtScreen flickerOpacity={0} vhs={false}>

@@ -140,10 +140,10 @@ export function tileIsFog(position: Vec2): boolean {
   })
 }
 
-export async function removeFog(position: Vec2): Promise<void> {
+export async function removeFog(position: Vec2): Promise<boolean> {
   // First check if we have stage and the point is inside the gameboard
   if (!gameState.stage || !isInsideGameboard(position)) {
-    return
+    return false
   }
 
   // Get all fog layers indexes
@@ -167,7 +167,7 @@ export async function removeFog(position: Vec2): Promise<void> {
   })
 
   if (!adjacentFogLayersIndx.length) {
-    return
+    return false
   }
 
   // If we match two layers it means we can remove al tiles from them
@@ -176,7 +176,7 @@ export async function removeFog(position: Vec2): Promise<void> {
     const [a, b] = adjacentFogLayersIndx
     gameState.stage.layers[a].tiles = []
     gameState.stage.layers[b].tiles = []
-    return
+    return true
   }
 
   // We have only one adjacent layer
@@ -214,6 +214,8 @@ export async function removeFog(position: Vec2): Promise<void> {
 
   // Remove all tiles from adjacent layer
   gameState.stage.layers[adjacentIdx].tiles = []
+
+  return true
 }
 
 // Creates a ad-hoc grid for the given character

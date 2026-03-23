@@ -5,6 +5,7 @@
   import { gameState } from "./state.svelte"
   import type { Inventory } from "./types"
   import { onMount } from "svelte"
+  import Audio from "./Audio.svelte"
 
   let {
     inventory,
@@ -12,12 +13,17 @@
     inventory: Inventory
   } = $props()
 
+  let exchangeAudio: Audio
+  let openAudio: Audio
   let playerInventory = $derived(gameState.currentPlayer.inventory)
   let leftInventory = $state(true)
   let indexLeft = $state(0)
   let indexRight = $state(0)
 
-  onMount(adjustIndex)
+  onMount(() => {
+    adjustIndex()
+    openAudio.play()
+  })
 
   function exchangeItem(): void {
     const [index, from, target] = leftInventory
@@ -25,6 +31,7 @@
       : [indexRight, playerInventory, inventory]
     const [item] = from.items.splice(index, 1)
     target.items.push(item)
+    exchangeAudio.play()
     adjustIndex()
   }
 
@@ -83,6 +90,9 @@
 />
 <OnkeydownCapture preventDefault key=" " handler={exchangeItem} />
 <OnkeydownCapture preventDefault key="Escape" handler={close} />
+
+<Audio bind:this={exchangeAudio} src="/sounds/pen_click.mp3" volume={0.15} />
+<Audio bind:this={openAudio} src="/sounds/chest_open.mp3" volume={0.25} />
 
 <div class="inventory-exchange" transition:fade>
   <div class="inventories" transition:fly={{ y: 20 }}>
