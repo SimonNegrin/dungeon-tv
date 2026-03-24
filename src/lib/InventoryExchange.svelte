@@ -150,12 +150,13 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
+    pointer-events: none;
     display: flex;
     justify-content: center;
     align-items: center;
   }
   .inventories {
+    pointer-events: all;
     display: flex;
     width: 80%;
     height: 80%;

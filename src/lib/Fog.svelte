@@ -8,6 +8,7 @@
     x: number
     y: number
     opacity: number
+    blinkTime: string
   }
 
   let {
@@ -24,7 +25,8 @@
       stars.push({
         x: Math.random(),
         y: Math.random(),
-        opacity: 0.4 + 0.6 * Math.random(),
+        opacity: 0.6 * Math.random(),
+        blinkTime: `${1500 + 1500 * Math.random()}ms`,
       })
     }
     return stars
@@ -76,7 +78,8 @@
       class="star"
       style:left="{star.x * 100}%"
       style:top="{star.y * 100}%"
-      style:opacity={star.opacity}
+      style:--opacity={star.opacity}
+      style:--blink-time={star.blinkTime}
     ></div>
   {/each}
 </div>
@@ -94,5 +97,21 @@
     height: 2px;
     background-color: #fff;
     transform: translate(-50%, -50%);
+    animation-name: blink;
+    animation-iteration-count: infinite;
+    animation-duration: var(--blink-time);
+    animation-direction: normal;
+  }
+
+  @keyframes blink {
+    0% {
+      opacity: calc(0.05 + var(--opacity));
+    }
+    50% {
+      opacity: calc(0.4 + var(--opacity));
+    }
+    100% {
+      opacity: calc(0.05 + var(--opacity));
+    }
   }
 </style>
