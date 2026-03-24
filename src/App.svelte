@@ -17,7 +17,14 @@
         <div class="screen-container">
           <GameMap />
         </div>
-        <div class="game-info"></div>
+        <div class="game-info">
+          <div class="initiative">
+            Iniciativa restante {gameState.initiativeLeft}
+          </div>
+          <div class="initiative">
+            Iniciativa requerida {gameState.initiativeRequired}
+          </div>
+        </div>
       </div>
     {:else}
       <Landing onclick={onStart} />
@@ -49,5 +56,9 @@
     min-width: 0;
     flex-shrink: 1;
     flex-grow: 1;
+    color: #fff;
+  }
+  .initiative {
+    font-size: 2em;
   }
 </style>

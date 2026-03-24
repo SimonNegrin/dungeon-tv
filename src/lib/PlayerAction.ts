@@ -1,5 +1,12 @@
 import { createAudioPreset, playAudio } from "./audio"
-import { getCharacterPathTo, getTileTypeAt, waitTime } from "./common"
+import {
+  getCharacterPathTo,
+  getTileTypeAt,
+  INITIATIVE_CHEST,
+  INITIATIVE_DOOR,
+  INITIATIVE_STEP,
+  waitTime,
+} from "./common"
 import { gameState } from "./state.svelte"
 
 const doorUnlockSound = createAudioPreset("door_unlock", { volume: 0.5 })
@@ -35,6 +42,14 @@ export default class PlayerAction {
       return false
     }
 
+    // Check if the player has the initiative needed
+    // to interact with a chest
+    if (gameState.initiativeLeft < INITIATIVE_CHEST) {
+      // TODO: Sound of exaust
+      return true
+    }
+
+    gameState.initiativeLeft -= INITIATIVE_CHEST
     gameState.openInventory = chest.attributes
 
     return true
@@ -57,9 +72,17 @@ export default class PlayerAction {
       return false
     }
 
+    // Check if the player has the initiative needed
+    // to interact with a door
+    if (gameState.initiativeLeft < INITIATIVE_DOOR) {
+      // TODO: Sound of exaust
+      return true
+    }
+
     // If the door does not need key we open the door inmediatly
     if (!door.attributes.keyId) {
       door.attributes.isOpen = true
+      gameState.initiativeLeft -= INITIATIVE_STEP
       doorUnlockSound()
       return true
     }
@@ -72,12 +95,14 @@ export default class PlayerAction {
       door.attributes.isOpen = true
       // Remove key from player inventory
       player.items = player.items.filter((item) => item.id !== keyId)
+      gameState.initiativeLeft -= INITIATIVE_DOOR
       doorUnlockSound()
       return true
     }
 
     // The player can't open the door but we return true
     // to indicate the interaction try
+    gameState.initiativeLeft -= INITIATIVE_STEP
     doorLockedSound()
     return true
   }
@@ -94,6 +119,12 @@ export default class PlayerAction {
     }
 
     for (const step of path.slice(1)) {
+      // Check if the player has the initiative needed to walk
+      if (gameState.initiativeLeft < INITIATIVE_STEP) {
+        // TODO: Sound of exaust
+        return true
+      }
+      gameState.initiativeLeft--
       gameState.currentPlayer.position = step
       await waitTime(200)
       gameState.cursorPath = gameState.cursorPath.slice(1)

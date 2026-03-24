@@ -58,5 +58,6 @@
 <style>
   .item-stats {
     padding-left: 10px;
+    margin: 5px 0;
   }
 </style>

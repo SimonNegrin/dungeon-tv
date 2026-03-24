@@ -5,7 +5,7 @@ import Vec2 from "./Vec2"
 const player: Character = {
   name: "Ladelbar",
   position: new Vec2(2, 2),
-  steps: 8,
+  initiative: 12,
   traits: [],
   items: [],
 }
@@ -14,6 +14,8 @@ export const gameState = $state<GameState>({
   stage: null,
   playerIndex: 0,
   currentPlayer: player,
+  initiativeLeft: player.initiative,
+  initiativeRequired: 0,
   openInventory: null,
   cursorPosition: player.position,
   cursorPath: [],

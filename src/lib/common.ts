@@ -16,6 +16,11 @@ export const TILE_SIZE = 32
 export const TILE_FLOOR = 0
 export const TILE_BLOCK = 1
 
+export const INITIATIVE_DOOR = 2
+export const INITIATIVE_CHEST = 2
+export const INITIATIVE_ATTACK = 2
+export const INITIATIVE_STEP = 1
+
 /**
  * Carga los datos del mapa de un stage desde su archivo JSON
  * @param spritesheetName - Nombre del stage a cargar (ej: "Stage_1")

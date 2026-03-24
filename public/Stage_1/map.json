@@ -492,11 +492,8 @@
               {
                 "spriteId": "short_sword",
                 "name": "Espada corta",
-                "desc": "Menos es nada",
-                "attack": 1,
-                "turns": 5,
-                "uses": 6,
-                "range": 4
+                "desc": "Mejor que nada",
+                "attack": 1
               },
               {
                 "spriteId": "rusty_key",

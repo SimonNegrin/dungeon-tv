@@ -16,6 +16,8 @@ interface GameState {
   stage: Stage | null
   playerIndex: 0
   currentPlayer: Character
+  initiativeLeft: number
+  initiativeRequired: number
   openInventory: Inventory | null
   cursorPosition: Vec2
   cursorPath: Vec2[]
@@ -24,8 +26,8 @@ interface GameState {
 
 export type Character = {
   name: string
-  steps: number
   position: Vec2
+  initiative: number
   traits: Item[]
   items: Item[]
 }

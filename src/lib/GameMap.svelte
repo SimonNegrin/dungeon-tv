@@ -30,7 +30,13 @@
       gameState.currentPlayer,
       gameState.cursorPosition,
     ).then((path) => {
-      gameState.cursorPath = path?.slice(1, -1) || []
+      if (!path) {
+        gameState.initiativeRequired = 0
+        gameState.cursorPath = []
+        return
+      }
+      gameState.initiativeRequired = Math.max(0, path.length - 1)
+      gameState.cursorPath = path.slice(1, -1)
     })
   })
 
@@ -70,7 +76,7 @@
 
   async function action(): Promise<void> {
     freezePath = true
-    const action = new PlayerAction(gameState)
+    const action = new PlayerAction()
     await action.execute()
     freezePath = false
     if (await removeFog(gameState.currentPlayer.position)) {
