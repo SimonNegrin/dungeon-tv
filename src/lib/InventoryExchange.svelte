@@ -6,6 +6,7 @@
   import type { Inventory } from "./types"
   import { onMount } from "svelte"
   import Audio from "./Audio.svelte"
+  import ItemStats from "./ItemStats.svelte"
 
   let {
     inventory,
@@ -115,6 +116,9 @@
             <div>
               <div class="name">{item.name}</div>
               <div class="desc">{item.desc}</div>
+              <div class="stats-container">
+                <ItemStats {item} />
+              </div>
             </div>
           </div>
         {/each}
@@ -135,6 +139,9 @@
             <div>
               <div class="name">{item.name}</div>
               <div class="desc">{item.desc}</div>
+              <div class="stats-container">
+                <ItemStats {item} />
+              </div>
             </div>
           </div>
         {/each}
@@ -169,6 +176,7 @@
   }
   .inventory {
     flex: 1 0 0;
+    min-height: 0;
     color: var(--color-back);
     text-align: center;
     padding: 20px;
@@ -184,6 +192,7 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
+    overflow: hidden;
   }
   .empty {
     padding: 4px 8px;
@@ -230,7 +239,8 @@
       font-size: 0.9em;
     }
 
-    & .desc {
+    & .desc,
+    & .stats-container {
       font-size: 0.7em;
     }
   }
