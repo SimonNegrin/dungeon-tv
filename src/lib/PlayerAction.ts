@@ -1,28 +1,42 @@
-import { getCharacterPathTo, isInventory, waitTime } from "./common"
-import type { GameState, Inventory, MapTileAtts, Tile } from "./types"
-import type Vec2 from "./Vec2"
+import { getCharacterPathTo, getTileTypeAt, waitTime } from "./common"
+import { gameState } from "./state.svelte"
+import type { AttsChest } from "./types"
 
 export default class PlayerAction {
-  constructor(public gameState: GameState) {}
-
   async execute(): Promise<void> {
-    if (!this.gameState.stage) {
+    if (!gameState.stage) {
       return
     }
     // Si el cursor está sobre un cofre y la posición del cofre es adjacente recta
     // al jugador actual se abre el cofre
-    if (await this.openChest()) {
+    if (await this.interactChest()) {
       return
     }
 
-    await this.move()
+    await this.playerMove()
   }
 
-  private async move(): Promise<boolean> {
+  private async interactChest(): Promise<boolean> {
+    const chest = getTileTypeAt("chest", gameState.cursorPosition)
+
+    if (!chest) {
+      return false
+    }
+
+    if (!gameState.currentPlayer.position.isRectAdjacent(chest.position)) {
+      return false
+    }
+
+    gameState.openInventory = chest.attributes as AttsChest
+
+    return true
+  }
+
+  private async playerMove(): Promise<boolean> {
     const path = await getCharacterPathTo(
-      this.gameState.stage!,
-      this.gameState.currentPlayer,
-      this.gameState.cursorPosition,
+      gameState.stage!,
+      gameState.currentPlayer,
+      gameState.cursorPosition,
     )
 
     if (!path) {
@@ -30,41 +44,11 @@ export default class PlayerAction {
     }
 
     for (const step of path.slice(1)) {
-      this.gameState.currentPlayer.position = step
+      gameState.currentPlayer.position = step
       await waitTime(200)
-      this.gameState.cursorPath = this.gameState.cursorPath.slice(1)
+      gameState.cursorPath = gameState.cursorPath.slice(1)
     }
 
     return true
-  }
-
-  private async openChest(): Promise<boolean> {
-    let inventoryTile = this.getTileWithInventory(this.gameState.cursorPosition)
-    if (!inventoryTile) {
-      return false
-    }
-
-    if (
-      !this.gameState.currentPlayer.position.isRectAdjacent(
-        this.gameState.cursorPosition,
-      )
-    ) {
-      return false
-    }
-
-    this.gameState.openInventory = inventoryTile.attributes as Inventory
-
-    return true
-  }
-
-  private getTileWithInventory(position: Vec2): Tile<MapTileAtts> | null {
-    for (const layer of this.gameState.stage!.layers) {
-      for (const tile of layer.tiles) {
-        if (position.isEqual(tile.position) && isInventory(tile.attributes)) {
-          return tile
-        }
-      }
-    }
-    return null
   }
 }

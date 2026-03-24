@@ -2,12 +2,11 @@ import EasyStar from "easystarjs"
 import type {
   Character,
   Grid,
-  Inventory,
-  Layer,
   MapTileAtts,
   Spritesheet,
   Stage,
   Tile,
+  TileType,
 } from "./types"
 import Vec2 from "./Vec2"
 import { gameState } from "./state.svelte"
@@ -249,15 +248,25 @@ export function createGrid(stage: Stage, character: Character): Grid | null {
   return grid
 }
 
-function isOpenDoorTile(tile: Tile<MapTileAtts>): boolean {
-  return tile.attributes.type === "door" && tile.attributes.isOpen
+export function getTileTypeAt(
+  tileType: TileType,
+  position: Vec2,
+): Tile<MapTileAtts> | null {
+  for (const layer of gameState.stage!.layers) {
+    for (const tile of layer.tiles) {
+      if (
+        tile.attributes.type === tileType &&
+        tile.position.isEqual(position)
+      ) {
+        return tile
+      }
+    }
+  }
+  return null
 }
 
-export function isInventory(anything: any): anything is Inventory {
-  if (!anything) {
-    return false
-  }
-  return typeof anything.name === "string" && Array.isArray(anything.items)
+function isOpenDoorTile(tile: Tile<MapTileAtts>): boolean {
+  return tile.attributes.type === "door" && tile.attributes.isOpen
 }
 
 export function getTilesAtPosition(position: Vec2): Tile<MapTileAtts>[] {

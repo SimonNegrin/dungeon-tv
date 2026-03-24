@@ -73,6 +73,7 @@ export interface Position {
 }
 
 export type MapTileAtts = AttsDoor | AttsChest | AttsSpawn
+export type TileType = "door" | "chest" | "spawn"
 
 export interface AttsDoor {
   type: "door"
