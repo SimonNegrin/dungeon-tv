@@ -8,7 +8,15 @@ const ladelbar: Character = {
   position: new Vec2(2, 2),
   initiative: 8,
   traits: [],
-  items: [],
+  items: [
+    {
+      id: "ethereal_necklace",
+      name: "Colgante etéreo",
+      desc: "Tiene un brillo fantasmal",
+      spriteId: "crystal_necklace",
+      ethereal: true,
+    },
+  ],
 }
 
 const krom: Character = {

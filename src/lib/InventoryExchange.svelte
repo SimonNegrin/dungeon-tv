@@ -7,8 +7,7 @@
   import { onMount } from "svelte"
   import ItemStats from "./ItemStats.svelte"
   import { nextPlayerIfExaust } from "./common"
-  import { chestOpenSound, penClickSound } from "./audio"
-  import Sprite from "./Sprite.svelte"
+  import { chestCloseSound, chestOpenSound, penClickSound } from "./audio"
 
   let {
     inventory,
@@ -40,6 +39,7 @@
   function close(event: KeyboardEvent): void {
     event.preventDefault()
     gameState.openInventory = null
+    chestCloseSound()
     nextPlayerIfExaust()
   }
 

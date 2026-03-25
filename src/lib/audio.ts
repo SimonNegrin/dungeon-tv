@@ -14,6 +14,9 @@ export const stepRightSound = createAudioPreset("step_right", { volume: 0.15 })
 export const disapearSound = createAudioPreset("disapear", { volume: 0.25 })
 export const penClickSound = createAudioPreset("pen_click", { volume: 0.15 })
 export const chestOpenSound = createAudioPreset("chest_open", { volume: 0.25 })
+export const chestCloseSound = createAudioPreset("chest_close", {
+  volume: 0.25,
+})
 
 export function walkSound(): void {
   stepRight = !stepRight
