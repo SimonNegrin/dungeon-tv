@@ -11,6 +11,7 @@ import type {
 } from "./types"
 import Vec2 from "./Vec2"
 import { gameState } from "./state.svelte"
+import { nextSound } from "./audio"
 
 export const TILE_SIZE = 32
 export const TILE_FLOOR = 0
@@ -307,4 +308,15 @@ export function nextPlayer(): void {
   gameState.cursorPosition = player.position
   gameState.initiativeLeft = player.initiative
   gameState.openInventory = null
+  nextSound()
+}
+
+// Spent an initiative amount and return boolean
+// indicating if there was enough initiative to spend it
+export function spendInitiative(amount: number): boolean {
+  if (amount > gameState.initiativeLeft) {
+    return false
+  }
+  gameState.initiativeLeft - amount
+  return true
 }

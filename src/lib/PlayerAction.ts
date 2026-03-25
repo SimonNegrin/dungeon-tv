@@ -1,4 +1,4 @@
-import { createAudioPreset, playAudio } from "./audio"
+import { doorLockedSound, doorUnlockSound, tiredSound } from "./audio"
 import {
   getCharacterPathTo,
   getTileTypeAt,
@@ -6,12 +6,10 @@ import {
   INITIATIVE_DOOR,
   INITIATIVE_STEP,
   nextPlayerIfExaust,
+  spendInitiative,
   waitTime,
 } from "./common"
 import { gameState } from "./state.svelte"
-
-const doorUnlockSound = createAudioPreset("door_unlock", { volume: 0.5 })
-const doorLockedSound = createAudioPreset("door_locked", { volume: 0.4 })
 
 export default class PlayerAction {
   async execute(): Promise<void> {
@@ -47,7 +45,7 @@ export default class PlayerAction {
     // Check if the player has the initiative needed
     // to interact with a chest
     if (gameState.initiativeLeft < INITIATIVE_CHEST) {
-      // TODO: Sound of exaust
+      tiredSound()
       return true
     }
 
@@ -74,18 +72,14 @@ export default class PlayerAction {
       return false
     }
 
-    // Check if the player has the initiative needed
-    // to interact with a door
-    if (gameState.initiativeLeft < INITIATIVE_DOOR) {
-      // TODO: Sound of exaust
-      return true
-    }
-
     // If the door does not need key we open the door inmediatly
     if (!door.attributes.keyId) {
-      door.attributes.isOpen = true
-      gameState.initiativeLeft -= INITIATIVE_STEP
-      doorUnlockSound()
+      if (spendInitiative(INITIATIVE_STEP)) {
+        door.attributes.isOpen = true
+        doorUnlockSound()
+      } else {
+        tiredSound()
+      }
       nextPlayerIfExaust()
       return true
     }
@@ -94,19 +88,22 @@ export default class PlayerAction {
     const player = gameState.currentPlayer
     const keyId = door.attributes.keyId
     if (player.items.some((item) => item.id === keyId)) {
-      // Open the door with key
-      door.attributes.isOpen = true
-      // Remove key from player inventory
-      player.items = player.items.filter((item) => item.id !== keyId)
-      gameState.initiativeLeft -= INITIATIVE_DOOR
-      doorUnlockSound()
+      if (spendInitiative(INITIATIVE_DOOR)) {
+        // Open the door with key
+        door.attributes.isOpen = true
+        // Remove key from player inventory
+        player.items = player.items.filter((item) => item.id !== keyId)
+        gameState.initiativeLeft -= INITIATIVE_DOOR
+        doorUnlockSound()
+      } else {
+        tiredSound()
+      }
       nextPlayerIfExaust()
       return true
     }
 
     // The player can't open the door but we return true
     // to indicate the interaction try
-    gameState.initiativeLeft -= INITIATIVE_STEP
     doorLockedSound()
     nextPlayerIfExaust()
     return true
@@ -126,9 +123,8 @@ export default class PlayerAction {
     for (const step of path.slice(1)) {
       // Check if the player has the initiative needed to walk
       if (gameState.initiativeLeft < INITIATIVE_STEP) {
-        // TODO: Sound of exaust
-        nextPlayerIfExaust()
-        return true
+        tiredSound()
+        break
       }
       gameState.initiativeLeft--
       gameState.currentPlayer.position = step
@@ -136,6 +132,7 @@ export default class PlayerAction {
       gameState.cursorPath = gameState.cursorPath.slice(1)
     }
 
+    nextPlayerIfExaust()
     return true
   }
 }

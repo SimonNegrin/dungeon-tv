@@ -1,7 +1,7 @@
 <script lang="ts" module>
+  import { walkSound } from "./audio"
   import { isEthereal, loadSpritesheet } from "./common"
   import type { Character, Tile } from "./types"
-  import WalkSound from "./WalkSound.svelte"
 
   type PlayerAtts = {
     name: string
@@ -19,8 +19,6 @@
   } = $props()
 
   let canvas: HTMLCanvasElement
-  let walkSound: WalkSound
-
   let lastPosition = player.position
   let tile = $derived(getRogueTile(player.name))
   let lookRight = $state(false)
@@ -31,7 +29,7 @@
       lookRight = player.position.x > lastPosition.x
     }
     if (!lastPosition.isEqual(player.position)) {
-      walkSound.play()
+      walkSound()
       lastPosition = player.position
     }
   })
@@ -84,8 +82,6 @@
     height={spritesheet.tileSize}
   ></canvas>
 </div>
-
-<WalkSound bind:this={walkSound} />
 
 <style>
   .rogue {
