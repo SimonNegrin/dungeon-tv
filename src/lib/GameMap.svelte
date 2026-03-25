@@ -24,19 +24,17 @@
 
   $effect(() => {
     if (freezePath) return
-    getCharacterPathTo(
-      gameState.stage!,
-      gameState.currentPlayer,
-      gameState.cursorPosition,
-    ).then((path) => {
-      if (!path) {
-        gameState.initiativeRequired = 0
-        gameState.cursorPath = []
-        return
-      }
-      gameState.initiativeRequired = Math.max(0, path.length - 1)
-      gameState.cursorPath = path
-    })
+    getCharacterPathTo(gameState.currentPlayer, gameState.cursorPosition).then(
+      (path) => {
+        if (!path) {
+          gameState.initiativeRequired = 0
+          gameState.cursorPath = []
+          return
+        }
+        gameState.initiativeRequired = Math.max(0, path.length - 1)
+        gameState.cursorPath = path
+      },
+    )
   })
 
   function onkeydown(event: KeyboardEvent): void {

@@ -111,7 +111,6 @@ export default class PlayerAction {
 
   private async playerMove(): Promise<boolean> {
     const path = await getCharacterPathTo(
-      gameState.stage!,
       gameState.currentPlayer,
       gameState.cursorPosition,
     )

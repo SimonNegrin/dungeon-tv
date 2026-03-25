@@ -58,15 +58,25 @@ export async function loadSpritesheet<T>(
 }
 
 export function getCharacterPathTo(
-  stage: Stage,
   character: Character,
   target: Vec2,
 ): Promise<Vec2[] | null> {
   return new Promise((resolve) => {
-    const grid = createGrid(stage, character)
+    if (!gameState.stage) {
+      return resolve(null)
+    }
+
+    // If some player is in the target position
+    // is not posible to create a path
+    if (gameState.players.some((player) => player.position.isEqual(target))) {
+      return resolve(null)
+    }
+
+    const grid = createGrid(gameState.stage, character)
     if (!grid) {
       return resolve(null)
     }
+
     const easystar = new EasyStar.js()
     easystar.disableDiagonals()
     easystar.setGrid(grid)
@@ -234,17 +244,20 @@ export function createGrid(stage: Stage, character: Character): Grid | null {
     grid.push(line)
   }
 
-  // Block all tiles occupied by players
-  gameState.players.forEach((player) => {
-    grid[player.position.y][player.position.x] = TILE_BLOCK
-  })
-
-  // TODO: Block all tiles occupied by NPCs
-
   // If the character is ethereal it can move to any tile
   if (isEthereal(character)) {
     return grid
   }
+
+  // Block all tiles occupied by players
+  // except if they are ethereal
+  gameState.players.forEach((player) => {
+    if (!isEthereal(player)) {
+      grid[player.position.y][player.position.x] = TILE_BLOCK
+    }
+  })
+
+  // TODO: Block all tiles occupied by NPCs
 
   // Block all tiles from the collider layers
   stage.layers.forEach((layer) => {
