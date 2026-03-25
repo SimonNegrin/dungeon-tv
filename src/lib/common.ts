@@ -1,7 +1,6 @@
 import EasyStar from "easystarjs"
 import type {
   Character,
-  CharacterDto,
   Grid,
   MapTileAtts,
   Spritesheet,
@@ -288,7 +287,7 @@ export function nextPlayer(): void {
   gameState.currentPlayer = player
   gameState.playerIndex = index
   gameState.cursorPosition = player.position
-  gameState.initiativeLeft = player.getStat("initiative")
+  gameState.initiativeLeft = calcStat("initiative", player)
   gameState.openInventory = null
   nextSound()
 }
@@ -303,15 +302,7 @@ export function spendInitiative(amount: number): boolean {
   return true
 }
 
-export function createCharacter(character: CharacterDto): Character {
-  return {
-    ...character,
-    getStat: (stat: StatType) => calcStat(stat, character),
-    isEthereal: () => isEthereal(character),
-  }
-}
-
-export function calcStat(stat: StatType, character: CharacterDto): number {
+export function calcStat(stat: StatType, character: Character): number {
   let value = character.stats[stat]
   ;[...character.traits, ...character.items].forEach((item) => {
     item.statModifiers?.forEach((item) => {
@@ -323,7 +314,7 @@ export function calcStat(stat: StatType, character: CharacterDto): number {
   return value
 }
 
-export function isEthereal(character: CharacterDto): boolean {
+export function isEthereal(character: Character): boolean {
   return [...character.traits, ...character.items].some((item) => {
     return item.metadata?.ethereal === true
   })

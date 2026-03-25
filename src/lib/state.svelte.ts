@@ -1,8 +1,9 @@
-import type { Character, GameState, Stage } from "./types"
-import { createCharacter, loadSpritesheet } from "./common"
+import type { Character, GameState, Item, MapTileAtts, Stage } from "./types"
+import { loadSpritesheet } from "./common"
 import Vec2 from "./Vec2"
+import { itemsFactory } from "./items"
 
-const ladelbar: Character = createCharacter({
+const ladelbar: Character = {
   spritePath: "rogues/ladelbar",
   name: "Ladelbar",
   position: new Vec2(2, 2),
@@ -17,7 +18,7 @@ const ladelbar: Character = createCharacter({
   },
   traits: [],
   items: [],
-})
+}
 
 // const krom: Character = {
 //   spritePath: "rogues/krom",
@@ -48,7 +49,24 @@ export const gameState = $state<GameState>({
 })
 
 export async function loadStage(name: string): Promise<void> {
-  const stage: Stage = await loadSpritesheet(name)
+  const stage: Stage = await loadSpritesheet<MapTileAtts>(name)
+
+  type Ref = {
+    type: string
+    id: string
+  }
+
+  stage.layers.forEach((layer) => {
+    layer.tiles.forEach((tile) => {
+      if (tile.attributes.type === "chest") {
+        tile.attributes.items = tile.attributes.items.map((item): Item => {
+          const ref = item as unknown as Ref
+          return itemsFactory[ref.type](ref.id)
+        })
+      }
+    })
+  })
+
   gameState.stage = stage
   gameState.playerIndex = 0
   gameState.currentPlayer = gameState.players[gameState.playerIndex]

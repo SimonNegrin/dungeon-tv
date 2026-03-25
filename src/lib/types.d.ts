@@ -25,18 +25,13 @@ interface GameState {
   players: Character[]
 }
 
-export interface CharacterDto {
+export interface Character {
   spritePath: string
   name: string
   position: Vec2
   stats: Record<StatType, number>
   traits: Item[]
   items: Item[]
-}
-
-export interface Character extends CharacterDto {
-  getStat(stat: StatType): number
-  isEthereal(): boolean
 }
 
 export type StatType =

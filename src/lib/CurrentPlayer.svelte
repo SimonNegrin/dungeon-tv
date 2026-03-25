@@ -15,17 +15,19 @@
       <tr>
         <td>Iniciativa</td>
         <td
-          >{gameState.initiativeLeft}/{gameState.currentPlayer.getStat(
+          >{gameState.initiativeLeft}/{calcStat(
             "initiative",
+            gameState.currentPlayer,
           )}</td
         >
       </tr>
       <tr>
         <td>Salud</td>
         <td
-          >{gameState.currentPlayer.getStat(
-            "health",
-          )}/{gameState.currentPlayer.getStat("totalHealth")}</td
+          >{calcStat("health", gameState.currentPlayer)}/{calcStat(
+            "totalHealth",
+            gameState.currentPlayer,
+          )}</td
         >
       </tr>
       <tr>
@@ -34,11 +36,12 @@
       </tr>
       <tr>
         <td>Daño</td>
-        <td>{gameState.currentPlayer.getStat("damage")}</td>
+        <td>{calcStat("damage", gameState.currentPlayer)}</td>
       </tr>
+
       <tr>
         <td>Defensa</td>
-        <td>{gameState.currentPlayer.getStat("defence")}</td>
+        <td>{calcStat("defence", gameState.currentPlayer)}</td>
       </tr>
     </tbody>
   </table>

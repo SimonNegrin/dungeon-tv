@@ -400,9 +400,7 @@
             "isOpen": true,
             "items": [
               {
-                "spriteId": "iron_key",
-                "name": "Llave de la cripta",
-                "desc": "Está algo pegajosa",
+                "type": "iron_key",
                 "id": "crypt_key"
               }
             ],
@@ -418,10 +416,8 @@
             "isOpen": true,
             "items": [
               {
-                "spriteId": "wizzard_hat",
-                "name": "Sombrero de mago",
-                "desc": "Los magos también pueden ir a la última",
-                "magic": true
+                "type": "wizzard_hat",
+                "id": "wizzard_hat_1774473884429"
               }
             ],
             "name": "Vasija"
@@ -441,9 +437,7 @@
             "isOpen": true,
             "items": [
               {
-                "spriteId": "brass_key",
-                "name": "Llave de latón",
-                "desc": "Desgastada y roñosa",
+                "type": "brass_key",
                 "id": "anteroom_key"
               }
             ],
@@ -494,9 +488,7 @@
                 "id": "short_sword"
               },
               {
-                "spriteId": "rusty_key",
-                "name": "Llave oxidada",
-                "desc": "Da tétanos de mirarla",
+                "type": "rusty_key",
                 "id": "storage_key"
               }
             ],
@@ -511,7 +503,16 @@
             "type": "chest",
             "name": "Cofre de madera",
             "isOpen": true,
-            "items": []
+            "items": [
+              {
+                "type": "life_potion",
+                "id": "life_potion_1"
+              },
+              {
+                "type": "shield_1",
+                "id": "shield_1_1"
+              }
+            ]
           }
         },
         {
