@@ -3,8 +3,9 @@
   import { gameState } from "./state.svelte"
   import type { Inventory } from "./types"
   import { onMount } from "svelte"
-  import { chestOpenSound } from "./audio"
+  import { chestCloseSound, chestOpenSound } from "./audio"
   import InventoryView from "./InventoryView.svelte"
+  import OnkeydownCapture from "./OnkeydownCapture.svelte"
 
   let {
     inventory,
@@ -44,7 +45,14 @@
   function toggleFocus(): void {
     focusChest = !focusChest
   }
+
+  function close(): void {
+    chestCloseSound()
+    gameState.openInventory = null
+  }
 </script>
+
+<OnkeydownCapture key="Escape" handler={close} />
 
 <div class="inventory-exchange" transition:fade>
   <div class="inventories" transition:fly={{ y: 20 }}>

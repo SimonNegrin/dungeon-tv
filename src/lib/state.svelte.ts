@@ -20,20 +20,22 @@ const ladelbar: Character = {
   items: [],
 }
 
-// const krom: Character = {
-//   spritePath: "rogues/krom",
-//   name: "Krom",
-//   position: new Vec2(3, 2),
-//   initiative: 8,
-//   totalHealth: 8,
-//   health: 8,
-//   attack: 2,
-//   damage: 1,
-//   defence: 3,
-//   baseStats: {},
-//   traits: [],
-//   items: [],
-// }
+const krom: Character = {
+  spritePath: "rogues/krom",
+  name: "Krom",
+  position: new Vec2(3, 2),
+  stats: {
+    health: 0,
+    totalHealth: 0,
+    initiative: 8,
+    attack: 0,
+    defence: 0,
+    damage: 0,
+    aim: 0,
+  },
+  traits: [],
+  items: [],
+}
 
 export const gameState = $state<GameState>({
   stage: null,
@@ -45,7 +47,7 @@ export const gameState = $state<GameState>({
   cursorPosition: ladelbar.position,
   cursorPath: [],
   freezePath: false,
-  players: [ladelbar],
+  players: [ladelbar, krom],
 })
 
 export async function loadStage(name: string): Promise<void> {

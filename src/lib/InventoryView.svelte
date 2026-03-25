@@ -38,7 +38,7 @@
     }
 
     if (handlers[event.key]) {
-      event.stopPropagation()
+      event.preventDefault()
       handlers[event.key]()
     }
   }
