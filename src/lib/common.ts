@@ -97,32 +97,6 @@ export function getCharacterPathTo(
   })
 }
 
-export function calcCharacterDistanceBetween(
-  stage: Stage,
-  character: Character,
-  a: Vec2,
-  b: Vec2,
-): Promise<number | null> {
-  return new Promise((resolve) => {
-    const grid = createGrid(stage, character)
-    if (!grid) {
-      return resolve(null)
-    }
-    const easystar = new EasyStar.js()
-    easystar.disableDiagonals()
-    easystar.setGrid(grid)
-    easystar.setAcceptableTiles(0)
-    easystar.findPath(a.x, a.y, b.x, b.y, (path) => {
-      if (!Array.isArray(path)) {
-        return resolve(null)
-      }
-      const distance = Math.max(0, path.length - 1)
-      resolve(distance)
-    })
-    easystar.calculate()
-  })
-}
-
 export function isEthereal(character: Character): boolean {
   const allItems = [...character.traits, ...character.items]
   return allItems.some((item) => {
