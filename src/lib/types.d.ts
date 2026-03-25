@@ -30,6 +30,11 @@ export type Character = {
   name: string
   position: Vec2
   initiative: number
+  totalHealth: number
+  health: number
+  attack: number
+  defence: number
+  damage: number
   traits: Item[]
   items: Item[]
 }
@@ -69,6 +74,9 @@ export interface Item {
 
   // Modify the character initiative
   initiative?: number
+
+  // Modify the character total health
+  totalHealth?: number
 }
 
 export interface Position {

@@ -293,7 +293,7 @@ export function nextPlayer(): void {
   gameState.currentPlayer = player
   gameState.playerIndex = index
   gameState.cursorPosition = player.position
-  gameState.initiativeLeft = player.initiative
+  gameState.initiativeLeft = calcCharacterInitiative(player)
   gameState.openInventory = null
   nextSound()
 }
@@ -306,4 +306,54 @@ export function spendInitiative(amount: number): boolean {
   }
   gameState.initiativeLeft - amount
   return true
+}
+
+export function calcCharacterInitiative(character: Character): number {
+  let value = character.initiative
+  ;[...character.traits, ...character.items].forEach((item) => {
+    if (typeof item.initiative === "number") {
+      value += item.initiative
+    }
+  })
+  return value
+}
+
+export function calcCharacterTotalHealth(character: Character): number {
+  let value = character.totalHealth
+  ;[...character.traits, ...character.items].forEach((item) => {
+    if (typeof item.totalHealth === "number") {
+      value += item.totalHealth
+    }
+  })
+  return value
+}
+
+export function calcCharacterAttack(character: Character): number {
+  let value = character.attack
+  ;[...character.traits, ...character.items].forEach((item) => {
+    if (typeof item.attack === "number") {
+      value += item.attack
+    }
+  })
+  return value
+}
+
+export function calcCharacterDefence(character: Character): number {
+  let value = character.defence
+  ;[...character.traits, ...character.items].forEach((item) => {
+    if (typeof item.defence === "number") {
+      value += item.defence
+    }
+  })
+  return value
+}
+
+export function calcCharacterDamage(character: Character): number {
+  let value = character.damage
+  ;[...character.traits, ...character.items].forEach((item) => {
+    if (typeof item.damage === "number") {
+      value += item.damage
+    }
+  })
+  return value
 }

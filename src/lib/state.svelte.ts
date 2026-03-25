@@ -7,6 +7,11 @@ const ladelbar: Character = {
   name: "Ladelbar",
   position: new Vec2(2, 2),
   initiative: 8,
+  totalHealth: 6,
+  health: 6,
+  attack: 3,
+  damage: 1,
+  defence: 2,
   traits: [],
   items: [
     {
@@ -24,6 +29,11 @@ const krom: Character = {
   name: "Krom",
   position: new Vec2(3, 2),
   initiative: 8,
+  totalHealth: 8,
+  health: 8,
+  attack: 2,
+  damage: 1,
+  defence: 3,
   traits: [],
   items: [],
 }

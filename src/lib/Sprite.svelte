@@ -34,9 +34,11 @@
   let {
     path,
     lookRight = false,
+    scale = 1,
   }: {
     path: string
     lookRight?: boolean
+    scale?: number
   } = $props()
 
   let spritesheet = $derived(spritesheetUrl(path))
@@ -59,7 +61,7 @@
   }
 </script>
 
-<div class="sprite">
+<div class="sprite" style:transform="scale({scale})">
   <img
     src={spritesheet}
     style:left="{spritePosition.x * -TILE_SIZE}px"

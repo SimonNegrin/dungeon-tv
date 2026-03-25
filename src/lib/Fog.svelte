@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { fade, fly } from "svelte/transition"
+  import { fly } from "svelte/transition"
   import { TILE_SIZE } from "./common"
   import type Vec2 from "./Vec2"
   import { gameState } from "./state.svelte"
@@ -56,7 +56,7 @@
       return (
         layer.collider &&
         layer.tiles.some((tile) => {
-          if (tile.attributes?.door) {
+          if (tile.attributes.type === "door") {
             return false
           }
           return tile.position.isEqual(position)
