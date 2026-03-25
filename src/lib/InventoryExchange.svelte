@@ -31,7 +31,7 @@
 
   function onleft(index: number): void {
     const row = Math.floor(index / 3)
-    indexLeft = row === 0 ? 2 : 5
+    indexLeft = row * 3 + 2
     toggleFocus()
   }
 
