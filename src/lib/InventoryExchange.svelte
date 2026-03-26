@@ -33,14 +33,20 @@
     openSounds[inventory.type]()
   })
 
+  function moveItem(index: number, from: Inventory, to: Inventory): void {
+    if (to.items.length >= 6) {
+      return
+    }
+    const [item] = from.items.splice(index, 1)
+    to.items.push(item)
+  }
+
   function moveToRight(index: number): void {
-    const [item] = currentPlayer.items.splice(index, 1)
-    inventory.items.push(item)
+    moveItem(index, currentPlayer, inventory)
   }
 
   function moveToLeft(index: number): void {
-    const [item] = inventory.items.splice(index, 1)
-    currentPlayer.items.push(item)
+    moveItem(index, inventory, currentPlayer)
   }
 
   function onleft(index: number): void {
