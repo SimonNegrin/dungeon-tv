@@ -400,8 +400,7 @@
             "isOpen": true,
             "items": [
               {
-                "type": "iron_key",
-                "id": "crypt_key"
+                "name": "Llave de latón"
               }
             ],
             "name": "Barril"
@@ -416,8 +415,7 @@
             "isOpen": true,
             "items": [
               {
-                "type": "wizzard_hat",
-                "id": "wizzard_hat_1774473884429"
+                "name": "Sombrero de mago"
               }
             ],
             "name": "Vasija"
@@ -437,8 +435,7 @@
             "isOpen": true,
             "items": [
               {
-                "type": "brass_key",
-                "id": "anteroom_key"
+                "name": "Llave oxidada"
               }
             ],
             "name": "Vasija"
@@ -451,7 +448,7 @@
           "attributes": {
             "type": "door",
             "isOpen": false,
-            "keyId": "storage_key",
+            "keyName": "Llave de latón",
             "name": "Puerta del almacén"
           }
         },
@@ -462,7 +459,7 @@
           "attributes": {
             "type": "door",
             "isOpen": false,
-            "keyId": "anteroom_key"
+            "keyName": "Llave oxidada"
           }
         },
         {
@@ -472,7 +469,7 @@
           "attributes": {
             "type": "door",
             "isOpen": true,
-            "keyId": ""
+            "keyName": ""
           }
         },
         {
@@ -484,12 +481,10 @@
             "isOpen": false,
             "items": [
               {
-                "type": "short_sword",
-                "id": "short_sword"
+                "name": "Espada corta"
               },
               {
-                "type": "rusty_key",
-                "id": "storage_key"
+                "name": "Llave de hierro"
               }
             ],
             "name": "Cofre mugriento"
@@ -505,12 +500,10 @@
             "isOpen": true,
             "items": [
               {
-                "type": "life_potion",
-                "id": "life_potion_1"
+                "name": "Poción de vida"
               },
               {
-                "type": "shield_1",
-                "id": "shield_1_1"
+                "name": "Escudo pequeño"
               }
             ]
           }
@@ -522,7 +515,7 @@
           "attributes": {
             "type": "door",
             "isOpen": false,
-            "keyId": "crypt_key"
+            "keyName": "Llave oxidada"
           }
         }
       ],

@@ -320,9 +320,9 @@ export function isEthereal(character: Character): boolean {
   })
 }
 
-export function removeItemById(character: Character, itemId: string): void {
+export function removeItemByName(character: Character, itemName: string): void {
   character.items = character.items.filter((item) => {
-    return item.id !== itemId
+    return item.name !== itemName
   })
 }
 

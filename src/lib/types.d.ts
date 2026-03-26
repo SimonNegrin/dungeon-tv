@@ -70,7 +70,6 @@ export interface ItemMetadata {
 
 export interface Item {
   spriteId: string
-  id: string
   name: string
   desc: string
 
@@ -102,7 +101,7 @@ export interface AttsDoor {
   type: "door"
   name: string
   isOpen: boolean
-  keyId: string
+  keyName: string
 }
 
 export interface AttsChest {

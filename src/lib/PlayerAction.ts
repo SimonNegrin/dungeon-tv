@@ -6,6 +6,7 @@ import {
   INITIATIVE_DOOR,
   INITIATIVE_STEP,
   nextPlayerIfExaust,
+  removeItemByName,
   spendInitiative,
   waitTime,
 } from "./common"
@@ -103,7 +104,7 @@ export default class PlayerAction {
     }
 
     // If the door does not need key we open the door inmediatly
-    if (!door.attributes.keyId) {
+    if (!door.attributes.keyName) {
       if (spendInitiative(INITIATIVE_STEP)) {
         door.attributes.isOpen = true
         doorUnlockSound()
@@ -116,13 +117,13 @@ export default class PlayerAction {
 
     // To open the door the player needs the key
     const player = gameState.currentPlayer
-    const keyId = door.attributes.keyId
-    if (player.items.some((item) => item.id === keyId)) {
+    const { keyName } = door.attributes
+    if (player.items.some((item) => item.name === keyName)) {
       if (spendInitiative(INITIATIVE_DOOR)) {
         // Open the door with key
         door.attributes.isOpen = true
         // Remove key from player inventory
-        player.items = player.items.filter((item) => item.id !== keyId)
+        removeItemByName(player, keyName)
         gameState.initiativeLeft -= INITIATIVE_DOOR
         doorUnlockSound()
       } else {

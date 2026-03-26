@@ -1,50 +1,8 @@
-import { playAnimation, removeItemById } from "./common"
+import { playAnimation, removeItemByName } from "./common"
 import type { Character, Item } from "./types"
 
-export const itemsFactory: Record<string, (id: string) => Item> = {
-  dagger: createDagger,
-  short_sword: createShortSword,
-  sword: createSword,
-  bastard_sword: createBastardSword,
-  big_sword: createBigSword,
-  great_sword: createGreatSword,
-  axe: createAxe,
-  big_axe: createBigAxe,
-  great_axe: createGreatAxe,
-  shield_1: createShield1,
-  shield_2: createShield2,
-  shield_3: createShield3,
-  shield_4: createShield4,
-  shield_5: createShield5,
-  shield_6: createShield6,
-  shield_7: createShield7,
-  wizzard_hat: createWizzardHat,
-  red_necklace: createRedNecklace,
-  iron_necklace: createIronNecklace,
-  crystal_necklace: createCrystalNecklace,
-  wood_necklace: createWoodNecklace,
-  sacred_necklace: createSacredNecklace,
-  damned_necklace: createDamnedNecklace,
-  parchment: createParchment,
-  coin: createCoin,
-  coins_1: createCoins1,
-  coins_2: createCoins2,
-  coins_bag: createCoinsBag,
-  cheese: createCheese,
-  bread: createBread,
-  apple: createApple,
-  wine: createWine,
-  water: createWater,
-  brass_key: createBrassKey,
-  iron_key: createIronKey,
-  silver_key: createSilverKey,
-  rusty_key: createRustyKey,
-  life_potion: createLifePotion,
-}
-
-function createDagger(id: string): Item {
-  return {
-    id,
+const itemPrefabs: Item[] = [
+  {
     spriteId: "dagger",
     name: "Daga",
     desc: "Una daga pequeña pero afilada",
@@ -58,12 +16,8 @@ function createDagger(id: string): Item {
         value: 1,
       },
     ],
-  }
-}
-
-function createShortSword(id: string): Item {
-  return {
-    id,
+  },
+  {
     spriteId: "short_sword",
     name: "Espada corta",
     desc: "Mejor que nada",
@@ -73,12 +27,8 @@ function createShortSword(id: string): Item {
         value: 2,
       },
     ],
-  }
-}
-
-function createSword(id: string): Item {
-  return {
-    id,
+  },
+  {
     spriteId: "sword",
     name: "Espada",
     desc: "Una espada estándar",
@@ -88,12 +38,8 @@ function createSword(id: string): Item {
         value: 3,
       },
     ],
-  }
-}
-
-function createBastardSword(id: string): Item {
-  return {
-    id,
+  },
+  {
     spriteId: "bastard_sword",
     name: "Espada bastarda",
     desc: "Una espada versátil de una mano y media",
@@ -107,12 +53,8 @@ function createBastardSword(id: string): Item {
         value: -1,
       },
     ],
-  }
-}
-
-function createBigSword(id: string): Item {
-  return {
-    id,
+  },
+  {
     spriteId: "big_sword",
     name: "Espada grande",
     desc: "Una espada enorme",
@@ -126,12 +68,8 @@ function createBigSword(id: string): Item {
         value: -2,
       },
     ],
-  }
-}
-
-function createGreatSword(id: string): Item {
-  return {
-    id,
+  },
+  {
     spriteId: "great_sword",
     name: "Espadón",
     desc: "Una espada gigantesca para los más fuertes",
@@ -149,12 +87,8 @@ function createGreatSword(id: string): Item {
         value: -3,
       },
     ],
-  }
-}
-
-function createAxe(id: string): Item {
-  return {
-    id,
+  },
+  {
     spriteId: "axe",
     name: "Hacha",
     desc: "Un hacha de batalla",
@@ -172,12 +106,8 @@ function createAxe(id: string): Item {
         value: -1,
       },
     ],
-  }
-}
-
-function createBigAxe(id: string): Item {
-  return {
-    id,
+  },
+  {
     spriteId: "big_axe",
     name: "Hacha grande",
     desc: "Un hacha enorme",
@@ -195,12 +125,8 @@ function createBigAxe(id: string): Item {
         value: -2,
       },
     ],
-  }
-}
-
-function createGreatAxe(id: string): Item {
-  return {
-    id,
+  },
+  {
     spriteId: "great_axe",
     name: "Gran hacha",
     desc: "Un hacha colosal",
@@ -218,12 +144,8 @@ function createGreatAxe(id: string): Item {
         value: -3,
       },
     ],
-  }
-}
-
-function createShield1(id: string): Item {
-  return {
-    id,
+  },
+  {
     spriteId: "shield_1",
     name: "Escudo pequeño",
     desc: "Un escudo básico",
@@ -233,12 +155,8 @@ function createShield1(id: string): Item {
         value: 1,
       },
     ],
-  }
-}
-
-function createShield2(id: string): Item {
-  return {
-    id,
+  },
+  {
     spriteId: "shield_2",
     name: "Escudo",
     desc: "Un escudo estándar",
@@ -248,12 +166,8 @@ function createShield2(id: string): Item {
         value: 2,
       },
     ],
-  }
-}
-
-function createShield3(id: string): Item {
-  return {
-    id,
+  },
+  {
     spriteId: "shield_3",
     name: "Escudo grande",
     desc: "Un escudo grande",
@@ -267,12 +181,8 @@ function createShield3(id: string): Item {
         value: -1,
       },
     ],
-  }
-}
-
-function createShield4(id: string): Item {
-  return {
-    id,
+  },
+  {
     spriteId: "shield_4",
     name: "Escudo de torre",
     desc: "Un escudo enorme",
@@ -286,12 +196,8 @@ function createShield4(id: string): Item {
         value: -2,
       },
     ],
-  }
-}
-
-function createShield5(id: string): Item {
-  return {
-    id,
+  },
+  {
     spriteId: "shield_5",
     name: "Escudo de hierro",
     desc: "Un escudo reforzado",
@@ -301,12 +207,8 @@ function createShield5(id: string): Item {
         value: 3,
       },
     ],
-  }
-}
-
-function createShield6(id: string): Item {
-  return {
-    id,
+  },
+  {
     spriteId: "shield_6",
     name: "Escudo de acero",
     desc: "Un escudo de alta calidad",
@@ -316,12 +218,8 @@ function createShield6(id: string): Item {
         value: 4,
       },
     ],
-  }
-}
-
-function createShield7(id: string): Item {
-  return {
-    id,
+  },
+  {
     spriteId: "shield_7",
     name: "Escudo mágico",
     desc: "Un escudo encantado",
@@ -338,12 +236,8 @@ function createShield7(id: string): Item {
     metadata: {
       magic: true,
     },
-  }
-}
-
-function createWizzardHat(id: string): Item {
-  return {
-    id,
+  },
+  {
     spriteId: "wizzard_hat",
     name: "Sombrero de mago",
     desc: "Un sombrero que otorga sabiduría",
@@ -356,12 +250,8 @@ function createWizzardHat(id: string): Item {
     metadata: {
       magic: true,
     },
-  }
-}
-
-function createRedNecklace(id: string): Item {
-  return {
-    id,
+  },
+  {
     spriteId: "red_necklace",
     name: "Collar rojo",
     desc: "Un collar que aumenta la vitalidad",
@@ -375,12 +265,8 @@ function createRedNecklace(id: string): Item {
         value: 2,
       },
     ],
-  }
-}
-
-function createIronNecklace(id: string): Item {
-  return {
-    id,
+  },
+  {
     spriteId: "iron_necklace",
     name: "Collar de hierro",
     desc: "Un collar que fortalece la defensa",
@@ -390,12 +276,8 @@ function createIronNecklace(id: string): Item {
         value: 1,
       },
     ],
-  }
-}
-
-function createCrystalNecklace(id: string): Item {
-  return {
-    id,
+  },
+  {
     spriteId: "crystal_necklace",
     name: "Collar de cristal",
     desc: "Un collar que mejora la puntería",
@@ -405,12 +287,8 @@ function createCrystalNecklace(id: string): Item {
         value: 2,
       },
     ],
-  }
-}
-
-function createWoodNecklace(id: string): Item {
-  return {
-    id,
+  },
+  {
     spriteId: "wood_necklace",
     name: "Collar de madera",
     desc: "Un collar que acelera la iniciativa",
@@ -420,12 +298,8 @@ function createWoodNecklace(id: string): Item {
         value: 2,
       },
     ],
-  }
-}
-
-function createSacredNecklace(id: string): Item {
-  return {
-    id,
+  },
+  {
     spriteId: "sacred_necklace",
     name: "Collar sagrado",
     desc: "Un collar bendito",
@@ -442,12 +316,8 @@ function createSacredNecklace(id: string): Item {
     metadata: {
       magic: true,
     },
-  }
-}
-
-function createDamnedNecklace(id: string): Item {
-  return {
-    id,
+  },
+  {
     spriteId: "damned_necklace",
     name: "Collar maldito",
     desc: "Un collar oscuro",
@@ -464,62 +334,38 @@ function createDamnedNecklace(id: string): Item {
     metadata: {
       magic: true,
     },
-  }
-}
-
-function createParchment(id: string): Item {
-  return {
-    id,
+  },
+  {
     spriteId: "parchment",
     name: "Pergamino",
     desc: "Un pergamino antiguo",
     // Quest item, no stat modifiers
-  }
-}
-
-function createCoin(id: string): Item {
-  return {
-    id,
+  },
+  {
     spriteId: "coin",
     name: "Moneda",
     desc: "Una moneda de oro",
     // Currency, no stat modifiers
-  }
-}
-
-function createCoins1(id: string): Item {
-  return {
-    id,
+  },
+  {
     spriteId: "coins_1",
     name: "Monedas",
     desc: "Un puñado de monedas",
     // Currency, no stat modifiers
-  }
-}
-
-function createCoins2(id: string): Item {
-  return {
-    id,
+  },
+  {
     spriteId: "coins_2",
     name: "Más monedas",
     desc: "Varias monedas",
     // Currency, no stat modifiers
-  }
-}
-
-function createCoinsBag(id: string): Item {
-  return {
-    id,
+  },
+  {
     spriteId: "coins_bag",
     name: "Bolsa de monedas",
     desc: "Una bolsa llena de monedas",
     // Currency, no stat modifiers
-  }
-}
-
-function createCheese(id: string): Item {
-  return {
-    id,
+  },
+  {
     spriteId: "cheese",
     name: "Queso",
     desc: "Un trozo de queso",
@@ -532,16 +378,12 @@ function createCheese(id: string): Item {
         const { health, totalHealth } = character.stats
         character.stats.health = Math.min(health + amount, totalHealth)
 
-        removeItemById(character, item.id)
+        removeItemByName(character, item.name)
         await playAnimation("health", character.position)
       },
     },
-  }
-}
-
-function createBread(id: string): Item {
-  return {
-    id,
+  },
+  {
     spriteId: "bread",
     name: "Pan",
     desc: "Una hogaza de pan",
@@ -554,16 +396,12 @@ function createBread(id: string): Item {
         const { health, totalHealth } = character.stats
         character.stats.health = Math.min(health + amount, totalHealth)
 
-        removeItemById(character, item.id)
+        removeItemByName(character, item.name)
         await playAnimation("health", character.position)
       },
     },
-  }
-}
-
-function createApple(id: string): Item {
-  return {
-    id,
+  },
+  {
     spriteId: "apple",
     name: "Manzana",
     desc: "Una manzana fresca",
@@ -576,16 +414,12 @@ function createApple(id: string): Item {
         const { health, totalHealth } = character.stats
         character.stats.health = Math.min(health + amount, totalHealth)
 
-        removeItemById(character, item.id)
+        removeItemByName(character, item.name)
         await playAnimation("health", character.position)
       },
     },
-  }
-}
-
-function createWine(id: string): Item {
-  return {
-    id,
+  },
+  {
     spriteId: "wine",
     name: "Vino",
     desc: "Una botella de vino",
@@ -598,16 +432,12 @@ function createWine(id: string): Item {
         const { health, totalHealth } = character.stats
         character.stats.health = Math.min(health + amount, totalHealth)
 
-        removeItemById(character, item.id)
+        removeItemByName(character, item.name)
         await playAnimation("health", character.position)
       },
     },
-  }
-}
-
-function createWater(id: string): Item {
-  return {
-    id,
+  },
+  {
     spriteId: "water",
     name: "Agua",
     desc: "Una botella de agua",
@@ -620,56 +450,36 @@ function createWater(id: string): Item {
         const { health, totalHealth } = character.stats
         character.stats.health = Math.min(health + amount, totalHealth)
 
-        removeItemById(character, item.id)
+        removeItemByName(character, item.name)
         await playAnimation("health", character.position)
       },
     },
-  }
-}
-
-function createBrassKey(id: string): Item {
-  return {
-    id,
+  },
+  {
     spriteId: "brass_key",
     name: "Llave de latón",
     desc: "Una llave de latón",
     // Key item, no stat modifiers
-  }
-}
-
-function createIronKey(id: string): Item {
-  return {
-    id,
+  },
+  {
     spriteId: "iron_key",
     name: "Llave de hierro",
     desc: "Una llave de hierro",
     // Key item, no stat modifiers
-  }
-}
-
-function createSilverKey(id: string): Item {
-  return {
-    id,
+  },
+  {
     spriteId: "silver_key",
     name: "Llave de plata",
     desc: "Una llave de plata",
     // Key item, no stat modifiers
-  }
-}
-
-function createRustyKey(id: string): Item {
-  return {
-    id,
+  },
+  {
     spriteId: "rusty_key",
     name: "Llave oxidada",
     desc: "Una llave vieja y oxidada",
     // Key item, no stat modifiers
-  }
-}
-
-function createLifePotion(id: string): Item {
-  return {
-    id,
+  },
+  {
     spriteId: "potion_red",
     name: "Poción de vida",
     desc: "Genial para la resaca",
@@ -679,7 +489,7 @@ function createLifePotion(id: string): Item {
     effectHandlers: {
       onUse: async (character: Character, item: Item) => {
         if (typeof item.metadata?.uses !== "number") {
-          removeItemById(character, item.id)
+          removeItemByName(character, item.name)
           return
         }
 
@@ -689,11 +499,32 @@ function createLifePotion(id: string): Item {
 
         item.metadata.uses--
         if (item.metadata.uses <= 0) {
-          removeItemById(character, item.id)
+          removeItemByName(character, item.name)
         }
 
         await playAnimation("health", character.position)
       },
     },
+  },
+]
+
+const prefabsMap = new Map<string, Item>(
+  itemPrefabs.map((item) => [item.name, item]),
+)
+
+export function createItem(name: string): Item {
+  const prefab = prefabsMap.get(name)
+  if (!prefab) {
+    throw new Error(`Prefab with name "${name}" doen't exists"`)
   }
+  const item: Item = {
+    ...prefab,
+  }
+
+  // Create new metadata object if needed
+  if (prefab.metadata) {
+    item.metadata = { ...prefab.metadata }
+  }
+
+  return item
 }
