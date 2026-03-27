@@ -164,9 +164,6 @@ export default class PlayerAction {
     }
 
     clearFogAt(gameState.currentPlayer.position)
-    // for (const step of path.slice(1)) {
-    //   clearFogAt(step)
-    // }
 
     nextPlayerIfExaust()
     return true

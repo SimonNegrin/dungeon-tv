@@ -42,7 +42,7 @@
   style:top="{position.y * TILE_SIZE}px"
 >
   <Coords vec2={position} />
-  <!-- {#each stars as star}
+  {#each stars as star}
     <div
       class="star"
       style:left="{star.x * 100}%"
@@ -50,7 +50,7 @@
       style:--opacity={star.opacity}
       style:--blink-time={star.blinkTime}
     ></div>
-  {/each} -->
+  {/each}
 </div>
 
 <style>
