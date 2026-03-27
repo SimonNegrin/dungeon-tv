@@ -49,13 +49,9 @@ async function playAudio(
   options?: AudioOptions,
 ): Promise<void> {
   const { promise, resolve, reject } = Promise.withResolvers<void>()
-  const src = preloaded.get(audioName)
-  if (!src) {
-    throw new Error(`Audio with name "${audioName}" is not preloaded`)
-  }
   const audio = document.createElement("audio")
   audio.preload = "auto"
-  audio.src = await src
+  audio.src = await preloaded.get(audioName)!
   document.body.append(audio)
   audio.onended = () => {
     audio.remove()
