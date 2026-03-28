@@ -1,5 +1,11 @@
 <script lang="ts">
-  import { isInsideGameboard, removeFog, TILE_SIZE, tileIsFog } from "./common"
+  import {
+    isInsideGameboard,
+    removeFog,
+    TILE_SIZE,
+    tileIsFog,
+    VIEWPORT_SIZE,
+  } from "./common"
   import Cursor from "./Cursor.svelte"
   import Loading from "./Loading.svelte"
   import { gameState } from "./state.svelte"
@@ -12,14 +18,9 @@
   import type { Character, Stage } from "./types"
   import FogLayer from "./FogLayer.svelte"
 
-  const VIEWPORT_SIZE = 13
-
   let stageOffset = $derived(
     calcStageOffset(gameState.stage, gameState.currentPlayer),
   )
-  let mapWidth = $state(0)
-  let containerWidth = $state(0)
-  let mapScale = $derived(mapWidth / containerWidth)
 
   function calcStageOffset(stage: Stage | null, player: Character): Vec2 {
     if (!stage) {
@@ -80,13 +81,11 @@
 
 <svelte:window {onkeydown} />
 
-<div class="game-map" bind:clientWidth={mapWidth}>
+<div class="game-map">
   <div
     class="game-map-container"
-    bind:clientWidth={containerWidth}
     style:width="{VIEWPORT_SIZE * TILE_SIZE}px"
     style:height="{VIEWPORT_SIZE * TILE_SIZE}px"
-    style:transform="scale({mapScale})"
   >
     {#if !gameState.stage}
       <Loading />

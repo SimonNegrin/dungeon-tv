@@ -22,6 +22,11 @@ export const TILE_FLOOR = 0
 export const TILE_BLOCK = 1
 export const VIEW_DISTANCE = 6
 
+// Size of the game map in tiles
+// Set a odd number to be able to keep centered
+// the player sprite
+export const VIEWPORT_SIZE = 13
+
 export const INITIATIVE_DOOR = 2
 export const INITIATIVE_CHEST = 2
 export const INITIATIVE_ATTACK = 2
