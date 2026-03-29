@@ -1,12 +1,14 @@
 <script lang="ts">
+  import { INVENTORY_SLOTS } from "./common"
+  import ArrowUpIcon from "./icons/ArrowUpIcon.svelte"
   import ItemSprite from "./ItemSprite.svelte"
+  import ItemStats from "./ItemStats.svelte"
   import type { Inventory } from "./types"
 
   let {
     selectedIndex = $bindable(0),
     inventory,
     focus = false,
-    capacity = 6,
     onselect,
     onleft,
     onright,
@@ -14,15 +16,12 @@
     selectedIndex?: number
     inventory: Inventory
     focus?: boolean
-    capacity?: number
     onselect?: (index: number) => void
-    onleft?: (index: number) => void
-    onright?: (index: number) => void
+    onleft?: () => void
+    onright?: () => void
   } = $props()
 
-  let viewWidth = $state(0)
-  let gridWidth = $state(0)
-  let scale = $derived(viewWidth / gridWidth)
+  let selectedItem = $derived(inventory.items[selectedIndex])
 
   function onkeydowncapture(event: KeyboardEvent): void {
     if (!focus) {
@@ -32,8 +31,6 @@
     const handlers: Record<string, () => void> = {
       ArrowRight: moveRight,
       ArrowLeft: moveLeft,
-      ArrowUp: moveUp,
-      ArrowDown: moveDown,
       " ": emitSelect,
     }
 
@@ -45,10 +42,8 @@
 
   function moveRight(): void {
     const next = selectedIndex + 1
-    const a = Math.floor(selectedIndex / 3)
-    const b = Math.floor(next / 3)
-    if (a !== b) {
-      onright?.(selectedIndex)
+    if (next === 3) {
+      onright?.()
       return
     }
     selectedIndex = next
@@ -56,33 +51,11 @@
 
   function moveLeft(): void {
     const next = selectedIndex - 1
-    const a = Math.floor(selectedIndex / 3)
-    const b = Math.floor(next / 3)
-    if (a !== b) {
-      onleft?.(selectedIndex)
+    if (next === -1) {
+      onleft?.()
       return
     }
     selectedIndex = next
-  }
-
-  function moveUp(): void {
-    const next = selectedIndex - 3
-    if (next < 0) return
-    const a = selectedIndex % 3
-    const b = next % 3
-    if (a === b) {
-      selectedIndex = next
-    }
-  }
-
-  function moveDown(): void {
-    const next = selectedIndex + 3
-    if (next > 5) return
-    const a = selectedIndex % 3
-    const b = next % 3
-    if (a === b) {
-      selectedIndex = next
-    }
   }
 
   function emitSelect(): void {
@@ -94,38 +67,85 @@
 
 <svelte:window {onkeydowncapture} />
 
-<div class="inventory-view" bind:clientWidth={viewWidth}>
-  <div
-    class="inventory-grid"
-    style="transform: scale({scale})"
-    bind:offsetWidth={gridWidth}
-  >
-    {#each Array(capacity) as _, index}
-      {@const item = inventory.items[index]}
-      <div class="slot" class:selected={focus && selectedIndex === index}>
-        {#if item}
-          <ItemSprite id={item.spriteId} />
+<div class="inventory-view" style:--selected-index={selectedIndex}>
+  <div class="inventory-grid">
+    {#each Array(INVENTORY_SLOTS) as _, i}
+      <div class="slot" class:selected={focus && selectedIndex === i}>
+        {#if inventory.items[i]}
+          <ItemSprite id={inventory.items[i].spriteId} scale={1.5} />
         {/if}
       </div>
     {/each}
+  </div>
+
+  <div class="cursor">
+    {#if focus}
+      <div class="pointer" style:left="calc(33% * var(--selected-index) + 13%)">
+        <ArrowUpIcon color1="#a78a20" color2="#f5e9bc" />
+      </div>
+    {/if}
+  </div>
+
+  <div class="selected-item">
+    {#if selectedItem}
+      <div>{selectedItem.name}</div>
+      <div>{selectedItem.desc}</div>
+      <div>
+        <ItemStats item={selectedItem} />
+      </div>
+    {:else}
+      <div class="empty">Vacio</div>
+    {/if}
   </div>
 </div>
 
 <style>
   .inventory-view {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    --bg-color: #a78a2047;
+
     aspect-ratio: 100 / 66;
   }
   .inventory-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 32px);
-    grid-template-rows: repeat(2, 32px);
+    display: flex;
+    gap: 2px;
+    padding: 2px;
   }
   .slot {
+    flex: 1 0 0;
+    aspect-ratio: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid transparent;
+    border-radius: 5px;
+    background-color: var(--bg-color);
+    box-shadow:
+      inset 1px 1px 3px var(--color-back),
+      inset 1px 1px 5px var(--color-back);
+
     &.selected {
-      outline: 1px solid var(--color-back);
+      border-color: var(--color-back);
     }
+  }
+
+  .cursor {
+    position: relative;
+    height: 10px;
+  }
+
+  .pointer {
+    position: absolute;
+    transition-duration: 100ms;
+  }
+
+  .selected-item {
+    padding: 10px 5px;
+    border: 2px solid var(--color-back);
+    border-radius: 5px;
+    text-align: left;
+  }
+
+  .empty {
+    text-align: center;
   }
 </style>

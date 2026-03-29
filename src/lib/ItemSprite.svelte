@@ -3,9 +3,11 @@
 
   let {
     id,
+    scale = 1,
   }: {
     id: string
+    scale?: number
   } = $props()
 </script>
 
-<Sprite path="items/{id}" />
+<Sprite path="items/{id}" {scale} />

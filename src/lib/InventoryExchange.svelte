@@ -56,15 +56,13 @@
     moveItem(index, leftInventory, rightInventory)
   }
 
-  function onleft(index: number): void {
-    const row = Math.floor(index / 3)
-    indexLeft = row * 3 + 2
+  function onleft(): void {
+    indexLeft = 2
     toggleFocus()
   }
 
-  function onright(index: number): void {
-    const row = Math.floor(index / 3)
-    indexRight = row * 3
+  function onright(): void {
+    indexRight = 0
     toggleFocus()
   }
 
@@ -141,7 +139,7 @@
     min-height: 0;
     color: var(--color-back);
     text-align: center;
-    padding: 20px;
+    padding: 10px;
     display: flex;
     flex-direction: column;
     gap: 10px;

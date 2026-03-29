@@ -1,5 +1,6 @@
 import EasyStar from "easystarjs"
 import type {
+  AttsChest,
   AttsDoor,
   Character,
   Grid,
@@ -21,6 +22,7 @@ export const TILE_SIZE = 32
 export const TILE_FLOOR = 0
 export const TILE_BLOCK = 1
 export const VIEW_DISTANCE = 6
+export const INVENTORY_SLOTS = 3
 
 // Size of the game map in tiles
 // Set a odd number to be able to keep centered

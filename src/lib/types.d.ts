@@ -7,6 +7,7 @@ export type InventoryType = "chest" | "player" | "enemy"
 
 export interface Inventory {
   type: InventoryType
+  spritePath: string
   name: string
   items: Item[]
 }
@@ -109,6 +110,7 @@ export interface AttsDoor {
 export interface AttsChest {
   type: "chest"
   name: string
+  spritePath: string
   isOpen: boolean
   keyName: string
   items: Item[]

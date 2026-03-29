@@ -71,7 +71,7 @@
 
 <style>
   .item-stats {
-    padding-left: 10px;
+    padding-left: 15px;
     margin: 5px 0;
   }
 </style>
