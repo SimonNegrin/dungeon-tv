@@ -108,7 +108,7 @@
 
           <CursorPath />
 
-          <Cursor position={gameState.cursorPosition} />
+          <Cursor />
 
           <Players />
         </div>

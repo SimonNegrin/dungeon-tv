@@ -158,11 +158,11 @@ export default class PlayerAction {
         tiredSound()
         break
       }
-      gameState.initiativeLeft--
       gameState.currentPlayer.position = step
       clearFogAt(step)
       await waitTime(200)
       gameState.cursorPath = gameState.cursorPath.slice(1)
+      gameState.initiativeLeft--
     }
 
     return true

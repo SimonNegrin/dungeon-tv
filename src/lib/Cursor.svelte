@@ -1,14 +1,22 @@
 <script lang="ts">
+  import { gameState } from "./state.svelte"
   import type Vec2 from "./Vec2"
 
-  let {
-    position,
-  }: {
-    position: Vec2
-  } = $props()
+  let tooFar = $derived(
+    isTooFar(gameState.cursorPath, gameState.initiativeLeft),
+  )
+
+  function isTooFar(cursorPath: Vec2[], initiativeLeft: number): boolean {
+    return cursorPath.length - 1 > initiativeLeft
+  }
 </script>
 
-<div class="cursor" style:--x={position.x} style:--y={position.y}></div>
+<div
+  class="cursor"
+  class:too-far={tooFar}
+  style:--x={gameState.cursorPosition.x}
+  style:--y={gameState.cursorPosition.y}
+></div>
 
 <style>
   .cursor {
@@ -18,7 +26,11 @@
     height: var(--tile-size);
     left: calc(var(--tile-size) * var(--x));
     top: calc(var(--tile-size) * var(--y));
-    border: 2px dotted #ff09ca;
+    border: 2px dotted #1dff09;
     transition-duration: 100ms;
+
+    &.too-far {
+      border-color: red;
+    }
   }
 </style>

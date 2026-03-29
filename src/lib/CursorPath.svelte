@@ -4,11 +4,13 @@
   import type Vec2 from "./Vec2"
 
   type Step = {
-    current: Vec2
-    next: Vec2
+    position: Vec2
+    tooFar: boolean
   }
 
-  let steps = $derived(updateSteps(gameState.cursorPath))
+  let steps = $derived(
+    updateSteps(gameState.cursorPath, gameState.initiativeLeft),
+  )
 
   $effect(() => {
     if (gameState.freezePath) return
@@ -25,12 +27,12 @@
     )
   })
 
-  function updateSteps(cursorPath: Vec2[]): Step[] {
+  function updateSteps(cursorPath: Vec2[], initiativeLeft: number): Step[] {
     const steps: Step[] = []
-    for (let i = 2; i < cursorPath.length; i++) {
+    for (let i = 1; i + 1 < cursorPath.length; i++) {
       steps.push({
-        current: cursorPath[i - 1],
-        next: cursorPath[i],
+        position: cursorPath[i],
+        tooFar: i > initiativeLeft,
       })
     }
     return steps
@@ -40,8 +42,9 @@
 {#each steps as step}
   <div
     class="step"
-    style:left="{step.current.x * TILE_SIZE}px"
-    style:top="{step.current.y * TILE_SIZE}px"
+    class:too-far={step.tooFar}
+    style:left="{step.position.x * TILE_SIZE}px"
+    style:top="{step.position.y * TILE_SIZE}px"
   ></div>
 {/each}
 
@@ -61,8 +64,12 @@
       display: block;
       width: var(--sign-size);
       height: var(--sign-size);
-      background-color: yellow;
+      background-color: #1dff09;
       border-radius: 100%;
+    }
+
+    &.too-far::before {
+      background-color: red;
     }
   }
 </style>
