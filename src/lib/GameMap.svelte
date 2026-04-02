@@ -3,7 +3,7 @@
   import { gameState } from "./state.svelte"
   import Tile, { type TileName } from "./Tile.svelte"
   import type { Position } from "./types"
-  import type Vec2 from "./Vec2"
+  import Vec2 from "./Vec2"
 
   const floorTile = cheeslike(
     "blank floor (dark grey)",
@@ -36,6 +36,17 @@
       return tiles[index]
     }
   }
+
+  function wallTileName(pos: Vec2): TileName {
+    const bottom = pos.add(new Vec2(0, 1))
+    if (gameState.stage.walls.map[bottom.toString()]) {
+      return "stone brick wall (top)"
+    }
+    if (Math.random() < 0.1) {
+      return "stone brick wall (side 2)"
+    }
+    return "stone brick wall (side 1)"
+  }
 </script>
 
 <svelte:window {onkeydown} />
@@ -46,12 +57,12 @@
     style:left="{offset.x * -TILE_SIZE}px"
     style:top="{offset.y * -TILE_SIZE}px"
   >
-    {#each gameState.stage.floor as position, i}
+    {#each gameState.stage.floor.tiles as position}
       <Tile {position} name={floorTile(position)} />
     {/each}
 
-    {#each gameState.stage.walls as position}
-      <Tile {position} name="rough stone wall (top)" />
+    {#each gameState.stage.walls.tiles as position}
+      <Tile {position} name={wallTileName(position)} />
     {/each}
   </div>
 </div>
@@ -68,5 +79,6 @@
     position: absolute;
     width: 0;
     height: 0;
+    transition-duration: 200ms;
   }
 </style>

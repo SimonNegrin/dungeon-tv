@@ -47,10 +47,22 @@ export async function loadStage(stageName: string): Promise<Stage> {
   const stage: Stage = {
     width,
     height,
-    floor: [...floor.values()],
-    walls: [...walls.values()],
-    doors: [],
-    spawn: [],
+    floor: {
+      tiles: [...floor.values()],
+      map: Object.fromEntries(floor),
+    },
+    walls: {
+      tiles: [...walls.values()],
+      map: Object.fromEntries(walls),
+    },
+    doors: {
+      tiles: [],
+      map: {},
+    },
+    spawn: {
+      tiles: [],
+      map: {},
+    },
     fog,
   }
 

@@ -52,7 +52,7 @@ export const debug = $state({
 })
 
 export const gameState = $state<GameState>({
-  stage: await loadStage("stage_1"),
+  stage: await loadStage("stage_2"),
   fog: [],
   playerIndex: 0,
   currentPlayer: ladelbar,

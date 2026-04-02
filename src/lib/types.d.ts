@@ -156,12 +156,17 @@ export interface Layer {
   collider: boolean
 }
 
+export interface Surface {
+  tiles: Vec2[]
+  map: Record<string, Vec2>
+}
+
 export interface Stage {
   width: number
   height: number
-  floor: Vec2[]
-  walls: Vec2[]
-  doors: Vec2[]
-  spawn: Vec2[]
+  floor: Surface
+  walls: Surface
+  doors: Surface
+  spawn: Surface
   fog: Vec2[]
 }
