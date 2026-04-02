@@ -1,5 +1,72 @@
 <script lang="ts">
-  import Tile from "./Tile.svelte"
+  import { TILE_SIZE } from "./constants"
+  import { gameState } from "./state.svelte"
+  import Tile, { type TileName } from "./Tile.svelte"
+  import type { Position } from "./types"
+  import type Vec2 from "./Vec2"
+
+  const floorTile = cheeslike(
+    "blank floor (dark grey)",
+    "blank floor (dark purple)",
+  )
+
+  let offset: Position = $state({ x: 0, y: 0 })
+
+  function onkeydown(event: KeyboardEvent): void {
+    switch (event.key) {
+      case "ArrowRight":
+        offset.x += 1
+        break
+      case "ArrowLeft":
+        offset.x -= 1
+        break
+      case "ArrowUp":
+        offset.y -= 1
+        break
+      case "ArrowDown":
+        offset.y += 1
+        break
+    }
+  }
+
+  function cheeslike(a: TileName, b: TileName): (pos: Vec2) => TileName {
+    const tiles: TileName[] = [a, b]
+    return (pos: Vec2): TileName => {
+      const index = (pos.x + pos.y) % 2
+      return tiles[index]
+    }
+  }
 </script>
 
-<Tile position={{ x: 0, y: 0 }} name="barrel" />
+<svelte:window {onkeydown} />
+
+<div class="game-map">
+  <div
+    class="map"
+    style:left="{offset.x * -TILE_SIZE}px"
+    style:top="{offset.y * -TILE_SIZE}px"
+  >
+    {#each gameState.stage.floor as position, i}
+      <Tile {position} name={floorTile(position)} />
+    {/each}
+
+    {#each gameState.stage.walls as position}
+      <Tile {position} name="rough stone wall (top)" />
+    {/each}
+  </div>
+</div>
+
+<style>
+  .game-map {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    outline: 2px solid yellow;
+    overflow: hidden;
+  }
+  .map {
+    position: absolute;
+    width: 0;
+    height: 0;
+  }
+</style>

@@ -22,11 +22,10 @@
   style:left="{position.x * TILE_SIZE}px"
   style:top="{position.y * TILE_SIZE}px"
 >
-  {sprite}
   <img
     src={spritesheet}
-    style:left="{sprite[1] * -TILE_SIZE}px"
-    style:top="{sprite[0] * -TILE_SIZE}px"
+    style:left="{sprite[0] * -TILE_SIZE}px"
+    style:top="{sprite[1] * -TILE_SIZE}px"
     alt=""
   />
 </div>

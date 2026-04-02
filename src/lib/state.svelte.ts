@@ -1,3 +1,4 @@
+import { loadStage } from "./common"
 import type { Character, GameState } from "./types"
 import Vec2 from "./Vec2"
 
@@ -51,7 +52,7 @@ export const debug = $state({
 })
 
 export const gameState = $state<GameState>({
-  stage: null,
+  stage: await loadStage("stage_1"),
   fog: [],
   playerIndex: 0,
   currentPlayer: ladelbar,
@@ -64,27 +65,27 @@ export const gameState = $state<GameState>({
   players: [ladelbar, krom],
 })
 
-export async function loadStage(name: string): Promise<void> {
-  //   const stage: Stage = await loadSpritesheet<MapTileAtts>(name)
-  //   type ItemRef = {
-  //     name: string
-  //   }
-  //   stage.layers.forEach((layer) => {
-  //     layer.tiles.forEach((tile) => {
-  //       if (tile.attributes.type === "chest") {
-  //         tile.attributes.items = tile.attributes.items.map(
-  //           (item: ItemRef): Item => {
-  //             return createItem(item.name)
-  //           },
-  //         )
-  //       }
-  //     })
-  //   })
-  //   gameState.stage = stage
-  //   gameState.fog = createFogPositions(stage)
-  //   gameState.playerIndex = 0
-  //   gameState.currentPlayer = gameState.players[gameState.playerIndex]
-  //   gameState.players.forEach((player) => {
-  //     clearFogAt(player.position)
-  //   })
-}
+// export async function loadStage(name: string): Promise<void> {
+//   const stage: Stage = await loadSpritesheet<MapTileAtts>(name)
+//   type ItemRef = {
+//     name: string
+//   }
+//   stage.layers.forEach((layer) => {
+//     layer.tiles.forEach((tile) => {
+//       if (tile.attributes.type === "chest") {
+//         tile.attributes.items = tile.attributes.items.map(
+//           (item: ItemRef): Item => {
+//             return createItem(item.name)
+//           },
+//         )
+//       }
+//     })
+//   })
+//   gameState.stage = stage
+//   gameState.fog = createFogPositions(stage)
+//   gameState.playerIndex = 0
+//   gameState.currentPlayer = gameState.players[gameState.playerIndex]
+//   gameState.players.forEach((player) => {
+//     clearFogAt(player.position)
+//   })
+// }

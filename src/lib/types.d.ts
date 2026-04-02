@@ -20,7 +20,7 @@ export interface Position {
 }
 
 interface GameState {
-  stage: Stage | null
+  stage: Stage
   fog: Vec2[]
   playerIndex: number
   currentPlayer: Character
@@ -156,4 +156,12 @@ export interface Layer {
   collider: boolean
 }
 
-export interface Stage {}
+export interface Stage {
+  width: number
+  height: number
+  floor: Vec2[]
+  walls: Vec2[]
+  doors: Vec2[]
+  spawn: Vec2[]
+  fog: Vec2[]
+}

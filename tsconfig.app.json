@@ -17,5 +17,13 @@
     "checkJs": true,
     "moduleDetection": "force"
   },
-  "include": ["src/**/*.ts", "src/**/*.js", "src/**/*.svelte"]
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.js",
+    "src/**/*.svelte",
+    "src copy/lib/CursorPath.svelte",
+    "src copy/lib/Player.svelte",
+    "src copy/lib/CurrentPlayer.svelte",
+    "src copy/lib/Sprite.svelte"
+  ]
 }
