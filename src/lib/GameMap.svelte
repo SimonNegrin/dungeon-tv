@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { TILE_SIZE } from "./constants"
+  import { onMount } from "svelte"
+  import { TILE_SIZE, VIEWPORT_SIZE } from "./constants"
   import { gameState } from "./state.svelte"
   import Tile, { type TileName } from "./Tile.svelte"
   import type { Position } from "./types"
@@ -11,6 +12,11 @@
   )
 
   let offset: Position = $state({ x: 0, y: 0 })
+
+  onMount(() => {
+    const [start] = gameState.stage.spawn.tiles
+    center(start)
+  })
 
   function onkeydown(event: KeyboardEvent): void {
     switch (event.key) {
@@ -47,6 +53,12 @@
     }
     return "stone brick wall (side 1)"
   }
+
+  export function center(pos: Vec2): void {
+    const halfViewport = Math.floor(VIEWPORT_SIZE / 2)
+    offset.x = halfViewport - pos.x
+    offset.y = halfViewport - pos.y
+  }
 </script>
 
 <svelte:window {onkeydown} />
@@ -56,6 +68,8 @@
     class="map"
     style:left="{offset.x * -TILE_SIZE}px"
     style:top="{offset.y * -TILE_SIZE}px"
+    style:width="{gameState.stage.width * TILE_SIZE}px"
+    style:height="{gameState.stage.height * TILE_SIZE}px"
   >
     {#each gameState.stage.floor.tiles as position}
       <Tile {position} name={floorTile(position)} />
@@ -80,5 +94,6 @@
     width: 0;
     height: 0;
     transition-duration: 200ms;
+    outline: 2px solid palevioletred;
   }
 </style>

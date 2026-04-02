@@ -1,3 +1,4 @@
+export const MAX_PLAYERS = 6
 export const TILE_SIZE = 32
 export const GRID_FLOOR = 0
 export const GRID_WALL = 1

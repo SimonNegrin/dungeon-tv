@@ -170,3 +170,15 @@ export interface Stage {
   spawn: Surface
   fog: Vec2[]
 }
+
+export interface Rect {
+  x: number
+  y: number
+  w: number
+  h: number
+}
+
+export interface StageData {
+  rects: Rect[]
+  doors: Position[]
+}
