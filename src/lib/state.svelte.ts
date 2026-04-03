@@ -1,4 +1,4 @@
-import { loadStage } from "./common"
+import { createStage } from "./common"
 import type { Character, GameState } from "./types"
 import Vec2 from "./Vec2"
 
@@ -52,7 +52,7 @@ export const debug = $state({
 })
 
 export const gameState = $state<GameState>({
-  stage: await loadStage("stage_2"),
+  stage: createStage(),
   fog: [],
   playerIndex: 0,
   currentPlayer: ladelbar,

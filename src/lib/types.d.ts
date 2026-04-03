@@ -14,7 +14,7 @@ export interface Inventory {
   items: Item[]
 }
 
-export interface Position {
+export interface Point {
   x: number
   y: number
 }
@@ -88,7 +88,7 @@ export interface Item {
   metadata?: ItemMetadata
 }
 
-export interface Position {
+export interface Point {
   x: number
   y: number
 }
@@ -131,55 +131,47 @@ export interface AttsEnemySpawn {
   enemyName: string
 }
 
-interface BaseTile {
-  position: Position
+interface MapTile {
   name: TileName
-}
-
-export interface FloorTile extends BaseTile {}
-
-/**
- * Representa un tile individual en el mapa
- */
-export interface MapTile {
-  position: Position
-  attributes: TileAtts
+  position: Vec2
 }
 
 /**
  * Representa una capa del mapa (ej: Collition, Decoration, Floor)
  */
 export interface Layer {
-  name: string
-  tiles: Tile<TileAtts>[]
-  tilesMap: Record<string, Tile<TileAtts>>
+  tiles: MapTile[]
+  tilesMap: Record<string, MapTile>
   collider: boolean
 }
 
-export interface Surface {
-  tiles: Vec2[]
-  map: Record<string, Vec2>
+interface StageLayers {
+  floor: Layer
+  walls: Layer
+  doors: Layer
+  spawn: Layer
 }
 
 export interface Stage {
   width: number
   height: number
-  floor: Surface
-  walls: Surface
-  doors: Surface
-  spawn: Surface
-  seen: Record<string, Vec2>
+  spawn: Vec2
+  layers: StageLayers
   fog: Vec2[]
 }
 
-export interface Rect {
-  x: number
-  y: number
-  w: number
-  h: number
+export interface Room {
+  floor: Vec2[]
+  walls: Vec2[]
+  doors: Vec2[]
+  spawn?: Vec2
 }
 
-export interface StageData {
-  rects: Rect[]
-  doors: Position[]
+export interface SpawnRoom extends Room {
+  spawn: Point
+}
+
+declare module "../assets/rooms.json" {
+  const rooms: Room[]
+  export default rooms
 }

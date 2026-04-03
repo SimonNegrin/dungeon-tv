@@ -2,7 +2,7 @@
   import spritesheet from "../assets/spritesheets/tiles/spritesheet.png"
   import map from "../assets/spritesheets/tiles/map.json"
   import { TILE_SIZE } from "./constants"
-  import type { Position } from "./types"
+  import type { Point } from "./types"
 
   export type TileName = keyof typeof map
 
@@ -10,7 +10,7 @@
     position,
     name,
   }: {
-    position: Position
+    position: Point
     name: TileName
   } = $props()
 

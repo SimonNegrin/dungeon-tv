@@ -2,21 +2,20 @@
   import { onMount } from "svelte"
   import { TILE_SIZE, VIEWPORT_SIZE } from "./constants"
   import { gameState } from "./state.svelte"
-  import Tile, { type TileName } from "./Tile.svelte"
-  import type { Position } from "./types"
+  import { type TileName } from "./Tile.svelte"
+  import type { Point } from "./types"
   import Vec2 from "./Vec2"
-  import Fog from "./Fog.svelte"
+  import MapLayer from "./MapLayer.svelte"
 
   const floorTile = cheeslike(
     "blank floor (dark grey)",
     "blank floor (dark purple)",
   )
 
-  let offset: Position = $state({ x: 0, y: 0 })
+  let offset: Point = $state({ x: 0, y: 0 })
 
   onMount(() => {
-    const [start] = gameState.stage.spawn.tiles
-    center(start)
+    center(gameState.stage.spawn)
   })
 
   function onkeydown(event: KeyboardEvent): void {
@@ -46,7 +45,7 @@
 
   function wallTileName(pos: Vec2): TileName {
     const bottom = pos.add(new Vec2(0, 1))
-    if (gameState.stage.walls.map[bottom.toString()]) {
+    if (gameState.stage.layers.walls.tilesMap[bottom.toString()]) {
       return "stone brick wall (top)"
     }
     if (Math.random() < 0.1) {
@@ -64,15 +63,24 @@
 
 <svelte:window {onkeydown} />
 
-<div class="game-map">
+<div
+  class="game-map"
+  style:width="{VIEWPORT_SIZE * TILE_SIZE}px"
+  style:height="{VIEWPORT_SIZE * TILE_SIZE}px"
+>
   <div
     class="map"
-    style:left="{offset.x * -TILE_SIZE}px"
-    style:top="{offset.y * -TILE_SIZE}px"
+    style:left="{offset.x * TILE_SIZE}px"
+    style:top="{offset.y * TILE_SIZE}px"
     style:width="{gameState.stage.width * TILE_SIZE}px"
     style:height="{gameState.stage.height * TILE_SIZE}px"
   >
-    {#each gameState.stage.floor.tiles as position}
+    <MapLayer layer={gameState.stage.layers.floor} zIndex={1} />
+    <MapLayer layer={gameState.stage.layers.walls} zIndex={2} />
+    <MapLayer layer={gameState.stage.layers.doors} zIndex={3} />
+    <MapLayer layer={gameState.stage.layers.spawn} zIndex={4} />
+
+    <!-- {#each gameState.stage.floor.tiles as position}
       <Tile {position} name={floorTile(position)} />
     {/each}
 
@@ -82,7 +90,7 @@
 
     {#each gameState.stage.doors.tiles as position}
       <Tile {position} name="framed door 2 (shut)" />
-    {/each}
+    {/each} -->
 
     <!-- {#each gameState.stage.fog as position}
       <Fog {position} />
@@ -92,8 +100,6 @@
 
 <style>
   .game-map {
-    width: 100%;
-    height: 100%;
     position: relative;
     outline: 2px solid yellow;
     overflow: hidden;
