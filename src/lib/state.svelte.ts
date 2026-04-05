@@ -22,7 +22,7 @@ const ladelbar: Character = {
     {
       name: "Colgante etéreo",
       desc: "",
-      sprite: "chain mail coif",
+      sprite: "crystal pendant",
       metadata: {
         ethereal: true,
       },
