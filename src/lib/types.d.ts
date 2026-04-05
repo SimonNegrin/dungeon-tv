@@ -1,3 +1,5 @@
+import type { ItemName } from "./sprites/SpriteItem.svelte"
+import type { RogueName } from "./sprites/SpriteRogue.svelte"
 import type Vec2 from "./Vec2"
 
 export type GridValue = 0 | 1
@@ -7,7 +9,7 @@ export type InventoryType = "chest" | "player" | "enemy"
 
 export interface Inventory {
   type: InventoryType
-  spritePath: string
+  sprite: string
   name: string
   items: Item[]
 }
@@ -33,7 +35,7 @@ interface GameState {
 
 export interface Character {
   type: "player" | "enemy"
-  spritePath: string
+  sprite: RogueName
   name: string
   position: Vec2
   stats: Record<StatType, number>
@@ -72,7 +74,7 @@ export interface ItemMetadata {
 }
 
 export interface Item {
-  spriteId: string
+  sprite: ItemName
   name: string
   desc: string
 
@@ -110,7 +112,7 @@ export interface AttsDoor {
 export interface AttsChest {
   type: "chest"
   name: string
-  spritePath: string
+  sprite: string
   isOpen: boolean
   keyName: string
   items: Item[]

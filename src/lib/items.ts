@@ -3,7 +3,7 @@ import type { Character, Item } from "./types"
 
 const itemPrefabs: Item[] = [
   {
-    spriteId: "dagger",
+    sprite: "dagger",
     name: "Daga",
     desc: "Una daga pequeña pero afilada",
     statModifiers: [
@@ -18,7 +18,7 @@ const itemPrefabs: Item[] = [
     ],
   },
   {
-    spriteId: "short_sword",
+    sprite: "short sword",
     name: "Espada corta",
     desc: "Mejor que nada",
     statModifiers: [
@@ -29,7 +29,7 @@ const itemPrefabs: Item[] = [
     ],
   },
   {
-    spriteId: "sword",
+    sprite: "long sword",
     name: "Espada",
     desc: "Una espada estándar",
     statModifiers: [
@@ -40,7 +40,7 @@ const itemPrefabs: Item[] = [
     ],
   },
   {
-    spriteId: "bastard_sword",
+    sprite: "bastard sword",
     name: "Espada bastarda",
     desc: "Una espada versátil de una mano y media",
     statModifiers: [
@@ -55,7 +55,7 @@ const itemPrefabs: Item[] = [
     ],
   },
   {
-    spriteId: "big_sword",
+    sprite: "zweihander",
     name: "Espada grande",
     desc: "Una espada enorme",
     statModifiers: [
@@ -70,7 +70,7 @@ const itemPrefabs: Item[] = [
     ],
   },
   {
-    spriteId: "great_sword",
+    sprite: "great sword",
     name: "Espadón",
     desc: "Una espada gigantesca para los más fuertes",
     statModifiers: [
@@ -89,7 +89,7 @@ const itemPrefabs: Item[] = [
     ],
   },
   {
-    spriteId: "axe",
+    sprite: "hand axe",
     name: "Hacha",
     desc: "Un hacha de batalla",
     statModifiers: [
@@ -108,7 +108,7 @@ const itemPrefabs: Item[] = [
     ],
   },
   {
-    spriteId: "big_axe",
+    sprite: "battle axe",
     name: "Hacha grande",
     desc: "Un hacha enorme",
     statModifiers: [
@@ -127,7 +127,7 @@ const itemPrefabs: Item[] = [
     ],
   },
   {
-    spriteId: "great_axe",
+    sprite: "great axe",
     name: "Gran hacha",
     desc: "Un hacha colosal",
     statModifiers: [
@@ -146,7 +146,7 @@ const itemPrefabs: Item[] = [
     ],
   },
   {
-    spriteId: "shield_1",
+    sprite: "buckler",
     name: "Escudo pequeño",
     desc: "Un escudo básico",
     statModifiers: [
@@ -157,7 +157,7 @@ const itemPrefabs: Item[] = [
     ],
   },
   {
-    spriteId: "shield_2",
+    sprite: "kite shield",
     name: "Escudo",
     desc: "Un escudo estándar",
     statModifiers: [
@@ -168,7 +168,7 @@ const itemPrefabs: Item[] = [
     ],
   },
   {
-    spriteId: "shield_3",
+    sprite: "large shield",
     name: "Escudo grande",
     desc: "Un escudo grande",
     statModifiers: [
@@ -183,7 +183,7 @@ const itemPrefabs: Item[] = [
     ],
   },
   {
-    spriteId: "shield_4",
+    sprite: "round shield",
     name: "Escudo de torre",
     desc: "Un escudo enorme",
     statModifiers: [
@@ -198,7 +198,7 @@ const itemPrefabs: Item[] = [
     ],
   },
   {
-    spriteId: "shield_5",
+    sprite: "cross shield",
     name: "Escudo de hierro",
     desc: "Un escudo reforzado",
     statModifiers: [
@@ -209,7 +209,7 @@ const itemPrefabs: Item[] = [
     ],
   },
   {
-    spriteId: "shield_6",
+    sprite: "dark shield",
     name: "Escudo de acero",
     desc: "Un escudo de alta calidad",
     statModifiers: [
@@ -220,7 +220,7 @@ const itemPrefabs: Item[] = [
     ],
   },
   {
-    spriteId: "shield_7",
+    sprite: "buckler 2",
     name: "Escudo mágico",
     desc: "Un escudo encantado",
     statModifiers: [
@@ -238,7 +238,7 @@ const itemPrefabs: Item[] = [
     },
   },
   {
-    spriteId: "wizzard_hat",
+    sprite: "wide-brimmed hat",
     name: "Sombrero de mago",
     desc: "Un sombrero que otorga sabiduría",
     statModifiers: [
@@ -252,7 +252,7 @@ const itemPrefabs: Item[] = [
     },
   },
   {
-    spriteId: "red_necklace",
+    sprite: "red pendant",
     name: "Collar rojo",
     desc: "Un collar que aumenta la vitalidad",
     statModifiers: [
@@ -267,7 +267,7 @@ const itemPrefabs: Item[] = [
     ],
   },
   {
-    spriteId: "iron_necklace",
+    sprite: "metal pendant",
     name: "Collar de hierro",
     desc: "Un collar que fortalece la defensa",
     statModifiers: [
@@ -278,7 +278,7 @@ const itemPrefabs: Item[] = [
     ],
   },
   {
-    spriteId: "crystal_necklace",
+    sprite: "crystal pendant",
     name: "Collar de cristal",
     desc: "Un collar que mejora la puntería",
     statModifiers: [
@@ -289,7 +289,7 @@ const itemPrefabs: Item[] = [
     ],
   },
   {
-    spriteId: "wood_necklace",
+    sprite: "stone pendant",
     name: "Collar de madera",
     desc: "Un collar que acelera la iniciativa",
     statModifiers: [
@@ -300,7 +300,7 @@ const itemPrefabs: Item[] = [
     ],
   },
   {
-    spriteId: "sacred_necklace",
+    sprite: "cross pendant",
     name: "Collar sagrado",
     desc: "Un collar bendito",
     statModifiers: [
@@ -318,7 +318,7 @@ const itemPrefabs: Item[] = [
     },
   },
   {
-    spriteId: "damned_necklace",
+    sprite: "ankh",
     name: "Collar maldito",
     desc: "Un collar oscuro",
     statModifiers: [
@@ -336,37 +336,37 @@ const itemPrefabs: Item[] = [
     },
   },
   {
-    spriteId: "parchment",
+    sprite: "scroll",
     name: "Pergamino",
     desc: "Un pergamino antiguo",
     // Quest item, no stat modifiers
   },
   {
-    spriteId: "coin",
+    sprite: "coin",
     name: "Moneda",
     desc: "Una moneda de oro",
     // Currency, no stat modifiers
   },
   {
-    spriteId: "coins_1",
+    sprite: "small stacks of coins",
     name: "Monedas",
     desc: "Un puñado de monedas",
     // Currency, no stat modifiers
   },
   {
-    spriteId: "coins_2",
+    sprite: "large stacks of coins",
     name: "Más monedas",
     desc: "Varias monedas",
     // Currency, no stat modifiers
   },
   {
-    spriteId: "coins_bag",
+    sprite: "coin purse",
     name: "Bolsa de monedas",
     desc: "Una bolsa llena de monedas",
     // Currency, no stat modifiers
   },
   {
-    spriteId: "cheese",
+    sprite: "cheese",
     name: "Queso",
     desc: "Un trozo de queso",
     metadata: {
@@ -384,7 +384,7 @@ const itemPrefabs: Item[] = [
     },
   },
   {
-    spriteId: "bread",
+    sprite: "bread",
     name: "Pan",
     desc: "Una hogaza de pan",
     metadata: {
@@ -402,7 +402,7 @@ const itemPrefabs: Item[] = [
     },
   },
   {
-    spriteId: "apple",
+    sprite: "apple",
     name: "Manzana",
     desc: "Una manzana fresca",
     metadata: {
@@ -420,7 +420,7 @@ const itemPrefabs: Item[] = [
     },
   },
   {
-    spriteId: "wine",
+    sprite: "bottle of beer",
     name: "Vino",
     desc: "Una botella de vino",
     metadata: {
@@ -438,7 +438,7 @@ const itemPrefabs: Item[] = [
     },
   },
   {
-    spriteId: "water",
+    sprite: "bottle of water",
     name: "Agua",
     desc: "Una botella de agua",
     metadata: {
@@ -456,31 +456,31 @@ const itemPrefabs: Item[] = [
     },
   },
   {
-    spriteId: "brass_key",
+    sprite: "gold key",
     name: "Llave de latón",
     desc: "Una llave de latón",
     // Key item, no stat modifiers
   },
   {
-    spriteId: "iron_key",
+    sprite: "metal key",
     name: "Llave de hierro",
     desc: "Una llave de hierro",
     // Key item, no stat modifiers
   },
   {
-    spriteId: "silver_key",
+    sprite: "ornate key",
     name: "Llave de plata",
     desc: "Una llave de plata",
     // Key item, no stat modifiers
   },
   {
-    spriteId: "rusty_key",
+    sprite: "primitive key",
     name: "Llave oxidada",
     desc: "Una llave vieja y oxidada",
     // Key item, no stat modifiers
   },
   {
-    spriteId: "potion_red",
+    sprite: "red potion",
     name: "Poción de vida",
     desc: "Genial para la resaca",
     metadata: {
