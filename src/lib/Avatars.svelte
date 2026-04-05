@@ -6,3 +6,7 @@
 {#each gameState.players as player}
   <Avatar actor={player} highlight={gameState.currentPlayer === player} />
 {/each}
+
+{#each gameState.monsters as moster}
+  <Avatar actor={moster} />
+{/each}

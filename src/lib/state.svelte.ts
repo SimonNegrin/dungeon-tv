@@ -20,14 +20,14 @@ const ladelbar: Player = {
   },
   traits: [],
   items: [
-    // {
-    //   name: "Colgante etéreo",
-    //   desc: "",
-    //   sprite: "crystal pendant",
-    //   metadata: {
-    //     ethereal: true,
-    //   },
-    // },
+    {
+      name: "Colgante etéreo",
+      desc: "",
+      sprite: "crystal pendant",
+      metadata: {
+        ethereal: true,
+      },
+    },
   ],
 }
 
@@ -89,11 +89,13 @@ export async function loadStage(stageName: string): Promise<void> {
 class MonstersGenerator {
   private layersToRemove = ["walls", "doors"]
 
+  public monstersDensity = 0.1
+
   constructor(private stage: Stage) {}
 
   createMonsters(players: Player[]): Monster[] {
-    let numMonsters = players.length * 3
     let validPositions = this.getValidPositions(players)
+    let numMonsters = Math.floor(validPositions.length * this.monstersDensity)
     const monsters: Monster[] = []
 
     while (numMonsters-- && validPositions.length) {
