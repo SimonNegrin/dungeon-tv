@@ -21,16 +21,16 @@
   function onkeydown(event: KeyboardEvent): void {
     switch (event.key) {
       case "ArrowRight":
-        offset.x += 1
-        break
-      case "ArrowLeft":
         offset.x -= 1
         break
+      case "ArrowLeft":
+        offset.x += 1
+        break
       case "ArrowUp":
-        offset.y -= 1
+        offset.y += 1
         break
       case "ArrowDown":
-        offset.y += 1
+        offset.y -= 1
         break
     }
   }
@@ -79,22 +79,6 @@
     <MapLayer layer={gameState.stage.layers.walls} zIndex={2} />
     <MapLayer layer={gameState.stage.layers.doors} zIndex={3} />
     <MapLayer layer={gameState.stage.layers.spawn} zIndex={4} />
-
-    <!-- {#each gameState.stage.floor.tiles as position}
-      <Tile {position} name={floorTile(position)} />
-    {/each}
-
-    {#each gameState.stage.walls.tiles as position}
-      <Tile {position} name={wallTileName(position)} />
-    {/each}
-
-    {#each gameState.stage.doors.tiles as position}
-      <Tile {position} name="framed door 2 (shut)" />
-    {/each} -->
-
-    <!-- {#each gameState.stage.fog as position}
-      <Fog {position} />
-    {/each} -->
   </div>
 </div>
 
@@ -109,6 +93,7 @@
     width: 0;
     height: 0;
     transition-duration: 200ms;
+    background-color: aqua;
     outline: 2px solid palevioletred;
   }
 </style>
