@@ -4,7 +4,7 @@ import Vec2 from "./Vec2"
 import { createItem } from "./items"
 
 const ladelbar: Character = {
-  spritePath: "rogues/ladelbar",
+  sprite: "bandit",
   type: "player",
   name: "Ladelbar",
   position: new Vec2(2, 2),
@@ -22,7 +22,7 @@ const ladelbar: Character = {
     {
       name: "Colgante etéreo",
       desc: "",
-      spriteId: "crystal_necklace",
+      sprite: "chain mail coif",
       metadata: {
         ethereal: true,
       },
@@ -31,7 +31,7 @@ const ladelbar: Character = {
 }
 
 const krom: Character = {
-  spritePath: "rogues/krom",
+  sprite: "farmer (pitchfork)",
   type: "player",
   name: "Krom",
   position: new Vec2(3, 2),

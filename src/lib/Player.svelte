@@ -2,7 +2,7 @@
 <script lang="ts">
   import { walkSound } from "./audio"
   import { isEthereal, TILE_SIZE } from "./common"
-  import Sprite from "./Sprite.svelte"
+  import SpriteRogue from "./sprites/SpriteRogue.svelte"
   import { gameState } from "./state.svelte"
   import type { Character } from "./types"
 
@@ -36,7 +36,7 @@
     <div class="current-player"></div>
   {/if}
 
-  <Sprite path={player.spritePath} {lookRight} />
+  <SpriteRogue name={player.sprite} invert={lookRight} />
 </div>
 
 <style>

@@ -1,12 +1,12 @@
 <script lang="ts">
   import { calcStat } from "./common"
-  import Sprite from "./Sprite.svelte"
+  import SpriteRogue from "./sprites/SpriteRogue.svelte"
   import { gameState } from "./state.svelte"
 </script>
 
 <div class="current-player">
   <div class="sprite-container">
-    <Sprite path={gameState.currentPlayer.spritePath} scale={12} />
+    <SpriteRogue name={gameState.currentPlayer.sprite} />
   </div>
   <div class="player-name">{gameState.currentPlayer.name}</div>
 
