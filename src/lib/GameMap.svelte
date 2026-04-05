@@ -107,13 +107,10 @@
         </div>
 
         <div class="gameboard">
-          <FogLayer />
-
-          <CursorPath />
-
-          <Cursor />
-
           <Avatars />
+          <FogLayer />
+          <CursorPath />
+          <Cursor />
         </div>
       </div>
     {/if}

@@ -21,7 +21,7 @@
 <style>
   .cursor {
     position: absolute;
-    z-index: 2;
+    z-index: 303;
     width: var(--tile-size);
     height: var(--tile-size);
     left: calc(var(--tile-size) * var(--x));
