@@ -1,5 +1,5 @@
 import type { ItemName } from "./sprites/SpriteItem.svelte"
-import type { MonsterName } from './sprites/SpriteMonster.svelte'
+import type { MonsterSpriteName as MonsterSpriteName } from './sprites/SpriteMonster.svelte'
 import type { RogueName } from "./sprites/SpriteRogue.svelte"
 import type Vec2 from "./Vec2"
 
@@ -20,9 +20,12 @@ export interface Position {
   y: number
 }
 
+export type Turn = "players" | "monsters"
+
 interface GameState {
   stage: Stage | null
   fog: Vec2[]
+  turn: Turn
   playerIndex: number
   currentPlayer: Player
   initiativeLeft: number
@@ -38,6 +41,7 @@ interface GameState {
 export abstract interface Character {
   name: string
   position: Vec2
+  initiativeLeft: number
   stats: Record<StatType, number>
   traits: Item[]
   items: Item[]
@@ -50,7 +54,7 @@ export interface Player extends Character {
 
 export interface Monster extends Character {
   type: "monster"
-  sprite: MonsterName
+  sprite: MonsterSpriteName
 }
 
 export type Actor = Player | Monster

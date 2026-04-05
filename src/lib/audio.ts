@@ -19,6 +19,9 @@ export const chestCloseSound = createAudioPreset("chest_close", {
   volume: 0.25,
 })
 
+// Attack sounds
+export const attackSword = createAudioPreset("attack_sword", { volume: 0.2 })
+
 export function walkSound(): void {
   stepRight = !stepRight
   if (stepRight) {

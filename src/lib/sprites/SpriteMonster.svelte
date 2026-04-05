@@ -1,15 +1,22 @@
-<script lang="ts">
+<script lang="ts" module>
   import spritesheet from "../../assets/spritesheets/monsters.png"
   import monsters from "../../assets/spritesheets/monsters.json"
-  import Sprite from "./Sprite.svelte"
 
-  export type MonsterName = keyof typeof monsters
+  export type MonsterSpriteName = keyof typeof monsters
+
+  export function getMonsterSpriteNames(): MonsterSpriteName[] {
+    return Object.keys(monsters) as MonsterSpriteName[]
+  }
+</script>
+
+<script lang="ts">
+  import Sprite from "./Sprite.svelte"
 
   let {
     name,
     invert,
   }: {
-    name: MonsterName
+    name: MonsterSpriteName
     invert?: boolean
   } = $props()
 </script>

@@ -1,14 +1,26 @@
 import type { GameState, Layer, Monster, Player, Stage } from "./types"
-import { clearFogAt, createFogPositions, VIEW_DISTANCE } from "./common"
+import {
+  calcStat,
+  clearFogAt,
+  createFogPositions,
+  VIEW_DISTANCE,
+} from "./common"
 import Vec2 from "./Vec2"
 import StageLoader from "./StageLoader"
 import { prefabsMap } from "./items"
+import {
+  getMonsterSpriteNames,
+  type MonsterSpriteName,
+} from "./sprites/SpriteMonster.svelte"
+import { nextSound } from "./audio"
+import MonstersController from "./MonstersController"
 
 const ladelbar: Player = {
   sprite: "bandit",
   type: "player",
   name: "Ladelbar",
   position: new Vec2(2, 2),
+  initiativeLeft: 8,
   stats: {
     health: 0,
     totalHealth: 0,
@@ -36,6 +48,7 @@ const krom: Player = {
   type: "player",
   name: "Krom",
   position: new Vec2(3, 2),
+  initiativeLeft: 8,
   stats: {
     health: 0,
     totalHealth: 0,
@@ -66,6 +79,7 @@ export const gameState = $state<GameState>({
   freezePath: false,
   players: [ladelbar, krom],
   monsters: [],
+  turn: "players",
 })
 
 export async function loadStage(stageName: string): Promise<void> {
@@ -77,7 +91,10 @@ export async function loadStage(stageName: string): Promise<void> {
   gameState.playerIndex = 0
   gameState.currentPlayer = gameState.players[gameState.playerIndex]
 
-  const monstersGenerator = new MonstersGenerator(stage)
+  const monstersGenerator = new MonstersGenerator(
+    stage,
+    getMonsterSpriteNames(),
+  )
   gameState.monsters = monstersGenerator.createMonsters(gameState.players)
 
   // Clear fog at players positions
@@ -86,12 +103,32 @@ export async function loadStage(stageName: string): Promise<void> {
   })
 }
 
+export async function nextPlayer(): Promise<void> {
+  const index = (gameState.playerIndex + 1) % gameState.players.length
+
+  if (index === 0) {
+    const monstersController = new MonstersController()
+    await monstersController.execute()
+  }
+
+  const player = gameState.players[index]
+  gameState.currentPlayer = player
+  gameState.playerIndex = index
+  gameState.cursorPosition = player.position
+  gameState.initiativeLeft = calcStat("initiative", player)
+  gameState.openInventory = null
+  nextSound()
+}
+
 class MonstersGenerator {
   private layersToRemove = ["walls", "doors"]
 
-  public monstersDensity = 0.1
+  private monstersDensity = 0.1
 
-  constructor(private stage: Stage) {}
+  constructor(
+    private stage: Stage,
+    private monsterSpriteNames: MonsterSpriteName[],
+  ) {}
 
   createMonsters(players: Player[]): Monster[] {
     let validPositions = this.getValidPositions(players)
@@ -109,21 +146,26 @@ class MonstersGenerator {
   }
 
   private createMonster(pos: Vec2): Monster {
+    const monsterSprite =
+      this.monsterSpriteNames[
+        Math.floor(this.monsterSpriteNames.length * Math.random())
+      ]
     return {
       type: "monster",
       name: "Monster",
-      sprite: "goblin brute",
+      sprite: monsterSprite,
       position: pos,
+      initiativeLeft: 8,
       items: [],
       traits: [],
       stats: {
-        attack: 0,
-        defence: 0,
-        damage: 0,
-        aim: 0,
-        initiative: 0,
-        health: 0,
-        totalHealth: 0,
+        attack: 1,
+        defence: 1,
+        damage: 1,
+        aim: 1,
+        initiative: 8,
+        health: 2,
+        totalHealth: 2,
       },
     }
   }

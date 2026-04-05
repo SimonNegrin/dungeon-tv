@@ -8,6 +8,10 @@ export default class Vec2 {
     return `${this.x},${this.y}`
   }
 
+  clone(): Vec2 {
+    return new Vec2(this.x, this.y)
+  }
+
   up(): Vec2 {
     return new Vec2(this.x, this.y - 1)
   }
@@ -18,6 +22,10 @@ export default class Vec2 {
 
   sub(vec2: Vec2): Vec2 {
     return new Vec2(this.x - vec2.x, this.y - vec2.y)
+  }
+
+  multiply(factor: number): Vec2 {
+    return new Vec2(this.x * factor, this.y * factor)
   }
 
   magnitude(): number {
@@ -42,5 +50,25 @@ export default class Vec2 {
     const xdist = Math.abs(this.x - vec2.x)
     const ydist = Math.abs(this.y - vec2.y)
     return (xdist === 1 && ydist === 0) || (xdist === 0 && ydist === 1)
+  }
+
+  isUp(pos: Vec2): boolean {
+    const up = this.add(new Vec2(0, -1))
+    return up.isEqual(pos)
+  }
+
+  isDown(pos: Vec2): boolean {
+    const down = this.add(new Vec2(0, 1))
+    return down.isEqual(pos)
+  }
+
+  isLeft(pos: Vec2): boolean {
+    const left = this.add(new Vec2(-1, 0))
+    return left.isEqual(pos)
+  }
+
+  isRight(pos: Vec2): boolean {
+    const right = this.add(new Vec2(1, 0))
+    return right.isEqual(pos)
   }
 }

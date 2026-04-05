@@ -12,9 +12,11 @@ import type {
 } from "./types"
 import Vec2 from "./Vec2"
 import { gameState } from "./state.svelte"
-import { nextSound, penClickSound } from "./audio"
+import { penClickSound } from "./audio"
 import VisionSystem from "./VisionSystem"
 
+export const STEP_TIME = 200
+export const ATTACK_TIME = 200
 export const TILE_SIZE = 32
 export const TILE_FLOOR = 0
 export const TILE_BLOCK = 1
@@ -37,18 +39,6 @@ export function getCharacterPathTo(
 ): Promise<Vec2[] | null> {
   return new Promise((resolve) => {
     if (!gameState.stage) {
-      return resolve(null)
-    }
-
-    // If some player is in the target position
-    // is not posible to create a path
-    if (gameState.players.some((player) => player.position.isEqual(target))) {
-      return resolve(null)
-    }
-
-    // If some monster is in the target position
-    // is not posible to create a path
-    if (gameState.monsters.some((player) => player.position.isEqual(target))) {
       return resolve(null)
     }
 
@@ -75,6 +65,20 @@ export function getCharacterPathTo(
     )
     easystar.calculate()
   })
+}
+
+export function isCharacterAtPositon(position: Vec2): boolean {
+  // If some player is in the target position
+  if (gameState.players.some((player) => player.position.isEqual(position))) {
+    return true
+  }
+
+  // If some monster is in the target position
+  if (gameState.monsters.some((player) => player.position.isEqual(position))) {
+    return true
+  }
+
+  return false
 }
 
 export function isInsideGameboard(position: Vec2): boolean {
@@ -253,17 +257,6 @@ export function waitTime(ms: number): Promise<void> {
   return new Promise((resolve) => {
     setTimeout(resolve, ms)
   })
-}
-
-export function nextPlayer(): void {
-  const index = (gameState.playerIndex + 1) % gameState.players.length
-  const player = gameState.players[index]
-  gameState.currentPlayer = player
-  gameState.playerIndex = index
-  gameState.cursorPosition = player.position
-  gameState.initiativeLeft = calcStat("initiative", player)
-  gameState.openInventory = null
-  nextSound()
 }
 
 // Spent an initiative amount and return boolean

@@ -1,4 +1,9 @@
-import { doorLockedSound, doorUnlockSound, tiredSound } from "./audio"
+import {
+  doorLockedSound,
+  doorUnlockSound,
+  tiredSound,
+  walkSound,
+} from "./audio"
 import {
   clearFogAt,
   getCharacterPathTo,
@@ -6,8 +11,10 @@ import {
   INITIATIVE_CHEST,
   INITIATIVE_DOOR,
   INITIATIVE_STEP,
+  isCharacterAtPositon,
   removeItemByName,
   spendInitiative,
+  STEP_TIME,
   waitTime,
 } from "./common"
 import { gameState } from "./state.svelte"
@@ -138,6 +145,10 @@ export default class PlayerAction {
   }
 
   private async playerMove(): Promise<boolean> {
+    if (isCharacterAtPositon(gameState.cursorPosition)) {
+      return false
+    }
+
     const path = await getCharacterPathTo(
       gameState.currentPlayer,
       gameState.cursorPosition,
@@ -155,7 +166,8 @@ export default class PlayerAction {
       }
       gameState.currentPlayer.position = step
       clearFogAt(step)
-      await waitTime(200)
+      walkSound()
+      await waitTime(STEP_TIME)
       gameState.cursorPath = gameState.cursorPath.slice(1)
       gameState.initiativeLeft--
     }
