@@ -1,9 +1,4 @@
-import {
-  doorLockedSound,
-  doorUnlockSound,
-  fogClearSound,
-  tiredSound,
-} from "./audio"
+import { doorLockedSound, doorUnlockSound, tiredSound } from "./audio"
 import {
   clearFogAt,
   getCharacterPathTo,

@@ -1,7 +1,8 @@
-import type { Character, GameState, Item, MapTileAtts, Stage } from "./types"
-import { clearFogAt, createFogPositions, loadSpritesheet } from "./common"
+import type { Character, GameState } from "./types"
+import { clearFogAt, createFogPositions } from "./common"
 import Vec2 from "./Vec2"
-import { createItem } from "./items"
+import StageLoader from "./StageLoader"
+import { prefabsMap } from "./items"
 
 const ladelbar: Character = {
   sprite: "bandit",
@@ -66,24 +67,9 @@ export const gameState = $state<GameState>({
   players: [ladelbar, krom],
 })
 
-export async function loadStage(name: string): Promise<void> {
-  const stage: Stage = await loadSpritesheet<MapTileAtts>(name)
-
-  type ItemRef = {
-    name: string
-  }
-
-  stage.layers.forEach((layer) => {
-    layer.tiles.forEach((tile) => {
-      if (tile.attributes.type === "chest") {
-        tile.attributes.items = tile.attributes.items.map(
-          (item: ItemRef): Item => {
-            return createItem(item.name)
-          },
-        )
-      }
-    })
-  })
+export async function loadStage(stageName: string): Promise<void> {
+  const stageLoader = new StageLoader(prefabsMap)
+  const stage = await stageLoader.load(stageName)
 
   gameState.stage = stage
   gameState.fog = createFogPositions(stage)

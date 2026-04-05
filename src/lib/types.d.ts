@@ -93,23 +93,23 @@ export interface Position {
   y: number
 }
 
-export type MapTileAtts = AttsDoor | AttsChest | AttsSpawn
+export type TileAtts = DoorAtts | ChestAtts | SpawnAtts
 export type TileType = "door" | "chest" | "spawn"
 
-type TileTypeMap = {
-  door: AttsDoor
-  chest: AttsChest
-  spawn: AttsSpawn
+export type TileTypeMap = {
+  door: DoorAtts
+  chest: ChestAtts
+  spawn: SpawnAtts
 }
 
-export interface AttsDoor {
+export interface DoorAtts {
   type: "door"
   name: string
   isOpen: boolean
   keyName: string
 }
 
-export interface AttsChest {
+export interface ChestAtts {
   type: "chest"
   name: string
   sprite: string
@@ -118,46 +118,37 @@ export interface AttsChest {
   items: Item[]
 }
 
-export interface AttsPlayerSpawn {
+export interface SpawnAtts {
   type: "spawn"
-  spawnType: "player"
-}
-
-export interface AttsEnemySpawn {
-  type: "spawn"
-  spawnType: "enemy"
-  enemyName: string
 }
 
 /**
  * Representa un tile individual en el mapa
  */
-export interface Tile<TileAtts> {
+export interface Tile<T extends TileAtts = TileAtts> {
   id: string
   sprite: Vec2
   position: Vec2
-  attributes: TileAtts
+  attributes: T
 }
 
 /**
  * Representa una capa del mapa (ej: Collition, Decoration, Floor)
  */
-export interface Layer<TileAtts> {
+export interface Layer {
   name: string
-  tiles: Tile<TileAtts>[]
-  tilesMap: Record<string, Tile<TileAtts>>
+  tiles: Tile[]
+  tilesMap: Record<string, Tile>
   collider: boolean
 }
 
 /**
  * Representa la estructura completa del mapa del juego
  */
-export interface Spritesheet<TileAtts> {
+export interface Stage {
   spritesheetUrl: string
   tileSize: number
   mapWidth: number
   mapHeight: number
-  layers: Layer<TileAtts>[]
+  layers: Layer[]
 }
-
-export type Stage = Spritesheet<MapTileAtts>

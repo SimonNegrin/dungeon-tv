@@ -1,13 +1,13 @@
 <script lang="ts">
-  import type { Layer, MapTileAtts } from "./types"
+  import type { Layer } from "./types"
   import Fog from "./Fog.svelte"
-  import MapTile from "./MapTile.svelte"
+  import GameMapTile from "./GameMapTile.svelte"
 
   let {
     layer,
     zIndex,
   }: {
-    layer: Layer<MapTileAtts>
+    layer: Layer
     zIndex: number
   } = $props()
 
@@ -21,7 +21,7 @@
     {/each}
   {:else}
     {#each layer.tiles as tile (tile.position.toString())}
-      <MapTile {tile} />
+      <GameMapTile {tile} />
     {/each}
   {/if}
 </div>

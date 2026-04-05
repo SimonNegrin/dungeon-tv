@@ -508,23 +508,6 @@ const itemPrefabs: Item[] = [
   },
 ]
 
-const prefabsMap = new Map<string, Item>(
+export const prefabsMap = new Map<string, Item>(
   itemPrefabs.map((item) => [item.name, item]),
 )
-
-export function createItem(name: string): Item {
-  const prefab = prefabsMap.get(name)
-  if (!prefab) {
-    throw new Error(`Prefab with name "${name}" doen't exists"`)
-  }
-  const item: Item = {
-    ...prefab,
-  }
-
-  // Create new metadata object if needed
-  if (prefab.metadata) {
-    item.metadata = { ...prefab.metadata }
-  }
-
-  return item
-}

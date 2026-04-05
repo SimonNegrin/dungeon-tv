@@ -10,7 +10,7 @@
   import Loading from "./Loading.svelte"
   import { gameState } from "./state.svelte"
   import Vec2 from "./Vec2"
-  import MapLayer from "./MapLayer.svelte"
+  import GameMapLayer from "./GameMapLayer.svelte"
   import PlayerAction from "./PlayerAction"
   import { fogClearSound } from "./audio"
   import CursorPath from "./CursorPath.svelte"
@@ -99,7 +99,10 @@
       >
         <div class="layers">
           {#each gameState.stage.layers as layer, index}
-            <MapLayer {layer} zIndex={gameState.stage.layers.length - index} />
+            <GameMapLayer
+              {layer}
+              zIndex={gameState.stage.layers.length - index}
+            />
           {/each}
         </div>
 

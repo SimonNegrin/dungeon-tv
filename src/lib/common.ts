@@ -1,13 +1,9 @@
 import EasyStar from "easystarjs"
 import type {
-  AttsChest,
-  AttsDoor,
   Character,
   Grid,
   Inventory,
   Layer,
-  MapTileAtts,
-  Spritesheet,
   Stage,
   StatType,
   Tile,
@@ -34,47 +30,6 @@ export const INITIATIVE_DOOR = 2
 export const INITIATIVE_CHEST = 2
 export const INITIATIVE_ATTACK = 2
 export const INITIATIVE_STEP = 1
-
-/**
- * Carga los datos del mapa de un stage desde su archivo JSON
- * @param spritesheetName - Nombre del stage a cargar (ej: "Stage_1")
- * @returns Promise con los datos del mapa del juego
- * @throws Error si no se puede cargar el archivo del mapa
- */
-export async function loadSpritesheet<T>(
-  spritesheetName: string,
-): Promise<Spritesheet<T>> {
-  const response = await fetch(`/spritesheets/${spritesheetName}/map.json`)
-
-  if (!response.ok) {
-    throw new Error(`No se pudo cargar el stage: ${spritesheetName}`)
-  }
-
-  const spritesheet: Spritesheet<T> = await response.json()
-
-  spritesheet.spritesheetUrl = `/spritesheets/${spritesheetName}/spritesheet.png`
-
-  spritesheet.layers.forEach((layer) => {
-    layer.tiles = layer.tiles.map((tile: any): Tile<T> => {
-      const id = Number(tile.id)
-      const spriteX = id % 8
-      const spriteY = Math.floor(id / 8)
-      return {
-        id: tile.id,
-        position: new Vec2(tile.x, tile.y),
-        sprite: new Vec2(spriteX, spriteY),
-        attributes: tile.attributes || {},
-      }
-    })
-
-    layer.tilesMap = Object.fromEntries(
-      layer.tiles.map((tile) => {
-        return [tile.position.toString(), tile]
-      }),
-    )
-  })
-  return spritesheet
-}
 
 export function getCharacterPathTo(
   character: Character,
@@ -259,15 +214,12 @@ export function createGrid(stage: Stage, character: Character): Grid | null {
   return grid
 }
 
-export function getTileTypeAt<K extends keyof TileTypeMap>(
+export function getTileTypeAt<K extends TileType>(
   tileType: K,
   position: Vec2,
 ): Tile<TileTypeMap[K]> | null
 
-export function getTileTypeAt(
-  tileType: TileType,
-  position: Vec2,
-): Tile<MapTileAtts> | null {
+export function getTileTypeAt(tileType: TileType, position: Vec2): Tile | null {
   for (const layer of gameState.stage!.layers) {
     for (const tile of layer.tiles) {
       if (
@@ -281,7 +233,7 @@ export function getTileTypeAt(
   return null
 }
 
-function isOpenDoor(tile: Tile<MapTileAtts>): boolean {
+function isOpenDoor(tile: Tile): boolean {
   return tile.attributes.type === "door" && tile.attributes.isOpen
 }
 
@@ -371,14 +323,12 @@ export function clearFogAt(position: Vec2): boolean {
     })
   }
 
-  const doors: Layer<AttsDoor> | undefined = gameState.stage.layers.find(
-    (layer) => {
-      return layer.name === "doors"
-    },
-  )
+  const doors: Layer | undefined = gameState.stage.layers.find((layer) => {
+    return layer.name === "doors"
+  })
   if (doors) {
     doors.tiles.forEach((tile) => {
-      if (!tile.attributes.isOpen) {
+      if (tile.attributes.type === "door" && !tile.attributes.isOpen) {
         visionSystem.addWall(tile.position)
       }
     })
