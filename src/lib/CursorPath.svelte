@@ -53,7 +53,7 @@
     --sign-size: 8px;
 
     position: absolute;
-    z-index: 301;
+    z-index: 3;
     width: var(--tile-size);
     height: var(--tile-size);
     display: flex;
