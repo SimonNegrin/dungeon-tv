@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { getCharacterPathTo, TILE_SIZE } from "./common"
+  import { TILE_SIZE } from "./common"
+  import { getCharacterPathTo } from "./helpers/stage"
   import { gameState } from "./state.svelte"
   import type Vec2 from "./Vec2"
 
@@ -9,7 +10,7 @@
   }
 
   let steps = $derived(
-    updateSteps(gameState.cursorPath, gameState.initiativeLeft),
+    updateSteps(gameState.cursorPath, gameState.currentPlayer.initiativeLeft),
   )
 
   $effect(() => {

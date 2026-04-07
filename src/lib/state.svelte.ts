@@ -1,21 +1,9 @@
-import type { GameState, Layer, Monster, Player, Stage } from "./types"
-import {
-  calcStat,
-  clearFogAt,
-  createFogPositions,
-  LAYER_WALLS,
-  VIEW_DISTANCE,
-} from "./common"
+import type { GameState, Monster, Player } from "./types"
 import Vec2 from "./Vec2"
 import StageLoader from "./StageLoader"
-import { prefabsMap } from "./items"
-import {
-  getMonsterSpriteNames,
-  type MonsterSpriteName,
-} from "./sprites/SpriteMonster.svelte"
-import { nextSound } from "./audio"
-import MonstersController from "./MonstersController"
-import VisionSystem from "./VisionSystem"
+import { prefabsMap } from "./helpers/items"
+import { populateMonsters } from "./helpers/monsters"
+import { clearFogAt, createFogPositions } from "./helpers/fog"
 
 const ladelbar: Player = {
   sprite: "bandit",
@@ -35,14 +23,14 @@ const ladelbar: Player = {
   },
   traits: [],
   items: [
-    // {
-    //   name: "Colgante etéreo",
-    //   desc: "",
-    //   sprite: "crystal pendant",
-    //   metadata: {
-    //     ethereal: true,
-    //   },
-    // },
+    {
+      name: "Colgante etéreo",
+      desc: "",
+      sprite: "crystal pendant",
+      metadata: {
+        ethereal: true,
+      },
+    },
   ],
 }
 
@@ -96,7 +84,6 @@ export const gameState = $state<GameState>({
   playerIndex: 0,
   currentPlayer: ladelbar,
   centerActor: ladelbar,
-  initiativeLeft: ladelbar.stats.initiative,
   initiativeRequired: 0,
   openInventory: null,
   cursorPosition: ladelbar.position,
@@ -115,116 +102,10 @@ export async function loadStage(stageName: string): Promise<void> {
   gameState.fog = createFogPositions(stage)
   gameState.playerIndex = 0
   gameState.currentPlayer = gameState.players[gameState.playerIndex]
-
-  const monstersGenerator = new MonstersGenerator(
-    stage,
-    getMonsterSpriteNames(),
-  )
-  gameState.monsters = monstersGenerator.createMonsters(gameState.players)
+  gameState.monsters = populateMonsters(gameState)
 
   // Clear fog at players positions
   gameState.players.forEach((player) => {
     clearFogAt(player.position)
   })
-}
-
-export async function nextPlayer(): Promise<void> {
-  const index = (gameState.playerIndex + 1) % gameState.players.length
-
-  if (index === 0) {
-    const monstersController = new MonstersController()
-    await monstersController.execute()
-  }
-
-  const player = gameState.players[index]
-  gameState.currentPlayer = player
-  gameState.centerActor = player
-  gameState.playerIndex = index
-  gameState.cursorPosition = player.position
-  gameState.initiativeLeft = calcStat("initiative", player)
-  gameState.openInventory = null
-  nextSound()
-}
-
-class MonstersGenerator {
-  private layersToRemove = [LAYER_WALLS, "doors"]
-
-  private monstersDensity = 0.1
-
-  constructor(
-    private stage: Stage,
-    private monsterSpriteNames: MonsterSpriteName[],
-  ) {}
-
-  createMonsters(players: Player[]): Monster[] {
-    let validPositions = this.getValidPositions(players)
-    let numMonsters = Math.floor(validPositions.length * this.monstersDensity)
-    const monsters: Monster[] = []
-
-    while (numMonsters-- && validPositions.length) {
-      const index = Math.floor(validPositions.length * Math.random())
-      const [pos] = validPositions.splice(index, 1)
-      const monster = this.createMonster(pos)
-      monsters.push(monster)
-    }
-
-    return monsters
-  }
-
-  private createMonster(pos: Vec2): Monster {
-    const monsterSprite =
-      this.monsterSpriteNames[
-        Math.floor(this.monsterSpriteNames.length * Math.random())
-      ]
-    return {
-      type: "monster",
-      name: "Monster",
-      sprite: monsterSprite,
-      position: pos,
-      offset: new Vec2(0, 0),
-      initiativeLeft: 8,
-      items: [],
-      traits: [],
-      stats: {
-        attack: 1,
-        defence: 1,
-        damage: 1,
-        aim: 1,
-        initiative: 8,
-        health: 2,
-        totalHealth: 2,
-      },
-    }
-  }
-
-  private getValidPositions(players: Player[]): Vec2[] {
-    // Get floor positions because at first
-    // all floor tiles are proper to allocate an enemy
-    let positions = this.stage.layers
-      .find((layer) => layer.name === "floor")!
-      .tiles.map((tile) => tile.position)
-
-    this.layersToRemove.forEach((layerName) => {
-      positions = this.filterLayer(
-        this.stage.layers.find((layer) => layer.name === layerName)!,
-        positions,
-      )
-    })
-
-    // Remove positions too near to players
-    positions = positions.filter((pos) => {
-      return players.every((player) => {
-        const distance = Math.floor(player.position.add(pos).magnitude())
-        return distance > VIEW_DISTANCE + 2
-      })
-    })
-
-    return positions
-  }
-
-  private filterLayer(layer: Layer, positions: Vec2[]): Vec2[] {
-    return positions.filter((position) => {
-      return layer.tilesMap[position.toString()] === undefined
-    })
-  }
 }

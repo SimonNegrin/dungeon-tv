@@ -29,7 +29,6 @@ interface GameState {
   playerIndex: number
   currentPlayer: Player
   centerActor: Actor
-  initiativeLeft: number
   initiativeRequired: number
   openInventory: Inventory | null
   freezePath: boolean

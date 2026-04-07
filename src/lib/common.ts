@@ -1,21 +1,8 @@
-import EasyStar from "easystarjs"
-import type {
-  Character,
-  Grid,
-  Inventory,
-  Layer,
-  Stage,
-  StatType,
-  Tile,
-  TileType,
-  TileTypeMap,
-} from "./types"
+import type { Character, Inventory, Tile, TileType, TileTypeMap } from "./types"
 import Vec2 from "./Vec2"
 import { gameState } from "./state.svelte"
 import { penClickSound } from "./audio"
 import VisionSystem from "./VisionSystem"
-import PhysicAttack from "./PhysicAttack"
-import Dice from "./Dice"
 
 export const LAYER_WALLS = "walls"
 
@@ -36,9 +23,6 @@ export const INITIATIVE_DOOR = 2
 export const INITIATIVE_CHEST = 2
 export const INITIATIVE_ATTACK = 2
 export const INITIATIVE_STEP = 1
-
-export const dice6 = new Dice(6)
-export const physicAttack = new PhysicAttack(dice6)
 
 export function createVisionSystem(): VisionSystem {
   if (!gameState.stage) {
@@ -72,211 +56,6 @@ export function getCharacterAt(pos: Vec2): Character | undefined {
   return getAllCharacters().find((character) => character.position.isEqual(pos))
 }
 
-export function getCharacterPathTo(
-  character: Character,
-  target: Vec2,
-): Promise<Vec2[] | null> {
-  return new Promise((resolve) => {
-    if (!gameState.stage) {
-      return resolve(null)
-    }
-
-    const grid = createGrid(gameState.stage, character, target)
-    if (!grid) {
-      return resolve(null)
-    }
-
-    const easystar = new EasyStar.js()
-    easystar.disableDiagonals()
-    easystar.setGrid(grid)
-    easystar.setAcceptableTiles(0)
-    easystar.findPath(
-      character.position.x,
-      character.position.y,
-      target.x,
-      target.y,
-      (path) => {
-        if (!Array.isArray(path)) {
-          return resolve(null)
-        }
-        resolve(path.map((c) => new Vec2(c.x, c.y)))
-      },
-    )
-    easystar.calculate()
-  })
-}
-
-export function isCharacterAtPositon(position: Vec2): boolean {
-  // If some player is in the target position
-  if (gameState.players.some((player) => player.position.isEqual(position))) {
-    return true
-  }
-
-  // If some monster is in the target position
-  if (gameState.monsters.some((player) => player.position.isEqual(position))) {
-    return true
-  }
-
-  return false
-}
-
-export function isInsideGameboard(position: Vec2): boolean {
-  if (!gameState.stage) {
-    return false
-  }
-  return (
-    position.x >= 0 &&
-    position.y >= 0 &&
-    position.x < gameState.stage.mapWidth &&
-    position.y < gameState.stage.mapHeight
-  )
-}
-
-export function tileIsFog(position: Vec2): boolean {
-  if (!gameState.stage || !isInsideGameboard(position)) {
-    return false
-  }
-  return gameState.stage.layers.some((layer) => {
-    if (!layer.name.startsWith("fog")) {
-      return false
-    }
-    return layer.tiles.some((tile) => {
-      return tile.position.isEqual(position)
-    })
-  })
-}
-
-export async function removeFog(position: Vec2): Promise<boolean> {
-  // First check if we have stage and the point is inside the gameboard
-  if (!gameState.stage || !isInsideGameboard(position)) {
-    return false
-  }
-
-  // Get all fog layers indexes
-  const fogLayersIndx: number[] = []
-  gameState.stage.layers.forEach((layer, index) => {
-    if (layer.name.startsWith("fog")) {
-      fogLayersIndx.push(index)
-    }
-  })
-
-  // Find the adjacent fog layer indexes to the point
-  const adjacentFogLayersIndx: number[] = []
-  fogLayersIndx.forEach((index) => {
-    const layer = gameState.stage!.layers[index]
-    const isAdjacent = layer.tiles.some((tile) => {
-      return tile.position.isAdjacent(position)
-    })
-    if (isAdjacent) {
-      adjacentFogLayersIndx.push(index)
-    }
-  })
-
-  if (!adjacentFogLayersIndx.length) {
-    return false
-  }
-
-  // If we match two layers it means we can remove al tiles from them
-  // because the player have visibility of all layers areas
-  if (adjacentFogLayersIndx.length === 2) {
-    const [a, b] = adjacentFogLayersIndx
-    gameState.stage.layers[a].tiles = []
-    gameState.stage.layers[b].tiles = []
-    return true
-  }
-
-  // We have only one adjacent layer
-  const [adjacentIdx] = adjacentFogLayersIndx
-  const adjacentFogLayer = gameState.stage.layers[adjacentIdx]
-
-  // Remove all fog tiles from other fog layers that overlaps
-  // with the adjacent fog layer
-  // This is because maybe we have to remove fog partially
-  // from other layers
-  fogLayersIndx.forEach((fogLayerIdx) => {
-    if (fogLayerIdx === adjacentIdx) {
-      return
-    }
-    // Is not the adjacent fog layer
-    // Remove the overlaping tiles
-    const overlapingIndxs: number[] = []
-    const fogTiles = gameState.stage!.layers[fogLayerIdx].tiles
-    fogTiles.forEach((tile, index) => {
-      adjacentFogLayer.tiles.forEach((t) => {
-        if (tile.position.isEqual(t.position)) {
-          overlapingIndxs.push(index)
-        }
-      })
-    })
-
-    if (overlapingIndxs.length === 0) {
-      return
-    }
-
-    gameState.stage!.layers[fogLayerIdx].tiles = fogTiles.filter((_, index) => {
-      return !overlapingIndxs.includes(index)
-    })
-  })
-
-  // Remove all tiles from adjacent layer
-  gameState.stage.layers[adjacentIdx].tiles = []
-
-  return true
-}
-
-// Creates a ad-hoc grid for the given character
-// If targetPosition is passed in this position
-// will be taken into account as available (not wall or blocked)
-export function createGrid(
-  stage: Stage,
-  character: Character,
-  targetPosition?: Vec2,
-): Grid | null {
-  // Create a grid with the dimensions of the stage with
-  // all tiles available to be occupied
-  const grid: Grid = []
-  for (let y = 0; y < stage.mapHeight; y++) {
-    const line: (typeof TILE_FLOOR)[] = Array(stage.mapWidth).fill(TILE_FLOOR)
-    grid.push(line)
-  }
-
-  // If the character is ethereal it can move to any tile
-  if (isEthereal(character)) {
-    return grid
-  }
-
-  // Block all tiles occupied by characters
-  // except if they are ethereal or they are in the target position
-  getAllCharacters().forEach((character) => {
-    // If the character is in the target position
-    // it not will block the path
-    if (targetPosition?.isEqual(character.position)) {
-      return
-    }
-
-    // If the character is ethereal his position is able to be occupied
-    if (isEthereal(character)) {
-      return
-    }
-
-    // The character blocks this position
-    grid[character.position.y][character.position.x] = TILE_BLOCK
-  })
-
-  // Block all tiles from the collider layers
-  stage.layers.forEach((layer) => {
-    if (!layer.collider) return
-    layer.tiles.forEach((tile) => {
-      if (isOpenDoor(tile)) {
-        return
-      }
-      grid[tile.position.y][tile.position.x] = TILE_BLOCK
-    })
-  })
-
-  return grid
-}
-
 export function getTileTypeAt<K extends TileType>(
   tileType: K,
   position: Vec2,
@@ -296,36 +75,10 @@ export function getTileTypeAt(tileType: TileType, position: Vec2): Tile | null {
   return null
 }
 
-function isOpenDoor(tile: Tile): boolean {
-  return tile.attributes.type === "door" && tile.attributes.isOpen
-}
-
 export function waitTime(ms: number): Promise<void> {
   return new Promise((resolve) => {
     setTimeout(resolve, ms)
   })
-}
-
-// Spent an initiative amount and return boolean
-// indicating if there was enough initiative to spend it
-export function spendInitiative(amount: number): boolean {
-  if (amount > gameState.initiativeLeft) {
-    return false
-  }
-  gameState.initiativeLeft - amount
-  return true
-}
-
-export function calcStat(stat: StatType, character: Character): number {
-  let value = character.stats[stat]
-  ;[...character.traits, ...character.items].forEach((item) => {
-    item.statModifiers?.forEach((item) => {
-      if (item.stat === stat) {
-        value += item.value
-      }
-    })
-  })
-  return value
 }
 
 export function isEthereal(character: Character): boolean {
@@ -338,49 +91,6 @@ export function removeItemByName(character: Character, itemName: string): void {
   character.items = character.items.filter((item) => {
     return item.name !== itemName
   })
-}
-
-export async function playAnimation(
-  animationId: string,
-  position: Vec2,
-): Promise<void> {}
-
-export function createFogPositions(stage: Stage): Vec2[] {
-  const positions: Vec2[] = []
-  for (let y = 0; y < stage.mapWidth; y++) {
-    for (let x = 0; x < stage.mapHeight; x++) {
-      positions.push(new Vec2(x, y))
-    }
-  }
-  return positions
-}
-
-export function clearFogAt(position: Vec2): boolean {
-  if (!gameState.stage) {
-    return false
-  }
-
-  const visionSystem = createVisionSystem()
-
-  const doors: Layer | undefined = gameState.stage.layers.find((layer) => {
-    return layer.name === "doors"
-  })
-  if (doors) {
-    doors.tiles.forEach((tile) => {
-      if (tile.attributes.type === "door" && !tile.attributes.isOpen) {
-        visionSystem.addWall(tile.position)
-      }
-    })
-  }
-
-  const visibleTiles = visionSystem.getVisibleTiles(position)
-  const previousFog = gameState.fog.length
-
-  gameState.fog = gameState.fog.filter((position) => {
-    return !visibleTiles.has(position.toString())
-  })
-
-  return gameState.fog.length < previousFog
 }
 
 export function isWallAt(position: Vec2): boolean {

@@ -1,22 +1,21 @@
 <script lang="ts">
-  import {
-    isInsideGameboard,
-    removeFog,
-    TILE_SIZE,
-    tileIsFog,
-    VIEWPORT_SIZE,
-  } from "./common"
+  import { TILE_SIZE, VIEWPORT_SIZE } from "./common"
   import Cursor from "./Cursor.svelte"
   import Loading from "./Loading.svelte"
   import { gameState } from "./state.svelte"
   import Vec2 from "./Vec2"
   import GameMapLayer from "./GameMapLayer.svelte"
-  import PlayerAction from "./PlayerAction"
-  import { fogClearSound } from "./audio"
   import CursorPath from "./CursorPath.svelte"
   import Avatars from "./Avatars.svelte"
-  import type { Actor, Character, Stage } from "./types"
+  import type { Actor, Stage } from "./types"
   import FogLayer from "./FogLayer.svelte"
+  import { currentPlayerAction } from "./helpers/players"
+  import {
+    moveCursorRight,
+    moveCursorLeft,
+    moveCursorDown,
+    moveCursorUp,
+  } from "./helpers/cursor"
 
   let stageOffset = $derived(
     calcStageOffset(gameState.stage, gameState.centerActor),
@@ -34,48 +33,23 @@
     return new Vec2(padX, padY)
   }
 
-  function onkeydown(event: KeyboardEvent): void {
+  async function onkeydown(event: KeyboardEvent): Promise<void> {
     if (event.defaultPrevented) return
     if (event.key === " ") {
-      action()
+      await currentPlayerAction()
       return
     }
     moveCursor(event)
   }
 
   function moveCursor(event: KeyboardEvent): void {
-    const movements: Record<string, Vec2> = {
-      ArrowRight: new Vec2(1, 0),
-      ArrowLeft: new Vec2(-1, 0),
-      ArrowDown: new Vec2(0, 1),
-      ArrowUp: new Vec2(0, -1),
+    const movements: Record<string, () => void> = {
+      ArrowRight: () => moveCursorRight(),
+      ArrowLeft: () => moveCursorLeft(),
+      ArrowDown: () => moveCursorDown(),
+      ArrowUp: () => moveCursorUp(),
     }
-
-    if (!movements[event.key]) {
-      return
-    }
-
-    const newPosition = gameState.cursorPosition.add(movements[event.key])
-
-    if (!isInsideGameboard(newPosition)) {
-      return
-    }
-
-    if (tileIsFog(newPosition)) {
-      return
-    }
-
-    gameState.cursorPosition = newPosition
-  }
-
-  async function action(): Promise<void> {
-    gameState.freezePath = true
-    const action = new PlayerAction()
-    await action.execute()
-    gameState.freezePath = false
-    if (await removeFog(gameState.currentPlayer.position)) {
-      fogClearSound()
-    }
+    movements[event.key]?.()
   }
 </script>
 

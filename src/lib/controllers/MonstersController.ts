@@ -2,21 +2,20 @@ import { Tween } from "svelte/motion"
 import {
   ATTACK_TIME,
   createVisionSystem,
-  getCharacterPathTo,
   INITIATIVE_ATTACK,
   INITIATIVE_STEP,
-  isCharacterAtPositon,
-  physicAttack,
   STEP_TIME,
   TILE_SIZE,
   VIEW_DISTANCE,
   waitTime,
-} from "./common"
-import { gameState } from "./state.svelte"
-import type { Monster, Player } from "./types"
-import Vec2 from "./Vec2"
+} from "../common"
+import { gameState } from "../state.svelte"
+import type { Monster, Player } from "../types"
+import Vec2 from "../Vec2"
 import { toStore } from "svelte/store"
-import { attackSword, walkSound } from "./audio"
+import { attackSword, walkSound } from "../audio"
+import { getCharacterPathTo, isCharacterAtPositon } from "../helpers/stage"
+import { physicAttack } from "../helpers/attack"
 
 interface AttackPlan {
   monster: Monster
@@ -156,8 +155,7 @@ export default class MonstersController {
 
     await tween.set(monster.offset.add(displacement))
 
-    if (physicAttack.attack(monster, player)) {
-      attackSword()
+    if (physicAttack(monster, player)) {
     } else {
       // TODO: Parry sound
     }

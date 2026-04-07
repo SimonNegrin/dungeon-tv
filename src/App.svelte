@@ -1,9 +1,10 @@
 <script lang="ts">
   import AspectRatio from "./lib/AspectRatio.svelte"
-  import { loadStage, gameState, nextPlayer } from "./lib/state.svelte"
+  import { loadStage, gameState } from "./lib/state.svelte"
   import Landing from "./lib/Landing.svelte"
   import { TILE_SIZE } from "./lib/common"
   import Game from "./lib/Game.svelte"
+  import { nextPlayer } from "./lib/helpers/game"
 
   async function onStart(): Promise<void> {
     await loadStage("stage_2")
