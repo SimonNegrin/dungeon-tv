@@ -1,7 +1,14 @@
-import type { Character, Inventory, Tile, TileType, TileTypeMap } from "./types"
+import type {
+  Actor,
+  Character,
+  Inventory,
+  Tile,
+  TileType,
+  TileTypeMap,
+} from "./types"
 import Vec2 from "./Vec2"
 import { gameState } from "./state.svelte"
-import { penClickSound } from "./audio"
+import { penClickSound } from "./helpers/audio"
 import VisionSystem from "./VisionSystem"
 
 export const LAYER_WALLS = "walls"
@@ -48,12 +55,12 @@ export function createVisionSystem(): VisionSystem {
   return visionSystem
 }
 
-export function getAllCharacters(): Character[] {
+export function getAllActors(): Actor[] {
   return [...gameState.players, ...gameState.monsters]
 }
 
-export function getCharacterAt(pos: Vec2): Character | undefined {
-  return getAllCharacters().find((character) => character.position.isEqual(pos))
+export function getActorAtPosition(pos: Vec2): Actor | undefined {
+  return getAllActors().find((character) => character.position.isEqual(pos))
 }
 
 export function getTileTypeAt<K extends TileType>(

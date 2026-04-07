@@ -3,15 +3,10 @@
   import { gameState } from "./state.svelte"
   import type { Inventory, InventoryType } from "./types"
   import { onMount } from "svelte"
-  import {
-    chestCloseSound,
-    chestOpenSound,
-    penClickSound,
-    zipSound,
-  } from "./audio"
+  import { chestCloseSound, chestOpenSound, zipSound } from "./helpers/audio"
   import InventoryView from "./InventoryView.svelte"
   import OnkeydownCapture from "./OnkeydownCapture.svelte"
-  import { INVENTORY_SLOTS, moveInventoryItem } from "./common"
+  import { moveInventoryItem } from "./common"
 
   let {
     leftInventory,

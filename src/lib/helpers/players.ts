@@ -3,7 +3,7 @@ import {
   doorUnlockSound,
   doorLockedSound,
   walkSound,
-} from "../audio"
+} from "./audio"
 import {
   INITIATIVE_CHEST,
   getTileTypeAt,
@@ -12,9 +12,12 @@ import {
   removeItemByName,
   waitTime,
   STEP_TIME,
+  getActorAtPosition,
+  INITIATIVE_ATTACK,
 } from "../common"
 import { gameState } from "../state.svelte"
 import type { Player } from "../types"
+import { physicAttack } from "./attack"
 import { clearFogAt } from "./fog"
 import { getCharacterPathTo, isCharacterAtPositon } from "./stage"
 
@@ -28,6 +31,10 @@ export async function currentPlayerAction(): Promise<void> {
   }
 
   if (await interactDoor()) {
+    return
+  }
+
+  if (await attackMonster()) {
     return
   }
 
@@ -149,14 +156,13 @@ async function playerMove(): Promise<boolean> {
     return false
   }
 
+  const player = gameState.currentPlayer
+
   if (isCharacterAtPositon(gameState.cursorPosition)) {
     return false
   }
 
-  const path = await getCharacterPathTo(
-    gameState.currentPlayer,
-    gameState.cursorPosition,
-  )
+  const path = await getCharacterPathTo(player, gameState.cursorPosition)
 
   if (!path) {
     return false
@@ -164,17 +170,37 @@ async function playerMove(): Promise<boolean> {
 
   for (const step of path.slice(1)) {
     // Check if the player has the initiative needed to walk
-    if (gameState.currentPlayer.initiativeLeft < INITIATIVE_STEP) {
+    if (!spendInitiative(player, INITIATIVE_STEP)) {
       tiredSound()
       break
     }
-    gameState.currentPlayer.position = step
+    player.position = step
     clearFogAt(step)
     walkSound()
     await waitTime(STEP_TIME)
     gameState.cursorPath = gameState.cursorPath.slice(1)
-    gameState.currentPlayer.initiativeLeft -= INITIATIVE_STEP
   }
 
+  return true
+}
+
+async function attackMonster(): Promise<boolean> {
+  const player = gameState.currentPlayer
+  const monster = getActorAtPosition(gameState.cursorPosition)
+
+  if (!monster || monster.type !== "monster") {
+    return false
+  }
+
+  if (!player.position.isRectAdjacent(monster.position)) {
+    return false
+  }
+
+  if (!spendInitiative(player, INITIATIVE_ATTACK)) {
+    tiredSound()
+    return false
+  }
+
+  await physicAttack(player, monster)
   return true
 }

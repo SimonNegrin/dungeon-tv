@@ -1,5 +1,5 @@
 import EasyStar from "easystarjs"
-import { TILE_FLOOR, isEthereal, getAllCharacters, TILE_BLOCK } from "../common"
+import { TILE_FLOOR, isEthereal, getAllActors, TILE_BLOCK } from "../common"
 import type { Character, Grid, Stage, Tile } from "../types"
 import Vec2 from "../Vec2"
 import { gameState } from "../state.svelte"
@@ -66,7 +66,7 @@ export function createGrid(
 
   // Block all tiles occupied by characters
   // except if they are ethereal or they are in the target position
-  getAllCharacters().forEach((character) => {
+  getAllActors().forEach((character) => {
     // If the character is in the target position
     // it not will block the path
     if (targetPosition?.isEqual(character.position)) {

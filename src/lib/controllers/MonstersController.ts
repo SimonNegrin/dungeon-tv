@@ -13,7 +13,7 @@ import { gameState } from "../state.svelte"
 import type { Monster, Player } from "../types"
 import Vec2 from "../Vec2"
 import { toStore } from "svelte/store"
-import { attackSword, walkSound } from "../audio"
+import { attackSwordSound, walkSound } from "../helpers/audio"
 import { getCharacterPathTo, isCharacterAtPositon } from "../helpers/stage"
 import { physicAttack } from "../helpers/attack"
 
@@ -134,33 +134,7 @@ export default class MonstersController {
     }
     monster.initiativeLeft -= INITIATIVE_ATTACK
 
-    const displacement = player.position
-      .sub(monster.position)
-      .multiply(TILE_SIZE / 2)
-
-    const tween = new Tween(monster.offset, {
-      duration: Math.floor(ATTACK_TIME / 2),
-      interpolate: (a) => {
-        return (t: number): Vec2 => {
-          return a.add(displacement.multiply(t))
-        }
-      },
-    })
-
-    const store = toStore(() => tween.current)
-
-    store.subscribe((offset) => {
-      monster.offset = offset
-    })
-
-    await tween.set(monster.offset.add(displacement))
-
-    if (physicAttack(monster, player)) {
-    } else {
-      // TODO: Parry sound
-    }
-
-    await tween.set(new Vec2(0, 0))
+    await physicAttack(monster, player)
     await waitTime(200)
   }
 

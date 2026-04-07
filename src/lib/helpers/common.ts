@@ -1,4 +1,6 @@
-import type { StatType, Character } from "../types"
+import { gameState } from "../state.svelte"
+import type { StatType, Character, Actor, GameState } from "../types"
+import { monsterDeathSound } from "./audio"
 
 export function getRandomFromArray<T>(items: T[]): T {
   const index = Math.floor(items.length * Math.random())
@@ -15,4 +17,27 @@ export function calcStat(stat: StatType, character: Character): number {
     })
   })
   return value
+}
+
+export function createDice(faces: number): () => number {
+  return () => {
+    return 1 + Math.floor(faces * Math.random())
+  }
+}
+
+export function killActor(actor: Actor): void {
+  switch (actor.type) {
+    case "monster":
+      gameState.monsters = gameState.monsters.filter((m) => {
+        return m !== actor
+      })
+      break
+    case "player":
+      gameState.players = gameState.players.filter((m) => {
+        return m !== actor
+      })
+      break
+  }
+
+  monsterDeathSound()
 }

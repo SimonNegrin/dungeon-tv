@@ -16,6 +16,7 @@
   </div>
   <div class="info">
     <div class="name">{actor.name}</div>
+    <div class="initiative">{actor.initiativeLeft}</div>
     <HealthBar character={actor} />
   </div>
 </div>
