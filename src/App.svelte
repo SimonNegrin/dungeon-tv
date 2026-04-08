@@ -2,7 +2,7 @@
   import AspectRatio from "./lib/AspectRatio.svelte"
   import { loadStage, gameState } from "./lib/state.svelte"
   import Landing from "./lib/Landing.svelte"
-  import { TILE_SIZE } from "./lib/common"
+  import { TILE_SIZE, VIEWPORT_SIZE } from "./lib/common"
   import Game from "./lib/Game.svelte"
   import { nextPlayer } from "./lib/helpers/game"
 
@@ -20,7 +20,7 @@
 
 <svelte:window {onkeydown} />
 
-<main style:--tile-size="{TILE_SIZE}px">
+<main style:--tile-size="{TILE_SIZE}px" style:--viewport-size={VIEWPORT_SIZE}>
   <AspectRatio ratio={16 / 9}>
     {#if gameState.stage}
       <Game />

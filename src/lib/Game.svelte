@@ -35,7 +35,7 @@
         />
       {/if}
     </div>
-    <div class="right-space">Hey</div>
+    <div class="right-space"></div>
   </div>
 </div>
 
@@ -58,7 +58,7 @@
   }
   .left-space,
   .right-space {
-    min-width: 0;
+    width: 0;
     flex-shrink: 0;
     flex-grow: 1;
   }

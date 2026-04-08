@@ -1,5 +1,5 @@
 import EasyStar from "easystarjs"
-import { TILE_FLOOR, isEthereal, TILE_BLOCK } from "../common"
+import { TILE_FLOOR, isEthereal, TILE_BLOCK, LAYER_WALLS } from "../common"
 import type { Character, Grid, Tile } from "../types"
 import Vec2 from "../Vec2"
 import { gameState } from "../state.svelte"
@@ -125,4 +125,20 @@ export function isCharacterAtPositon(position: Vec2): boolean {
   }
 
   return false
+}
+
+export function isWallAt(position: Vec2): boolean {
+  if (!gameState.stage) {
+    return false
+  }
+
+  const walls = gameState.stage.layers.find((layer) => {
+    return layer.name === LAYER_WALLS
+  })
+
+  if (!walls) {
+    return false
+  }
+
+  return walls.tilesMap[position.toString()] !== undefined
 }

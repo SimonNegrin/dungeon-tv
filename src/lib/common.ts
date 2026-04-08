@@ -1,16 +1,8 @@
-import type {
-  Actor,
-  Character,
-  Inventory,
-  Tile,
-  TileType,
-  TileTypeMap,
-} from "./types"
+import type { Character, Inventory, Tile, TileType, TileTypeMap } from "./types"
 import Vec2 from "./Vec2"
 import { gameState } from "./state.svelte"
 import { penClickSound } from "./helpers/audio"
 import VisionSystem from "./VisionSystem"
-import { getRectAdjacents } from "./helpers/common"
 
 export const LAYER_WALLS = "walls"
 
@@ -91,22 +83,6 @@ export function removeItemByName(character: Character, itemName: string): void {
   character.items = character.items.filter((item) => {
     return item.name !== itemName
   })
-}
-
-export function isWallAt(position: Vec2): boolean {
-  if (!gameState.stage) {
-    return false
-  }
-
-  const walls = gameState.stage.layers.find((layer) => {
-    return layer.name === LAYER_WALLS
-  })
-
-  if (!walls) {
-    return false
-  }
-
-  return walls.tilesMap[position.toString()] !== undefined
 }
 
 export function moveInventoryItem(
