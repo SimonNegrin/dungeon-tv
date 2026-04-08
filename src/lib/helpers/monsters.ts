@@ -28,7 +28,7 @@ function createMonster(pos: Vec2): Monster {
   return {
     isAlive: true,
     type: "monster",
-    name: "Monster",
+    name: monsterSprite,
     sprite: monsterSprite,
     position: pos,
     offset: new Vec2(0, 0),
