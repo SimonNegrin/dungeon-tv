@@ -6,6 +6,7 @@ import { populateMonsters } from "./helpers/monsters"
 import { clearFogAt, createFogPositions } from "./helpers/fog"
 
 const ladelbar: Player = {
+  isAlive: true,
   sprite: "bandit",
   type: "player",
   name: "Ladelbar",
@@ -35,6 +36,7 @@ const ladelbar: Player = {
 }
 
 const krom: Player = {
+  isAlive: true,
   sprite: "farmer (pitchfork)",
   type: "player",
   name: "Krom",
@@ -59,6 +61,7 @@ export const debug = $state({
 })
 
 const orc: Monster = {
+  isAlive: true,
   type: "monster",
   sprite: "orc",
   name: "Orc",
@@ -90,6 +93,7 @@ export const gameState = $state<GameState>({
   cursorPath: [],
   freezePath: false,
   players: [ladelbar, krom],
+  allPlayers: [ladelbar, krom],
   monsters: [],
   turn: "players",
 })

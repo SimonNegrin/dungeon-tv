@@ -26,6 +26,7 @@ function createMonster(pos: Vec2): Monster {
   const monsterSpriteNames = getMonsterSpriteNames()
   const monsterSprite = getRandomFromArray(monsterSpriteNames)
   return {
+    isAlive: true,
     type: "monster",
     name: "Monster",
     sprite: monsterSprite,

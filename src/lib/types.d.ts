@@ -1,5 +1,5 @@
 import type { ItemName } from "./sprites/SpriteItem.svelte"
-import type { MonsterSpriteName as MonsterSpriteName } from './sprites/SpriteMonster.svelte'
+import type { MonsterSpriteName as MonsterSpriteName } from "./sprites/SpriteMonster.svelte"
 import type { RogueName } from "./sprites/SpriteRogue.svelte"
 import type Vec2 from "./Vec2"
 
@@ -35,10 +35,12 @@ interface GameState {
   cursorPosition: Vec2
   cursorPath: Vec2[]
   players: Player[]
+  allPlayers: Player[]
   monsters: Monster[]
 }
 
-export abstract interface Character {
+export interface Character {
+  isAlive: boolean
   name: string
   position: Vec2
   offset: Vec2

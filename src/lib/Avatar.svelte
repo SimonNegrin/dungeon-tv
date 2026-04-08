@@ -28,22 +28,24 @@
   })
 </script>
 
-<div
-  class="avatar"
-  class:ethereal={isEthereal(actor)}
-  style:left="{actor.position.x * TILE_SIZE + actor.offset.x}px"
-  style:top="{actor.position.y * TILE_SIZE + actor.offset.y}px"
->
-  {#if highlight}
-    <div class="highlight"></div>
-  {/if}
+{#if actor.isAlive}
+  <div
+    class="avatar"
+    class:ethereal={isEthereal(actor)}
+    style:left="{actor.position.x * TILE_SIZE + actor.offset.x}px"
+    style:top="{actor.position.y * TILE_SIZE + actor.offset.y}px"
+  >
+    {#if highlight}
+      <div class="highlight"></div>
+    {/if}
 
-  {#if actor.type === "player"}
-    <SpriteRogue name={actor.sprite} invert={lookRight} />
-  {:else}
-    <SpriteMonster name={actor.sprite} invert={lookRight} />
-  {/if}
-</div>
+    {#if actor.type === "player"}
+      <SpriteRogue name={actor.sprite} invert={lookRight} />
+    {:else}
+      <SpriteMonster name={actor.sprite} invert={lookRight} />
+    {/if}
+  </div>
+{/if}
 
 <style>
   .avatar {

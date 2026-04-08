@@ -12,14 +12,19 @@ import {
   removeItemByName,
   waitTime,
   STEP_TIME,
-  getActorAtPosition,
   INITIATIVE_ATTACK,
 } from "../common"
 import { gameState } from "../state.svelte"
-import type { Player } from "../types"
-import { physicAttack } from "./attack"
+import type { Monster, Player } from "../types"
+import { physicAttack } from "./combat"
 import { clearFogAt } from "./fog"
 import { getCharacterPathTo, isCharacterAtPositon } from "./stage"
+import {
+  getActorAtPosition,
+  getAdjacentActors,
+  getRectAdjacents,
+} from "./common"
+import type Vec2 from "../Vec2"
 
 export async function currentPlayerAction(): Promise<void> {
   if (await interactPlayer()) {
@@ -174,10 +179,23 @@ async function playerMove(): Promise<boolean> {
       tiredSound()
       break
     }
+
+    // If the player current position is rect adjacent to a monster
+    // the monster has an oportunity to attack the player
+    const adjacentMonsters = getAdjacentActors(player.position, "monster")
+    for (const adjacentMonster of adjacentMonsters) {
+      await physicAttack(adjacentMonster, player)
+      await waitTime(100)
+    }
+
+    if (!player.isAlive) {
+      break
+    }
+
     player.position = step
     clearFogAt(step)
-    walkSound()
     await waitTime(STEP_TIME)
+    walkSound()
     gameState.cursorPath = gameState.cursorPath.slice(1)
   }
 

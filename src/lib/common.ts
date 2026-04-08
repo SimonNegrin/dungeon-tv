@@ -10,6 +10,7 @@ import Vec2 from "./Vec2"
 import { gameState } from "./state.svelte"
 import { penClickSound } from "./helpers/audio"
 import VisionSystem from "./VisionSystem"
+import { getRectAdjacents } from "./helpers/common"
 
 export const LAYER_WALLS = "walls"
 
@@ -53,14 +54,6 @@ export function createVisionSystem(): VisionSystem {
   }
 
   return visionSystem
-}
-
-export function getAllActors(): Actor[] {
-  return [...gameState.players, ...gameState.monsters]
-}
-
-export function getActorAtPosition(pos: Vec2): Actor | undefined {
-  return getAllActors().find((character) => character.position.isEqual(pos))
 }
 
 export function getTileTypeAt<K extends TileType>(

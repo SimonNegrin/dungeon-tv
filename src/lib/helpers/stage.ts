@@ -1,8 +1,9 @@
 import EasyStar from "easystarjs"
-import { TILE_FLOOR, isEthereal, getAllActors, TILE_BLOCK } from "../common"
-import type { Character, Grid, Stage, Tile } from "../types"
+import { TILE_FLOOR, isEthereal, TILE_BLOCK } from "../common"
+import type { Character, Grid, Tile } from "../types"
 import Vec2 from "../Vec2"
 import { gameState } from "../state.svelte"
+import { getAllActors } from "./common"
 
 export function getCharacterPathTo(
   character: Character,

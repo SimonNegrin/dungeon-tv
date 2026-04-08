@@ -15,7 +15,8 @@ import Vec2 from "../Vec2"
 import { toStore } from "svelte/store"
 import { attackSwordSound, walkSound } from "../helpers/audio"
 import { getCharacterPathTo, isCharacterAtPositon } from "../helpers/stage"
-import { physicAttack } from "../helpers/attack"
+import { physicAttack } from "../helpers/combat"
+import { getAdjacentActors } from "../helpers/common"
 
 interface AttackPlan {
   monster: Monster
@@ -119,12 +120,13 @@ export default class MonstersController {
   }
 
   private async executeAttackPlan(attackPlan: AttackPlan): Promise<void> {
-    gameState.centerActor = attackPlan.player
+    const { monster, player } = attackPlan
+    gameState.centerActor = player
 
-    await this.moveAlongPath(attackPlan.monster, attackPlan.path)
+    await this.moveAlongPath(monster, attackPlan.path)
 
-    while (attackPlan.monster.initiativeLeft >= INITIATIVE_ATTACK) {
-      await this.attackPlayer(attackPlan.monster, attackPlan.player)
+    while (player.isAlive && monster.initiativeLeft >= INITIATIVE_ATTACK) {
+      await this.attackPlayer(monster, player)
     }
   }
 
@@ -154,6 +156,19 @@ export default class MonstersController {
       if (monster.initiativeLeft < INITIATIVE_STEP) {
         break
       }
+
+      // If the player current position is rect adjacent to a player
+      // the player has an oportunity to attack the monster
+      const adjacentPlayers = getAdjacentActors(monster.position, "player")
+      for (const adjacentPlayer of adjacentPlayers) {
+        await physicAttack(adjacentPlayer, monster)
+        await waitTime(100)
+      }
+
+      if (!monster.isAlive) {
+        break
+      }
+
       monster.position = step
       await waitTime(STEP_TIME)
       walkSound()
