@@ -1,14 +1,29 @@
 import { Tween } from "svelte/motion"
 import { toStore } from "svelte/store"
 import { attackFailSound, attackSwordSound } from "./audio"
-import { TILE_SIZE, ATTACK_TIME } from "../common"
+import { TILE_SIZE, ATTACK_TIME, waitTime } from "../common"
 import type { Actor, Character } from "../types"
 import Vec2 from "../Vec2"
 import { calcStat, createDice, killActor } from "./common"
 
 const dice6 = createDice(6)
 
+export async function combat(from: Actor, target: Actor): Promise<void> {
+  // from attack first
+  await physicAttack(from, target)
+
+  // wait a bit
+  await waitTime(200)
+
+  // target fight back
+  await physicAttack(target, from)
+}
+
 export async function physicAttack(from: Actor, target: Actor): Promise<void> {
+  if (!from.isAlive) {
+    return
+  }
+
   const attackMovement = new AttackMovement(from, target)
 
   const attack = calcStat("attack", from)

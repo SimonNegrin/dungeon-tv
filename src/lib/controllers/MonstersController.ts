@@ -1,21 +1,17 @@
-import { Tween } from "svelte/motion"
 import {
-  ATTACK_TIME,
   createVisionSystem,
   INITIATIVE_ATTACK,
   INITIATIVE_STEP,
   STEP_TIME,
-  TILE_SIZE,
   VIEW_DISTANCE,
   waitTime,
 } from "../common"
 import { gameState } from "../state.svelte"
 import type { Monster, Player } from "../types"
 import Vec2 from "../Vec2"
-import { toStore } from "svelte/store"
-import { attackSwordSound, walkSound } from "../helpers/audio"
+import { walkSound } from "../helpers/audio"
 import { getCharacterPathTo, isCharacterAtPositon } from "../helpers/stage"
-import { physicAttack } from "../helpers/combat"
+import { combat, physicAttack } from "../helpers/combat"
 import { getAdjacentActors } from "../helpers/common"
 
 interface AttackPlan {
@@ -136,7 +132,7 @@ export default class MonstersController {
     }
     monster.initiativeLeft -= INITIATIVE_ATTACK
 
-    await physicAttack(monster, player)
+    await combat(monster, player)
     await waitTime(200)
   }
 

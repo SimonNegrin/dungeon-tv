@@ -15,16 +15,11 @@ import {
   INITIATIVE_ATTACK,
 } from "../common"
 import { gameState } from "../state.svelte"
-import type { Monster, Player } from "../types"
-import { physicAttack } from "./combat"
 import { clearFogAt } from "./fog"
 import { getCharacterPathTo, isCharacterAtPositon } from "./stage"
-import {
-  getActorAtPosition,
-  getAdjacentActors,
-  getRectAdjacents,
-} from "./common"
-import type Vec2 from "../Vec2"
+import { getActorAtPosition, getAdjacentActors } from "./common"
+import type { Player } from "../types"
+import { combat, physicAttack } from "./combat"
 
 export async function currentPlayerAction(): Promise<void> {
   if (await interactPlayer()) {
@@ -219,6 +214,6 @@ async function attackMonster(): Promise<boolean> {
     return false
   }
 
-  await physicAttack(player, monster)
+  await combat(player, monster)
   return true
 }
