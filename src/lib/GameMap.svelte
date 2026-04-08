@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { TILE_SIZE, VIEWPORT_SIZE } from "./common"
   import Cursor from "./Cursor.svelte"
   import Loading from "./Loading.svelte"
   import { gameState } from "./state.svelte"
@@ -16,6 +15,7 @@
     moveCursorDown,
     moveCursorUp,
   } from "./helpers/cursor"
+  import { TILE_SIZE, VIEWPORT_SIZE } from "./helpers/common"
 
   let stageOffset = $derived(
     calcStageOffset(gameState.stage, gameState.centerActor),

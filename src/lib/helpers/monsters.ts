@@ -1,8 +1,7 @@
-import { LAYER_WALLS, VIEW_DISTANCE } from "../common"
 import { getMonsterSpriteNames } from "../sprites/SpriteMonster.svelte"
 import type { Monster, Layer, GameState } from "../types"
 import Vec2 from "../Vec2"
-import { getRandomFromArray } from "./common"
+import { getRandomFromArray, LAYER_WALLS, VIEW_DISTANCE } from "./common"
 
 const LAYERS_TO_REMOVE = [LAYER_WALLS, "doors"]
 const MONSTERS_DENSITY = 0.1

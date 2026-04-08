@@ -13,7 +13,7 @@ import {
   waitTime,
   STEP_TIME,
   INITIATIVE_ATTACK,
-} from "../common"
+} from "./common"
 import { gameState } from "../state.svelte"
 import { clearFogAt } from "./fog"
 import { getCharacterPathTo, isCharacterAtPositon } from "./stage"

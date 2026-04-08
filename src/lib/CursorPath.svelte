@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { TILE_SIZE } from "./common"
+  import { TILE_SIZE } from "./helpers/common"
   import { getCharacterPathTo } from "./helpers/stage"
   import { gameState } from "./state.svelte"
   import type Vec2 from "./Vec2"

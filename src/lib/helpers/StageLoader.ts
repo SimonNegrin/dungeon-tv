@@ -1,5 +1,5 @@
-import type { Stage, Layer, Tile, Item } from "./types"
-import Vec2 from "./Vec2"
+import type { Stage, Layer, Tile, Item } from "../types"
+import Vec2 from "../Vec2"
 
 type ItemRef = {
   name: string

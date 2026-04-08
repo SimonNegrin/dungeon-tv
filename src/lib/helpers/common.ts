@@ -1,8 +1,37 @@
-import { waitTime } from "../common"
 import { gameState } from "../state.svelte"
-import type { StatType, Character, Actor, GameState, ActorType } from "../types"
+import type {
+  StatType,
+  Character,
+  Actor,
+  ActorType,
+  Inventory,
+  Tile,
+  TileType,
+  TileTypeMap,
+} from "../types"
 import Vec2 from "../Vec2"
-import { monsterDeathSound } from "./audio"
+import { monsterDeathSound, penClickSound } from "./audio"
+import VisionSystem from "./VisionSystem"
+
+export const LAYER_WALLS = "walls"
+
+export const STEP_TIME = 200
+export const ATTACK_TIME = 200
+export const TILE_SIZE = 32
+export const TILE_FLOOR = 0
+export const TILE_BLOCK = 1
+export const VIEW_DISTANCE = 6
+export const INVENTORY_SLOTS = 3
+
+// Size of the game map in tiles
+// Set a odd number to be able to keep centered
+// the player sprite
+export const VIEWPORT_SIZE = 13
+
+export const INITIATIVE_DOOR = 2
+export const INITIATIVE_CHEST = 2
+export const INITIATIVE_ATTACK = 2
+export const INITIATIVE_STEP = 1
 
 export function getRandomFromArray<T>(items: T[]): T {
   const index = Math.floor(items.length * Math.random())
@@ -29,22 +58,6 @@ export function createDice(faces: number): () => number {
 
 export async function killActor(actor: Actor): Promise<void> {
   actor.isAlive = false
-
-  // switch (actor.type) {
-  //   case "monster":
-  //     gameState.monsters = gameState.monsters.filter((m) => {
-  //       return m !== actor
-  //     })
-  //     monsterDeathSound()
-  //     break
-  //   case "player":
-  //     gameState.players = gameState.players.filter((m) => {
-  //       return m !== actor
-  //     })
-  //     monsterDeathSound()
-  //     break
-  //   }
-
   monsterDeathSound()
   await waitTime(1000)
 }
@@ -76,4 +89,78 @@ export function getAdjacentActors(pos: Vec2, actorType?: ActorType): Actor[] {
     }
   })
   return actors
+}
+
+export function createVisionSystem(): VisionSystem {
+  if (!gameState.stage) {
+    throw new Error("VisionSystem can't be created if there is no stage")
+  }
+
+  const visionSystem = new VisionSystem(
+    gameState.stage!.mapWidth,
+    gameState.stage!.mapHeight,
+    VIEW_DISTANCE,
+  )
+
+  const walls = gameState.stage.layers.find((layer) => {
+    return layer.name === LAYER_WALLS
+  })
+
+  if (walls) {
+    walls.tiles.forEach((tile) => {
+      visionSystem.addWall(tile.position)
+    })
+  }
+
+  return visionSystem
+}
+
+export function getTileTypeAt<K extends TileType>(
+  tileType: K,
+  position: Vec2,
+): Tile<TileTypeMap[K]> | null
+
+export function getTileTypeAt(tileType: TileType, position: Vec2): Tile | null {
+  for (const layer of gameState.stage!.layers) {
+    for (const tile of layer.tiles) {
+      if (
+        tile.attributes.type === tileType &&
+        tile.position.isEqual(position)
+      ) {
+        return tile
+      }
+    }
+  }
+  return null
+}
+
+export function waitTime(ms: number): Promise<void> {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms)
+  })
+}
+
+export function isEthereal(character: Character): boolean {
+  return [...character.traits, ...character.items].some((item) => {
+    return item.metadata?.ethereal === true
+  })
+}
+
+export function removeItemByName(character: Character, itemName: string): void {
+  character.items = character.items.filter((item) => {
+    return item.name !== itemName
+  })
+}
+
+export function moveInventoryItem(
+  index: number,
+  from: Inventory,
+  to: Inventory,
+): void {
+  if (to.items.length >= INVENTORY_SLOTS) {
+    return
+  }
+  const [item] = from.items.splice(index, 1)
+  to.items.push(item)
+  penClickSound()
 }

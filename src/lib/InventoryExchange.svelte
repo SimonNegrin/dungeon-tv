@@ -6,7 +6,7 @@
   import { chestCloseSound, chestOpenSound, zipSound } from "./helpers/audio"
   import InventoryView from "./InventoryView.svelte"
   import OnkeydownCapture from "./OnkeydownCapture.svelte"
-  import { moveInventoryItem } from "./common"
+  import { moveInventoryItem } from "./helpers/common"
 
   let {
     leftInventory,

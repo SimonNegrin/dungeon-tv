@@ -1,4 +1,4 @@
-import { removeItemByName } from "../common"
+import { removeItemByName } from "./common"
 import type { Character, Item } from "../types"
 import { playAnimation } from "./animations"
 

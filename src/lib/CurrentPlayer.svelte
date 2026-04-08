@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { calcStat } from "./common"
+  import { calcStat } from "./helpers/common"
   import SpriteRogue from "./sprites/SpriteRogue.svelte"
   import { gameState } from "./state.svelte"
 </script>
@@ -15,7 +15,7 @@
       <tr>
         <td>Iniciativa</td>
         <td
-          >{gameState.initiativeLeft}/{calcStat(
+          >{gameState.currentPlayer.initiativeLeft}/{calcStat(
             "initiative",
             gameState.currentPlayer,
           )}</td

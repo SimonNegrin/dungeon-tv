@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { TILE_SIZE } from "../common"
+  import { TILE_SIZE } from "../helpers/common"
 
   let {
     spritesheet,

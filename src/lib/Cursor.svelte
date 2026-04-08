@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { isEthereal } from "./common"
+  import { isEthereal } from "./helpers/common"
   import { TURN_PLAYERS } from "./helpers/game"
   import { isWallAt } from "./helpers/stage"
   import { gameState } from "./state.svelte"

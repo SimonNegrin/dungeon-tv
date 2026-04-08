@@ -1,5 +1,5 @@
 import { nextSound } from "./audio"
-import MonstersController from "../controllers/MonstersController"
+import MonstersController from "./MonstersController"
 import { gameState } from "../state.svelte"
 import { calcStat } from "./common"
 

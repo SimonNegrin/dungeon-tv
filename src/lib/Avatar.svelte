@@ -1,7 +1,7 @@
 <!-- svelte-ignore state_referenced_locally -->
 <script lang="ts">
   import { walkSound } from "./helpers/audio"
-  import { isEthereal, TILE_SIZE } from "./common"
+  import { isEthereal, TILE_SIZE } from "./helpers/common"
   import SpriteMonster from "./sprites/SpriteMonster.svelte"
   import SpriteRogue from "./sprites/SpriteRogue.svelte"
   import type { Actor } from "./types"

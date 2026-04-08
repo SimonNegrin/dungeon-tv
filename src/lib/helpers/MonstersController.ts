@@ -5,14 +5,14 @@ import {
   STEP_TIME,
   VIEW_DISTANCE,
   waitTime,
-} from "../common"
+} from "./common"
 import { gameState } from "../state.svelte"
 import type { Monster, Player } from "../types"
 import Vec2 from "../Vec2"
-import { walkSound } from "../helpers/audio"
-import { getCharacterPathTo, isCharacterAtPositon } from "../helpers/stage"
-import { combat, physicAttack } from "../helpers/combat"
-import { getActorAtPosition, getAdjacentActors } from "../helpers/common"
+import { walkSound } from "./audio"
+import { getCharacterPathTo, isCharacterAtPositon } from "./stage"
+import { combat, physicAttack } from "./combat"
+import { getActorAtPosition, getAdjacentActors } from "./common"
 
 interface AttackPlan {
   monster: Monster

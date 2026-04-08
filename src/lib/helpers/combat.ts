@@ -1,7 +1,7 @@
 import { Tween } from "svelte/motion"
 import { toStore } from "svelte/store"
 import { attackFailSound, attackSwordSound } from "./audio"
-import { TILE_SIZE, ATTACK_TIME, waitTime } from "../common"
+import { TILE_SIZE, ATTACK_TIME, waitTime } from "./common"
 import type { Actor, Character } from "../types"
 import Vec2 from "../Vec2"
 import { calcStat, createDice, killActor } from "./common"

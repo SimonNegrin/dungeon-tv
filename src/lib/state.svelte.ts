@@ -1,6 +1,6 @@
 import type { GameState, Monster, Player } from "./types"
 import Vec2 from "./Vec2"
-import StageLoader from "./StageLoader"
+import StageLoader from "./helpers/StageLoader"
 import { prefabsMap } from "./helpers/items"
 import { populateMonsters } from "./helpers/monsters"
 import { clearFogAt, createFogPositions } from "./helpers/fog"

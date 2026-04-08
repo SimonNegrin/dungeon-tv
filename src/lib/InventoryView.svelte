@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { INVENTORY_SLOTS } from "./common"
+  import { INVENTORY_SLOTS } from "./helpers/common"
   import ArrowUpIcon from "./icons/ArrowUpIcon.svelte"
   import ItemStats from "./ItemStats.svelte"
   import SpriteItem from "./sprites/SpriteItem.svelte"

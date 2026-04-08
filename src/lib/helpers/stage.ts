@@ -1,5 +1,5 @@
 import EasyStar from "easystarjs"
-import { TILE_FLOOR, isEthereal, TILE_BLOCK, LAYER_WALLS } from "../common"
+import { TILE_FLOOR, isEthereal, TILE_BLOCK, LAYER_WALLS } from "./common"
 import type { Character, Grid, Tile } from "../types"
 import Vec2 from "../Vec2"
 import { gameState } from "../state.svelte"

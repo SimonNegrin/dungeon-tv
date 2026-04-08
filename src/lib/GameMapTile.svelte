@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Tile } from "./types"
   import { gameState } from "./state.svelte"
-  import { TILE_SIZE } from "./common"
+  import { TILE_SIZE } from "./helpers/common"
   import Coords from "./Coords.svelte"
 
   let {

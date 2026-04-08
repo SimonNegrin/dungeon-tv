@@ -1,7 +1,7 @@
 <script lang="ts">
   import ActorStats from "./ActorStats.svelte"
-  import { TILE_SIZE, VIEWPORT_SIZE } from "./common"
   import GameMap from "./GameMap.svelte"
+  import { TILE_SIZE, VIEWPORT_SIZE } from "./helpers/common"
   import InventoryExchange from "./InventoryExchange.svelte"
   import { gameState } from "./state.svelte"
 
