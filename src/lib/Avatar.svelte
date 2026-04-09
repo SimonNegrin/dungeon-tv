@@ -5,8 +5,9 @@
   import SpriteMonster from "./sprites/SpriteMonster.svelte"
   import SpriteRogue from "./sprites/SpriteRogue.svelte"
   import type { Actor } from "./types"
-  import { gameState } from "./state.svelte"
+  import { debug, gameState } from "./state.svelte"
   import { TURN_PLAYERS } from "./helpers/game"
+  import Health from "./Health.svelte"
 
   let {
     actor,
@@ -37,6 +38,10 @@
     style:left="{actor.position.x * TILE_SIZE + actor.offset.x}px"
     style:top="{actor.position.y * TILE_SIZE + actor.offset.y}px"
   >
+    {#if debug.showHealth}
+      <Health health={actor.stats.health} />
+    {/if}
+
     {#if gameState.turn === TURN_PLAYERS && highlight}
       <div class="highlight"></div>
     {/if}

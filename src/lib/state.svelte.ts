@@ -20,7 +20,7 @@ const ladelbar: Player = {
     initiative: 8,
     attack: 3,
     defence: 2,
-    damage: 0,
+    damage: 1,
     aim: 0,
   },
   traits: [],
@@ -50,7 +50,7 @@ const krom: Player = {
     initiative: 8,
     attack: 3,
     defence: 3,
-    damage: 0,
+    damage: 1,
     aim: 0,
   },
   traits: [],
@@ -59,6 +59,7 @@ const krom: Player = {
 
 export const debug = $state({
   showCoords: false,
+  showHealth: false,
 })
 
 const orc: Monster = {

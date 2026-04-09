@@ -201,7 +201,7 @@ async function attackMonster(): Promise<boolean> {
   const player = gameState.currentPlayer
   const monster = getActorAtPosition(gameState.cursorPosition)
 
-  if (!monster || monster.type !== "monster") {
+  if (!monster?.isAlive || monster.type !== "monster") {
     return false
   }
 

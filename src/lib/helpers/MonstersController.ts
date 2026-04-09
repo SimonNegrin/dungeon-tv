@@ -26,16 +26,20 @@ export default class MonstersController {
 
   async execute(): Promise<void> {
     this.restoreMonstersInitiative()
-
-    // Create a monsters pool
-    // The monsters will be extracted from the pool each time
-    // they are used to attack or move
-    // Once the pool is empty the turn of the monsters
-    // will have finished
-    this.monstersPool = gameState.monsters.slice(0)
-
+    this.loadMonstersPool()
     await this.attackPhase()
     await this.movePhase()
+  }
+
+  // Create a monsters pool
+  // The monsters will be extracted from the pool each time
+  // they are used to attack or move
+  // Once the pool is empty the turn of the monsters
+  // will have finished
+  private loadMonstersPool(): void {
+    this.monstersPool = gameState.monsters.filter((monster) => {
+      return monster.isAlive
+    })
   }
 
   private async attackPhase(): Promise<void> {
@@ -171,7 +175,11 @@ export default class MonstersController {
 
     await this.moveAlongPath(monster, attackPlan.path)
 
-    while (player.isAlive && monster.initiativeLeft >= INITIATIVE_ATTACK) {
+    while (
+      monster.isAlive &&
+      player.isAlive &&
+      monster.initiativeLeft >= INITIATIVE_ATTACK
+    ) {
       await this.attackPlayer(monster, player)
     }
   }

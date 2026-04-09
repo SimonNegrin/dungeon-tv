@@ -67,20 +67,25 @@ export function createGrid(
 
   // Block all tiles occupied by characters
   // except if they are ethereal or they are in the target position
-  getAllActors().forEach((character) => {
+  getAllActors().forEach((actor) => {
+    // We don't take into account dead actors
+    if (!actor.isAlive) {
+      return
+    }
+
     // If the character is in the target position
     // it not will block the path
-    if (targetPosition?.isEqual(character.position)) {
+    if (targetPosition?.isEqual(actor.position)) {
       return
     }
 
     // If the character is ethereal his position is able to be occupied
-    if (isEthereal(character)) {
+    if (isEthereal(actor)) {
       return
     }
 
     // The character blocks this position
-    grid[character.position.y][character.position.x] = TILE_BLOCK
+    grid[actor.position.y][actor.position.x] = TILE_BLOCK
   })
 
   // Block all tiles from the collider layers
@@ -113,18 +118,11 @@ export function isInsideGameboard(position: Vec2): boolean {
   )
 }
 
+// Return if there is an alive character at certain position
 export function isCharacterAtPositon(position: Vec2): boolean {
-  // If some player is in the target position
-  if (gameState.players.some((player) => player.position.isEqual(position))) {
-    return true
-  }
-
-  // If some monster is in the target position
-  if (gameState.monsters.some((player) => player.position.isEqual(position))) {
-    return true
-  }
-
-  return false
+  return getAllActors().some((actor) => {
+    return actor.isAlive && actor.position.isEqual(position)
+  })
 }
 
 export function isWallAt(position: Vec2): boolean {
