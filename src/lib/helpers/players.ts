@@ -14,16 +14,17 @@ import {
   STEP_TIME,
   INITIATIVE_ATTACK,
   createAttackPlan,
+  TIME_AFTER_ATTACK,
 } from "./common"
 import { gameState } from "../state.svelte"
 import { clearFogAt } from "./fog"
 import {
   getActorAtPosition,
-  getAdjacentActors,
+  getRectAdjacentActors,
   getCharacterPathTo,
   isActorAtPositon,
 } from "./stage"
-import type { Monster, Player } from "../types"
+import type { Player } from "../types"
 import { combat, physicAttack } from "./combat"
 import type Vec2 from "../Vec2"
 
@@ -189,9 +190,10 @@ async function walkTo(player: Player, path: Vec2[]): Promise<void> {
 
     // If the player current position is rect adjacent to a monster
     // the monster has an oportunity to attack the player
-    const adjacentMonsters = getAdjacentActors(player.position, "monster")
+    const adjacentMonsters = getRectAdjacentActors(player.position, "monster")
     for (const adjacentMonster of adjacentMonsters) {
       await physicAttack(adjacentMonster, player)
+      await waitTime(TIME_AFTER_ATTACK)
     }
 
     if (!player.isAlive) {

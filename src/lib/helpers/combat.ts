@@ -30,7 +30,7 @@ export async function physicAttack(from: Actor, target: Actor): Promise<void> {
   const attackMovement = new AttackMovement(from, target)
 
   const attack = calcStat("attack", from)
-  const defence = calcStat("defence", from)
+  const defence = calcStat("defence", target)
 
   const attackRoll = dice6()
   const defenceRoll = dice6()

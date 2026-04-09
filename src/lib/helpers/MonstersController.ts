@@ -4,6 +4,7 @@ import {
   INITIATIVE_ATTACK,
   INITIATIVE_STEP,
   STEP_TIME,
+  TIME_AFTER_ATTACK,
   VIEW_DISTANCE,
   waitTime,
 } from "./common"
@@ -11,7 +12,7 @@ import { gameState } from "../state.svelte"
 import type { AttackPlan, Monster, Player } from "../types"
 import Vec2 from "../Vec2"
 import { walkSound } from "./audio"
-import { getAdjacentActors, getCharacterPathTo } from "./stage"
+import { getRectAdjacentActors, getCharacterPathTo } from "./stage"
 import { combat, physicAttack } from "./combat"
 
 export default class MonstersController {
@@ -112,15 +113,40 @@ export default class MonstersController {
   }
 
   private selectBestAttackPlan(attackPlans: AttackPlan[]): AttackPlan {
-    const [attackPlan] = attackPlans.toSorted((a, b) => {
-      const healthPointsA = a.target.stats.totalHealth - a.target.stats.health
-      const healthPointsB = b.target.stats.totalHealth - b.target.stats.health
-      const pathPointsA =
-        a.attacker.stats.initiative - a.path.length * INITIATIVE_STEP
-      const pathPointsB =
-        b.attacker.stats.initiative - b.path.length * INITIATIVE_STEP
+    const healthFactor = 1.5
+    const stepsFactor = 1
+    const playersInPath = new Map<Monster, number>()
 
-      return healthPointsA + pathPointsA - (healthPointsB + pathPointsB)
+    // Count how many players will find the monster in his way
+    // So the more players in the way will increate the path cost
+    // because they have a change to attack the monster while he walks
+    attackPlans.forEach((attackPlan) => {
+      let inPath = 0
+
+      attackPlan.path.forEach((step) => {
+        const adjacentPlayers = getRectAdjacentActors(step, "player").filter(
+          (player) => {
+            // We not take into account the target player
+            return player !== attackPlan.target
+          },
+        )
+        inPath += adjacentPlayers.length
+      })
+
+      const monster = attackPlan.attacker as Monster
+      playersInPath.set(monster, inPath)
+    })
+
+    const [attackPlan] = attackPlans.toSorted((a, b) => {
+      const inPathA = playersInPath.get(a.attacker as Monster)!
+      const inPathB = playersInPath.get(b.attacker as Monster)!
+      const healthCostA = a.target.stats.health * healthFactor
+      const healthCostB = b.target.stats.health * healthFactor
+      const pathCostA = a.path.length * stepsFactor
+      const pathCostB = b.path.length * stepsFactor
+      const totalA = healthCostA + pathCostA + inPathA
+      const totalB = healthCostB + pathCostB + inPathB
+      return totalA - totalB
     })
     return attackPlan
   }
@@ -169,15 +195,6 @@ export default class MonstersController {
   // Move the monster along the path until the end is reached
   // or the monster has enough initiative
   private async moveAlongPath(monster: Monster, path: Vec2[]): Promise<void> {
-    // // Skip the first step because is the current monster position
-    // path = path.slice(1)
-
-    // // If the last step is the position of a character we skip it
-    // // to prevent occupy the same position
-    // if (path.length > 0 && isActorAtPositon(path.at(-1)!)) {
-    //   path = path.slice(0, -1)
-    // }
-
     for (const step of path) {
       if (monster.initiativeLeft < INITIATIVE_STEP) {
         break
@@ -185,9 +202,10 @@ export default class MonstersController {
 
       // If the player current position is rect adjacent to a player
       // the player has an oportunity to attack the monster
-      const adjacentPlayers = getAdjacentActors(monster.position, "player")
+      const adjacentPlayers = getRectAdjacentActors(monster.position, "player")
       for (const adjacentPlayer of adjacentPlayers) {
         await physicAttack(adjacentPlayer, monster)
+        await waitTime(TIME_AFTER_ATTACK)
       }
 
       if (!monster.isAlive) {

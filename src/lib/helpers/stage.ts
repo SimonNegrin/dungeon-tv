@@ -138,7 +138,10 @@ export function getActorAtPosition(pos: Vec2): Actor | undefined {
   )
 }
 
-export function getAdjacentActors(pos: Vec2, actorType?: ActorType): Actor[] {
+export function getRectAdjacentActors(
+  pos: Vec2,
+  actorType?: ActorType,
+): Actor[] {
   const rectAdjacents = getRectAdjacents(pos)
   const actors: Actor[] = []
   rectAdjacents.forEach((adjacent) => {
