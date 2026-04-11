@@ -12,7 +12,7 @@
           "y": 10,
           "attributes": {
             "type": "chest",
-            "name": "",
+            "name": "Cofre",
             "isOpen": false,
             "items": []
           }
@@ -23,7 +23,7 @@
           "y": 9,
           "attributes": {
             "type": "chest",
-            "name": "",
+            "name": "Cofre",
             "isOpen": false,
             "items": []
           }
@@ -34,7 +34,7 @@
           "y": 22,
           "attributes": {
             "type": "chest",
-            "name": "",
+            "name": "Cofre",
             "isOpen": false,
             "items": []
           }
@@ -45,7 +45,7 @@
           "y": 21,
           "attributes": {
             "type": "chest",
-            "name": "",
+            "name": "Cofre",
             "isOpen": false,
             "items": []
           }
@@ -56,7 +56,7 @@
           "y": 19,
           "attributes": {
             "type": "chest",
-            "name": "",
+            "name": "Cofre",
             "isOpen": false,
             "items": []
           }
@@ -67,7 +67,7 @@
           "y": 17,
           "attributes": {
             "type": "chest",
-            "name": "",
+            "name": "Cofre",
             "isOpen": false,
             "items": []
           }
@@ -78,7 +78,7 @@
           "y": 12,
           "attributes": {
             "type": "chest",
-            "name": "",
+            "name": "Cofre",
             "isOpen": false,
             "items": []
           }
@@ -89,7 +89,7 @@
           "y": 1,
           "attributes": {
             "type": "chest",
-            "name": "",
+            "name": "Cofre",
             "isOpen": false,
             "items": []
           }
@@ -100,7 +100,7 @@
           "y": 16,
           "attributes": {
             "type": "chest",
-            "name": "",
+            "name": "Cofre",
             "isOpen": false,
             "items": []
           }
@@ -117,7 +117,7 @@
           "y": 7,
           "attributes": {
             "type": "door",
-            "name": "",
+            "name": "Cofre",
             "isOpen": true,
             "keyName": "",
             "openSpriteId": ""
@@ -129,7 +129,7 @@
           "y": 9,
           "attributes": {
             "type": "door",
-            "name": "",
+            "name": "Cofre",
             "isOpen": false,
             "keyName": "",
             "openSpriteId": ""
@@ -141,7 +141,7 @@
           "y": 14,
           "attributes": {
             "type": "door",
-            "name": "",
+            "name": "Cofre",
             "isOpen": false,
             "keyName": "",
             "openSpriteId": ""
@@ -153,7 +153,7 @@
           "y": 20,
           "attributes": {
             "type": "door",
-            "name": "",
+            "name": "Cofre",
             "isOpen": false,
             "keyName": "",
             "openSpriteId": ""
@@ -165,7 +165,7 @@
           "y": 17,
           "attributes": {
             "type": "door",
-            "name": "",
+            "name": "Cofre",
             "isOpen": false,
             "keyName": "",
             "openSpriteId": ""
@@ -177,7 +177,7 @@
           "y": 11,
           "attributes": {
             "type": "door",
-            "name": "",
+            "name": "Cofre",
             "isOpen": false,
             "keyName": "",
             "openSpriteId": ""
@@ -189,7 +189,7 @@
           "y": 4,
           "attributes": {
             "type": "door",
-            "name": "",
+            "name": "Cofre",
             "isOpen": true,
             "keyName": "",
             "openSpriteId": ""

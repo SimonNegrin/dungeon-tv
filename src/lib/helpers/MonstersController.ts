@@ -171,7 +171,11 @@ export default class MonstersController {
   private async executeAttackPlan(attackPlan: AttackPlan): Promise<void> {
     const monster = attackPlan.attacker as Monster
     const player = attackPlan.target as Player
-    gameState.centerActor = player
+
+    if (gameState.centerActor !== player) {
+      gameState.centerActor = player
+      await waitTime(200)
+    }
 
     await this.moveAlongPath(monster as Monster, attackPlan.path)
 

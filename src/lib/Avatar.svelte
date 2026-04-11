@@ -8,6 +8,7 @@
   import { debug, gameState } from "./state.svelte"
   import { TURN_PLAYERS } from "./helpers/game"
   import Health from "./Health.svelte"
+  import { fade } from "svelte/transition"
 
   let {
     actor,
@@ -36,6 +37,7 @@
     class="avatar"
     style:left="{actor.position.x * TILE_SIZE + actor.offset.x}px"
     style:top="{actor.position.y * TILE_SIZE + actor.offset.y}px"
+    out:fade
   >
     {#if debug.showHealth}
       <Health health={actor.stats.health} />

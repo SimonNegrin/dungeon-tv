@@ -63,7 +63,7 @@
   }
 </script>
 
-<OnkeydownCapture key="Escape" handler={close} />
+<OnkeydownCapture key="Escape" handler={close} preventDefault />
 
 <div class="inventory-exchange" transition:fade>
   <div class="inventories" transition:fly={{ y: 20 }}>

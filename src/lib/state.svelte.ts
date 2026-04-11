@@ -57,6 +57,48 @@ const krom: Player = {
   items: [],
 }
 
+const trancos: Player = {
+  isAlive: true,
+  sprite: "male fighter",
+  type: "player",
+  name: "Trancos",
+  position: new Vec2(3, 3),
+  offset: new Vec2(0, 0),
+  initiativeLeft: 8,
+  stats: {
+    health: 6,
+    totalHealth: 6,
+    initiative: 8,
+    attack: 3,
+    defence: 3,
+    damage: 1,
+    aim: 0,
+  },
+  traits: [],
+  items: [],
+}
+
+const legolas: Player = {
+  isAlive: true,
+  sprite: "ranger",
+  type: "player",
+  name: "Legolas",
+  position: new Vec2(4, 3),
+  offset: new Vec2(0, 0),
+  initiativeLeft: 8,
+  stats: {
+    health: 6,
+    totalHealth: 6,
+    initiative: 8,
+    attack: 3,
+    defence: 3,
+    damage: 1,
+    aim: 0,
+  },
+  traits: [],
+  items: [],
+}
+
 export const debug = $state({
   showCoords: false,
   showHealth: false,
@@ -96,7 +138,7 @@ export const gameState = $state<GameState>({
   cursorPosition: ladelbar.position,
   cursorPath: [],
   freezePath: false,
-  players: [ladelbar, krom],
+  players: [trancos, legolas, ladelbar, krom],
   monsters: [],
   turn: TURN_PLAYERS,
 })
@@ -112,6 +154,7 @@ export async function loadStage(stageName: string): Promise<void> {
   gameState.centerActor = gameState.currentPlayer
   gameState.monsters = populateMonsters(gameState)
   gameState.turn = TURN_PLAYERS
+  gameState.cursorPosition = gameState.players[0].position
 
   // Clear fog at players positions
   gameState.players.forEach((player) => {

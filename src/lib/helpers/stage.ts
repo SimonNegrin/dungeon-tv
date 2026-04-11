@@ -65,7 +65,6 @@ export function createGrid(
   }
 
   // Block all tiles occupied by characters
-  // except if they are ethereal or they are in the target position
   getAllAliveActors().forEach((actor) => {
     // We don't take into account dead actors
     if (!actor.isAlive) {
