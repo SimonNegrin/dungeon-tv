@@ -1,6 +1,5 @@
 <script lang="ts">
   import ActorStats from "./ActorStats.svelte"
-  import { TURN_PLAYERS } from "./helpers/game"
   import { gameState } from "./state.svelte"
 
   let {
@@ -20,8 +19,6 @@
       class="player"
       class:left={side === "left"}
       class:right={side === "right"}
-      class:current-player={gameState.turn === TURN_PLAYERS &&
-        gameState.currentPlayer.name === player.name}
     >
       <ActorStats actor={player} />
     </div>

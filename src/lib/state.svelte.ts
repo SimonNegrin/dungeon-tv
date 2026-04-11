@@ -186,6 +186,7 @@ export const gameState = $state<GameState>({
   ignoreInput: false,
   stage: null,
   hurts: [],
+  arrows: [],
   fog: [],
   playerIndex: 0,
   currentPlayer: ladelbar,

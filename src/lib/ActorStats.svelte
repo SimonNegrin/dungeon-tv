@@ -1,5 +1,6 @@
 <script lang="ts">
   import HealthBar from "./HealthBar.svelte"
+  import { TURN_PLAYERS } from "./helpers/game"
   import SpriteActor from "./sprites/SpriteActor.svelte"
   import SpriteItem from "./sprites/SpriteItem.svelte"
   import { gameState } from "./state.svelte"
@@ -15,7 +16,8 @@
 <div
   class="character-stats"
   class:dead={!actor.isAlive}
-  class:current-player={actor.name === gameState.currentPlayer.name}
+  class:current-player={gameState.turn === TURN_PLAYERS &&
+    actor.name === gameState.currentPlayer.name}
 >
   <div>
     <SpriteActor {actor} />

@@ -30,10 +30,8 @@ export const INVENTORY_SLOTS = 3
 // the player sprite
 export const VIEWPORT_SIZE = 13
 
-export const INITIATIVE_DOOR = 2
-export const INITIATIVE_CHEST = 2
-export const INITIATIVE_ATTACK = 2
-export const INITIATIVE_STEP = 1
+// Shoot and magic distance
+export const SHOOT_DISTANCE = 6
 
 export function getRandomFromArray<T>(items: T[]): T {
   const index = Math.floor(items.length * Math.random())

@@ -2,7 +2,7 @@ import { Tween } from "svelte/motion"
 import { toStore } from "svelte/store"
 import { attackFailSound, attackSwordSound } from "./audio"
 import { TILE_SIZE, ATTACK_TIME, waitTime, TIME_AFTER_ATTACK } from "./common"
-import type { Actor, Character } from "../types"
+import type { Actor, Arrow, Character } from "../types"
 import Vec2 from "../Vec2"
 import { createDice, killActor } from "./common"
 import { gameState } from "../state.svelte"
@@ -30,15 +30,9 @@ export async function physicAttack(from: Actor, target: Actor): Promise<void> {
 
   const attackMovement = new AttackMovement(from, target)
 
-  const attackRoll = dice6()
-  const defenceRoll = dice6()
-
-  const attackTotal = from.currentStats.attack + attackRoll
-  const defenceTotal = target.currentStats.defence + defenceRoll
-
   await attackMovement.advance()
 
-  if (attackTotal > defenceTotal) {
+  if (hitRoll(from.currentStats.attack, target.currentStats.defence)) {
     damage(from, target)
     attackSwordSound()
   } else {
@@ -97,4 +91,42 @@ class AttackMovement {
     const zero = new Vec2(0, 0)
     await this.tween.set(zero)
   }
+}
+
+export async function arrowTo(from: Actor, target: Actor): Promise<void> {
+  const { promise, resolve } = Promise.withResolvers<void>()
+
+  const arrow: Arrow = {
+    id: Symbol(),
+    resolve,
+    from,
+    target,
+    hit: hitRoll(from.currentStats.aim, target.currentStats.defence),
+  }
+
+  gameState.arrows.push(arrow)
+
+  await promise
+
+  removeArrow(arrow)
+
+  if (arrow.hit) {
+    damage(from, target)
+  }
+}
+
+function removeArrow(arrow: Arrow): void {
+  gameState.arrows = gameState.arrows.filter((a) => {
+    return a.id !== arrow.id
+  })
+}
+
+function hitRoll(attack: number, defence: number): boolean {
+  const attackRoll = dice6()
+  const defenceRoll = dice6()
+
+  const attackTotal = attack + attackRoll
+  const defenceTotal = defence + defenceRoll
+
+  return attackTotal > defenceTotal
 }

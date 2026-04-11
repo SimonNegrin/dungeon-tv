@@ -5,16 +5,14 @@ import {
   walkSound,
 } from "./audio"
 import {
-  INITIATIVE_CHEST,
   getTileTypeAt,
-  INITIATIVE_STEP,
-  INITIATIVE_DOOR,
   removeItemByName,
   waitTime,
   STEP_TIME,
-  INITIATIVE_ATTACK,
   createAttackPlan,
   TIME_AFTER_ATTACK,
+  SHOOT_DISTANCE,
+  createVisionSystem,
 } from "./common"
 import { gameState } from "../state.svelte"
 import { clearFogAt } from "./fog"
@@ -25,7 +23,7 @@ import {
   isActorAtPositon,
 } from "./stage"
 import type { Player } from "../types"
-import { combat, physicAttack } from "./combat"
+import { arrowTo, combat, physicAttack } from "./combat"
 import type Vec2 from "../Vec2"
 
 export async function currentPlayerAction(): Promise<void> {
@@ -231,5 +229,45 @@ async function attackMonster(): Promise<boolean> {
 
   player.currentStats.actions--
   await combat(player, monster)
+  return true
+}
+
+export async function shootMonster(): Promise<boolean> {
+  const player = gameState.currentPlayer
+  const monster = getActorAtPosition(gameState.cursorPosition)
+
+  if (!monster?.isAlive || monster.type !== "monster") {
+    return false
+  }
+
+  // Check if the player has actions to shoot
+  if (player.currentStats.actions <= 0) {
+    tiredSound()
+    return false
+  }
+
+  // Check if the monster is near enough to shoot
+  if (monster.position.distanceTo(player.position) > SHOOT_DISTANCE) {
+    return false
+  }
+
+  // Check if we have line of sight
+  const visionSystem = createVisionSystem()
+  if (
+    !visionSystem.hasLineOfSight(
+      player.position.x,
+      player.position.y,
+      monster.position.x,
+      monster.position.y,
+    )
+  ) {
+    return false
+  }
+
+  player.currentStats.actions--
+
+  // Shoot monster
+  await arrowTo(player, monster)
+
   return true
 }

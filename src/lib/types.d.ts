@@ -31,6 +31,7 @@ interface GameState {
   ignoreInput: boolean
   stage: Stage | null
   hurts: Hurt[]
+  arrows: Arrow[]
   fog: Vec2[]
   turn: Turn
   playerIndex: number
@@ -195,4 +196,12 @@ export interface AttackPlan {
   attacker: Actor
   target: Actor
   path: Vec2[]
+}
+
+export interface Arrow {
+  id: Symbol
+  resolve: () => void
+  from: Actor
+  target: Actor
+  hit: boolean
 }

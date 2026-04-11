@@ -8,7 +8,7 @@
   import Avatars from "./Avatars.svelte"
   import type { Actor, Stage } from "./types"
   import FogLayer from "./FogLayer.svelte"
-  import { currentPlayerAction } from "./helpers/players"
+  import { currentPlayerAction, shootMonster } from "./helpers/players"
   import {
     moveCursorRight,
     moveCursorLeft,
@@ -17,6 +17,7 @@
   } from "./helpers/cursor"
   import { TILE_SIZE, VIEWPORT_SIZE } from "./helpers/common"
   import Hurts from "./Hurts.svelte"
+  import Arrows from "./Arrows.svelte"
 
   let stageOffset = $derived(
     calcStageOffset(gameState.stage, gameState.centerActor),
@@ -38,6 +39,10 @@
     if (gameState.ignoreInput || event.defaultPrevented) return
     if (event.key === " ") {
       await currentPlayerAction()
+      return
+    }
+    if (event.key === "s") {
+      await shootMonster()
       return
     }
     moveCursor(event)
@@ -87,6 +92,7 @@
           <Hurts />
           <CursorPath />
           <Cursor />
+          <Arrows />
         </div>
       </div>
     {/if}
