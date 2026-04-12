@@ -6,6 +6,11 @@
     const angle = arrow.target.position.sub(arrow.from.position).angle()
     return `${angle}rad`
   }
+
+  function animationDuration(arrow: Arrow): number {
+    const distance = arrow.from.position.distanceTo(arrow.target.position)
+    return distance * 150
+  }
 </script>
 
 {#each gameState.arrows as arrow (arrow)}
@@ -16,6 +21,7 @@
     style:--tx={arrow.target.position.x}
     style:--ty={arrow.target.position.y}
     style:--r={calcAngle(arrow)}
+    style:--duration={animationDuration(arrow)}
     onanimationend={() => arrow.resolve()}
   ></div>
 {/each}
@@ -28,7 +34,7 @@
     height: 1px;
     background-color: #fff;
     animation-name: shoot;
-    animation-duration: 400ms;
+    animation-duration: calc(1ms * var(--duration));
     animation-fill-mode: forwards;
     animation-iteration-count: 1;
     animation-timing-function: linear;
