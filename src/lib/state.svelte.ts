@@ -190,8 +190,8 @@ setBaseStat("actions", 2, trancos, legolas, ladelbar, krom)
 setBaseStat("movement", 8, trancos, legolas, ladelbar, krom)
 setBaseStat("attack", 2, trancos, legolas, ladelbar, krom)
 setBaseStat("defence", 2, trancos, legolas, ladelbar, krom)
-setBaseStat("aim", 2, trancos, legolas, ladelbar, krom)
-setBaseStat("magic", 2, trancos, legolas, ladelbar, krom)
+setBaseStat("aim", 2, legolas, ladelbar)
+setBaseStat("magic", 2, trancos, legolas, krom)
 setBaseStat("health", 8, trancos, legolas, ladelbar, krom)
 
 export const debug = $state({

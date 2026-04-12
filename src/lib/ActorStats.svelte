@@ -27,42 +27,46 @@
     <HealthBar character={actor} />
 
     <div class="stats">
-      <div class="stat">
+      <div class="stat movement">
         <div class="sprite">
           <SpriteItem name="leather boots" />
         </div>
         <div class="level">{actor.currentStats.movement}</div>
       </div>
-      <div class="stat">
+      <div class="stat actions">
         <div class="sprite">
           <SpriteItem name="leather gloves" />
         </div>
         <div class="level">{actor.currentStats.actions}</div>
       </div>
-      <div class="stat">
+      <div class="stat attack">
         <div class="sprite">
           <SpriteItem name="short sword" />
         </div>
         <div class="level">{actor.currentStats.attack}</div>
       </div>
-      <div class="stat">
+      <div class="stat defence">
         <div class="sprite">
           <SpriteItem name="buckler" />
         </div>
         <div class="level">{actor.currentStats.defence}</div>
       </div>
-      <div class="stat">
-        <div class="sprite">
-          <SpriteItem name="arrows" />
+      {#if actor.currentStats.aim > 0}
+        <div class="stat aim">
+          <div class="sprite">
+            <SpriteItem name="arrows" />
+          </div>
+          <div class="level">{actor.currentStats.aim}</div>
         </div>
-        <div class="level">{actor.currentStats.aim}</div>
-      </div>
-      <div class="stat">
-        <div class="sprite">
-          <SpriteItem name="wide-brimmed hat" />
+      {/if}
+      {#if actor.currentStats.magic > 0}
+        <div class="stat magic">
+          <div class="sprite">
+            <SpriteItem name="wide-brimmed hat" />
+          </div>
+          <div class="level">{actor.currentStats.magic}</div>
         </div>
-        <div class="level">{actor.currentStats.magic}</div>
-      </div>
+      {/if}
     </div>
   </div>
 </div>
@@ -95,6 +99,10 @@
     margin-top: 4px;
     display: grid;
     gap: 2px;
+    grid-template-areas:
+      "movement actions"
+      "attack defence"
+      "aim magic";
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(3, 28px);
   }
@@ -104,6 +112,25 @@
     align-items: center;
     background-color: antiquewhite;
     border: 2px inset rgb(253, 233, 207);
+
+    &.movement {
+      grid-area: movement;
+    }
+    &.actions {
+      grid-area: actions;
+    }
+    &.attack {
+      grid-area: attack;
+    }
+    &.defence {
+      grid-area: defence;
+    }
+    &.aim {
+      grid-area: aim;
+    }
+    &.magic {
+      grid-area: magic;
+    }
   }
 
   .level {

@@ -234,6 +234,12 @@ async function attackMonster(): Promise<boolean> {
 
 export async function shootMonster(): Promise<boolean> {
   const player = gameState.currentPlayer
+
+  // Check if the player have the ability of shoot arrows
+  if (player.currentStats.aim <= 0) {
+    return false
+  }
+
   const monster = getActorAtPosition(gameState.cursorPosition)
 
   if (!monster?.isAlive || monster.type !== "monster") {
