@@ -23,7 +23,7 @@ import {
   isActorAtPositon,
 } from "./stage"
 import type { Player } from "../types"
-import { arrowTo, combat, physicAttack } from "./combat"
+import { projectileTo, combat, physicAttack } from "./combat"
 import type Vec2 from "../Vec2"
 
 export async function currentPlayerAction(): Promise<void> {
@@ -273,7 +273,7 @@ export async function shootMonster(): Promise<boolean> {
   player.currentStats.actions--
 
   // Shoot monster
-  await arrowTo(player, monster)
+  await projectileTo(player, monster)
 
   return true
 }

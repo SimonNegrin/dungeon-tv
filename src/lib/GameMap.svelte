@@ -17,7 +17,7 @@
   } from "./helpers/cursor"
   import { TILE_SIZE, VIEWPORT_SIZE } from "./helpers/common"
   import Hurts from "./Hurts.svelte"
-  import Arrows from "./Arrows.svelte"
+  import Projectiles from "./Projectiles.svelte"
 
   let stageOffset = $derived(
     calcStageOffset(gameState.stage, gameState.centerActor),
@@ -92,7 +92,7 @@
           <Hurts />
           <CursorPath />
           <Cursor />
-          <Arrows />
+          <Projectiles />
         </div>
       </div>
     {/if}

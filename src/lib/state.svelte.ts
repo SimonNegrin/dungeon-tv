@@ -203,7 +203,7 @@ export const gameState = $state<GameState>({
   ignoreInput: false,
   stage: null,
   hurts: [],
-  arrows: [],
+  projectiles: [],
   fog: [],
   playerIndex: 0,
   currentPlayer: ladelbar,

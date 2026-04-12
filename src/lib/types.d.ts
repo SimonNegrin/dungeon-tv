@@ -1,3 +1,4 @@
+import type { Component } from "svelte"
 import type { ItemName } from "./sprites/SpriteItem.svelte"
 import type { MonsterSpriteName as MonsterSpriteName } from "./sprites/SpriteMonster.svelte"
 import type { RogueName } from "./sprites/SpriteRogue.svelte"
@@ -31,7 +32,7 @@ interface GameState {
   ignoreInput: boolean
   stage: Stage | null
   hurts: Hurt[]
-  arrows: Arrow[]
+  projectiles: IProjectile[]
   fog: Vec2[]
   turn: Turn
   playerIndex: number
@@ -206,10 +207,11 @@ export interface AttackPlan {
   path: Vec2[]
 }
 
-export interface Arrow {
+export interface IProjectile {
   id: Symbol
-  resolve: () => void
   from: Actor
   target: Actor
   hits: number
+  bullet: Component<{ projectile: IProjectile }>
+  resolve: () => void
 }

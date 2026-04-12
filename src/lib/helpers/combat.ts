@@ -2,10 +2,11 @@ import { Tween } from "svelte/motion"
 import { toStore } from "svelte/store"
 import { arrowShootSound, attackFailSound, attackSwordSound } from "./audio"
 import { TILE_SIZE, ATTACK_TIME, waitTime, TIME_AFTER_ATTACK } from "./common"
-import type { Actor, Arrow, Character } from "../types"
+import type { Actor, Character, IProjectile } from "../types"
 import Vec2 from "../Vec2"
 import { createDice, killActor } from "./common"
 import { gameState } from "../state.svelte"
+import ProjectileArrow from "../ProjectileArrow.svelte"
 
 const dice6 = createDice(6)
 
@@ -98,35 +99,36 @@ class AttackMovement {
   }
 }
 
-export async function arrowTo(from: Actor, target: Actor): Promise<void> {
+export async function projectileTo(from: Actor, target: Actor): Promise<void> {
   const { promise, resolve } = Promise.withResolvers<void>()
 
   const hits = attackRoll(from.currentStats.aim, target.currentStats.defence)
 
-  const arrow: Arrow = {
+  const projectile: IProjectile = {
     id: Symbol(),
     resolve,
     from,
     target,
     hits,
+    bullet: ProjectileArrow,
   }
 
   arrowShootSound()
 
-  // Addig the arrow to the arrows array will produce
-  // the arrow animation in the map
-  gameState.arrows.push(arrow)
+  // Addig the projectile to the projectiles array will produce
+  // the projectile animation in the map
+  gameState.projectiles.push(projectile)
 
-  // Await until the arrow reach the target
+  // Await until the projectile reach the target
   await promise
 
-  // Remove arrow from the arrows array
-  gameState.arrows = gameState.arrows.filter((a) => {
-    return a.id !== arrow.id
+  // Remove projectile from the projectiles array
+  gameState.projectiles = gameState.projectiles.filter((p) => {
+    return p.id !== projectile.id
   })
 
-  if (arrow.hits) {
-    damage(target, arrow.hits)
+  if (projectile.hits) {
+    damage(target, projectile.hits)
   }
 }
 
