@@ -74,8 +74,8 @@ function createMonster(pos: Vec2): Monster {
 
   setBaseStat("actions", 2, monster)
   setBaseStat("movement", 8, monster)
-  setBaseStat("attack", 1, monster)
-  setBaseStat("defence", 1, monster)
+  setBaseStat("attack", 2, monster)
+  setBaseStat("defence", 2, monster)
   setBaseStat("aim", 0, monster)
   setBaseStat("magic", 0, monster)
   setBaseStat("health", 2, monster)

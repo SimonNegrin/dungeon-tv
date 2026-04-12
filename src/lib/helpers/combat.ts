@@ -32,8 +32,10 @@ export async function physicAttack(from: Actor, target: Actor): Promise<void> {
 
   await attackMovement.advance()
 
-  if (hitRoll(from.currentStats.attack, target.currentStats.defence)) {
-    damage(from, target)
+  const hits = attackRoll(from.currentStats.attack, target.currentStats.defence)
+
+  if (hits) {
+    damage(target, hits)
     attackSwordSound()
   } else {
     attackFailSound()
@@ -42,11 +44,12 @@ export async function physicAttack(from: Actor, target: Actor): Promise<void> {
   await attackMovement.back()
 }
 
-function damage(from: Actor, target: Actor): void {
-  const damage = 1
-  target.currentStats.health -= damage
+function damage(target: Actor, hits: number): void {
+  const health = Math.max(0, target.currentStats.health - hits)
+  target.currentStats.health = health
+
   gameState.hurts.push({
-    damage: damage * -1,
+    damage: hits * -1,
     position: target.position,
   })
 
@@ -98,39 +101,59 @@ class AttackMovement {
 export async function arrowTo(from: Actor, target: Actor): Promise<void> {
   const { promise, resolve } = Promise.withResolvers<void>()
 
+  const hits = attackRoll(from.currentStats.aim, target.currentStats.defence)
+
   const arrow: Arrow = {
     id: Symbol(),
     resolve,
     from,
     target,
-    hit: hitRoll(from.currentStats.aim, target.currentStats.defence),
+    hits,
   }
 
   arrowShootSound()
 
+  // Addig the arrow to the arrows array will produce
+  // the arrow animation in the map
   gameState.arrows.push(arrow)
 
+  // Await until the arrow reach the target
   await promise
 
-  removeArrow(arrow)
-
-  if (arrow.hit) {
-    damage(from, target)
-  }
-}
-
-function removeArrow(arrow: Arrow): void {
+  // Remove arrow from the arrows array
   gameState.arrows = gameState.arrows.filter((a) => {
     return a.id !== arrow.id
   })
+
+  if (arrow.hits) {
+    damage(target, arrow.hits)
+  }
 }
 
-function hitRoll(attack: number, defence: number): boolean {
-  const attackRoll = dice6()
-  const defenceRoll = dice6()
+// Roll attack and defence dices and return the number of hits
+function attackRoll(attack: number, defence: number): number {
+  const attackDices = rollDices(attack).toSorted(sortAscent)
+  const defenceDices = rollDices(defence).toSorted(sortDescent)
 
-  const attackTotal = attack + attackRoll
-  const defenceTotal = defence + defenceRoll
+  let hits = 0
+  for (let i = 0; i < attackDices.length; i++) {
+    const defence = defenceDices[i] ?? 0
+    if (attackDices[i] > defence) {
+      hits++
+    }
+  }
 
-  return attackTotal > defenceTotal
+  return hits
 }
+
+// Roll the given number of dices
+function rollDices(dicesNumber: number): number[] {
+  const results: number[] = []
+  for (let i = 0; i < dicesNumber; i++) {
+    results.push(dice6())
+  }
+  return results
+}
+
+const sortAscent = (a: number, b: number) => a - b
+const sortDescent = (a: number, b: number) => b - a

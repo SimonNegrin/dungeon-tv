@@ -211,5 +211,5 @@ export interface Arrow {
   resolve: () => void
   from: Actor
   target: Actor
-  hit: boolean
+  hits: number
 }
