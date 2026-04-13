@@ -1,8 +1,10 @@
 <script lang="ts">
+  import { onMount } from "svelte"
   import { attackRoll, damage } from "./helpers/combat"
   import { events } from "./helpers/common"
   import Projectile from "./Projectile.svelte"
   import type { IProjectileConfig } from "./types"
+  import { arrowShootSound } from "./helpers/audio"
 
   let {
     config,
@@ -11,6 +13,8 @@
   } = $props()
 
   let angle = $derived(config.target.position.sub(config.from.position).angle())
+
+  onMount(arrowShootSound)
 
   async function ontarget(): Promise<void> {
     const hits = attackRoll(

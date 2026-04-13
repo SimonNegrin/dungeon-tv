@@ -24,6 +24,8 @@ export const attackSwordSound = createAudioPreset("attack_sword", {
   volume: 0.2,
 })
 export const attackFailSound = createAudioPreset("attack_fail", { volume: 0.2 })
+export const magicFireSound = createAudioPreset("magic_fire", { volume: 0.2 })
+export const magicShootSound = createAudioPreset("magic_shoot", { volume: 0.2 })
 
 // Monster
 export const monsterHurtRandomSound = createRandomSound([

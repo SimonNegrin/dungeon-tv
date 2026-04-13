@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { TILE_SIZE, waitTime } from "./helpers/common"
+  import { waitTime } from "./helpers/common"
   import type { Point } from "./types"
 
   interface ISize {
@@ -15,8 +15,10 @@
 
   let {
     animation,
+    color,
   }: {
     animation: IAnimation
+    color: string
   } = $props()
 
   let pos = $derived(animation.keyframes[0])
@@ -24,8 +26,16 @@
   export async function play(): Promise<void> {
     for (const keyframe of animation.keyframes) {
       pos = keyframe
-      await waitTime(1000 / 24)
+      await waitTime(40)
     }
+  }
+
+  function left(pos: Point): number {
+    return pos.x * -animation.size.width
+  }
+
+  function top(pos: Point): number {
+    return pos.y * -animation.size.height
   }
 </script>
 
@@ -33,22 +43,7 @@
   class="animation"
   style:width="{animation.size.width}px"
   style:height="{animation.size.height}px"
->
-  <img
-    class="spritesheet"
-    src={animation.spritesheet}
-    alt=""
-    style:left="{pos.x * -TILE_SIZE}px"
-    style:top="{pos.y * -TILE_SIZE}px"
-  />
-</div>
-
-<style>
-  .animation {
-    position: relative;
-    overflow: hidden;
-  }
-  .spritesheet {
-    position: absolute;
-  }
-</style>
+  style:mask-image="url({animation.spritesheet})"
+  style:mask-position="{left(pos)}px {top(pos)}px"
+  style:background-color={color}
+></div>

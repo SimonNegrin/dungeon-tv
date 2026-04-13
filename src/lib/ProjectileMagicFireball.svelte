@@ -1,10 +1,11 @@
 <script lang="ts">
-  import { onMount } from "svelte"
   import Animation from "./Animation.svelte"
   import Projectile from "./Projectile.svelte"
   import type { IProjectileConfig } from "./types"
   import { events } from "./helpers/common"
   import { attackRoll, damage } from "./helpers/combat"
+  import { magicFireSound, magicShootSound } from "./helpers/audio"
+  import { onMount } from "svelte"
 
   let {
     config,
@@ -13,12 +14,13 @@
   } = $props()
 
   let animation: Animation
+  let showBullet = $state(true)
 
-  onMount(() => {
-    animation.play()
-  })
+  onMount(magicShootSound)
 
-  function ontarget(): void {
+  async function ontarget(): Promise<void> {
+    showBullet = false
+
     const hits = attackRoll(
       config.from.currentStats.magic,
       config.target.currentStats.defence,
@@ -28,6 +30,8 @@
       damage(config.target, hits)
     }
 
+    magicFireSound()
+    await animation.play()
     events.shootCompleted.emit(config)
   }
 </script>
@@ -36,11 +40,13 @@
   <div class="projectile-magic-fireball">
     <div class="fireball">
       <Animation
+        color="#ffcb53"
         bind:this={animation}
         animation={{
           spritesheet: "/animations/explotions.png",
           size: { width: 64, height: 64 },
           keyframes: [
+            { x: 11, y: 7 },
             { x: 0, y: 7 },
             { x: 1, y: 7 },
             { x: 2, y: 7 },
@@ -52,10 +58,10 @@
             { x: 8, y: 7 },
             { x: 9, y: 7 },
             { x: 10, y: 7 },
-            { x: 11, y: 7 },
           ],
         }}
       />
+      <div class="bullet" class:show={showBullet}></div>
     </div>
   </div>
 </Projectile>
@@ -72,6 +78,20 @@
     height: 64px;
     top: -16px;
     left: -16px;
-    background-color: #ffffff4d;
+  }
+  .bullet {
+    position: absolute;
+    z-index: 2;
+    top: calc(50% - 3px);
+    left: calc(50% - 3px);
+    width: 6px;
+    height: 6px;
+    border-radius: 100%;
+    background-color: #fff;
+    opacity: 0;
+
+    &.show {
+      opacity: 1;
+    }
   }
 </style>

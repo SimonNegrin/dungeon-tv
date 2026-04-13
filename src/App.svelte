@@ -23,6 +23,14 @@
 
 <main style:--tile-size="{TILE_SIZE}px" style:--viewport-size={VIEWPORT_SIZE}>
   <AspectRatio ratio={16 / 9}>
+    <!-- <ProjectileMagicFireball
+      config={{
+        id: Symbol(),
+        from: gameState.players[0],
+        target: gameState.players[3],
+        type: "fireball",
+      }}
+    /> -->
     {#if gameState.stage}
       <Game />
     {:else}
