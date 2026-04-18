@@ -22,16 +22,13 @@
 
 <style>
   .health-bar {
-    height: 12px;
-    padding: 2px;
-    border: 2px solid #5e3b10;
-    border-radius: 9999px;
-    background-color: antiquewhite;
+    height: 8px;
+    background-color: var(--background-color);
+    border: 2px inset var(--border-color);
   }
   .health {
     background-color: red;
     height: 4px;
-    border-radius: 9999px;
     transition-duration: 200ms;
   }
 </style>

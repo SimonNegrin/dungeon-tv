@@ -73,13 +73,24 @@
 
 <style>
   .character-stats {
+    --normal-background-color: rgb(45, 48, 64);
+    --normal-background-color-2: rgb(59, 62, 83);
+    --normal-border-color: rgb(68, 72, 95);
+    --current-player-background-color: rgb(176, 76, 51);
+    --current-player-background-color-2: rgb(188, 91, 67);
+    --current-player-border-color: rgb(201, 99, 74);
+
+    --background-color: var(--normal-background-color);
+    --background-color-2: var(--normal-background-color-2);
+    --border-color: var(--normal-border-color);
+
     position: relative;
     display: flex;
     gap: 4px;
     padding: 4px;
     height: 100%;
-    background-color: brown;
-    border: 2px outset rgb(168, 64, 64);
+    background-color: var(--background-color);
+    border: 2px outset var(--border-color);
     transition-duration: 200ms;
 
     &.dead {
@@ -87,12 +98,17 @@
     }
 
     &.current-player {
-      background-color: burlywood;
-      border: 2px outset rgb(243, 217, 183);
+      --background-color: var(--current-player-background-color);
+      --background-color-2: var(--current-player-background-color-2);
+      --border-color: var(--current-player-border-color);
     }
   }
   .info {
     flex: 1 0 0;
+  }
+
+  .name {
+    color: #cdd4e0;
   }
 
   .stats {
@@ -110,8 +126,9 @@
   .stat {
     display: flex;
     align-items: center;
-    background-color: antiquewhite;
-    border: 2px inset rgb(253, 233, 207);
+    background-color: var(--background-color-2);
+    border: 2px inset var(--border-color);
+    color: #cdd4e0;
 
     &.movement {
       grid-area: movement;
