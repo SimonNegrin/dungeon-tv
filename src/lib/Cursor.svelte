@@ -8,7 +8,7 @@
   let invalidPosition = $derived(
     isTooFar(
       gameState.cursorPath,
-      gameState.currentPlayer.currentStats.movement,
+      gameState.currentPlayer!.actor.currentStats.movement,
     ) || isWallAtPosition(gameState.cursorPosition),
   )
 
@@ -18,7 +18,7 @@
 
   function isWallAtPosition(cursorPosition: Vec2): boolean {
     // If the current player is ethereal it not matter if there is a wall
-    if (isEthereal(gameState.currentPlayer)) {
+    if (isEthereal(gameState.currentPlayer!.actor)) {
       return false
     }
     return isWallAt(cursorPosition)

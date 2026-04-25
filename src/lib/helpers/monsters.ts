@@ -107,7 +107,7 @@ function getValidPositions(gameState: IGlobalState): Vec2[] {
   // Remove positions too near to players
   positions = positions.filter((pos) => {
     return gameState.players.every((player) => {
-      const distance = Math.floor(player.position.add(pos).magnitude())
+      const distance = Math.floor(player.actor.position.add(pos).magnitude())
       return distance > VIEW_DISTANCE + 2
     })
   })

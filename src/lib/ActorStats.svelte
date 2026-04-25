@@ -17,7 +17,7 @@
   class="character-stats"
   class:dead={!actor.isAlive}
   class:current-player={gameState.turn === TURN_PLAYERS &&
-    actor.name === gameState.currentPlayer.name}
+    actor.id === gameState.currentPlayer!.playerId}
 >
   <div>
     <SpriteActor {actor} />

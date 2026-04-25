@@ -22,7 +22,7 @@ export async function nextPlayer(): Promise<void> {
   }
 
   //If next index player we need to find again an alive player
-  if (!gameState.players[nextIndex].isAlive) {
+  if (!gameState.players[nextIndex].actor.isAlive) {
     nextIndex = nextAlivePlayerIndex()
   }
 
@@ -34,9 +34,9 @@ export async function nextPlayer(): Promise<void> {
 
   const player = gameState.players[nextIndex]
   gameState.currentPlayer = player
-  gameState.centerActor = player
+  gameState.centerActor = player.actor
   gameState.playerIndex = nextIndex
-  gameState.cursorPosition = player.position
+  gameState.cursorPosition = player.actor.position
   gameState.openInventory = null
   gameState.turn = TURN_PLAYERS
   nextSound()
@@ -52,7 +52,7 @@ function nextAlivePlayerIndex(): number {
   ]
 
   const next = priorized.findIndex((player) => {
-    return player.isAlive
+    return player.actor.isAlive
   })
 
   if (next === -1) {
@@ -64,7 +64,7 @@ function nextAlivePlayerIndex(): number {
 
 function restorePlayersStats(): void {
   gameState.players.forEach((player) => {
-    player.currentStats.movement = player.totalStats.movement
-    player.currentStats.actions = player.totalStats.actions
+    player.actor.currentStats.movement = player.actor.totalStats.movement
+    player.actor.currentStats.actions = player.actor.totalStats.actions
   })
 }

@@ -27,8 +27,6 @@ import {
 import type { CharacterStats, IPlayer, PlayerGenre } from "../types"
 import { projectileTo, combat, physicAttack } from "./combat"
 import Vec2 from "../Vec2"
-import ProjectileArrow from "../ProjectileArrow.svelte"
-import ProjectileMagicFireball from "../ProjectileMagicFireball.svelte"
 import type { RogueName } from "../sprites/SpriteRogue.svelte"
 
 export async function currentPlayerAction(): Promise<void> {
@@ -57,26 +55,26 @@ async function interactPlayer(): Promise<boolean> {
   const currentPlayer = gameState.currentPlayer!
 
   const player = gameState.players.find((player) => {
-    return player.position.isEqual(gameState.cursorPosition)
+    return player.actor.position.isEqual(gameState.cursorPosition)
   })
 
   if (!player) {
     return false
   }
 
-  if (!currentPlayer.position.isRectAdjacent(player.position)) {
+  if (!currentPlayer.actor.position.isRectAdjacent(player.actor.position)) {
     return false
   }
 
   // Check if the player has the initiative needed
   // to interact with a chest
-  if (currentPlayer.currentStats.actions <= 0) {
+  if (currentPlayer.actor.currentStats.actions <= 0) {
     tiredSound()
     return true
   }
 
-  currentPlayer.currentStats.actions--
-  gameState.openInventory = player
+  currentPlayer.actor.currentStats.actions--
+  gameState.openInventory = player.actor
 
   return true
 }
@@ -89,18 +87,18 @@ async function interactChest(): Promise<boolean> {
     return false
   }
 
-  if (!currentPlayer.position.isRectAdjacent(chest.position)) {
+  if (!currentPlayer.actor.position.isRectAdjacent(chest.position)) {
     return false
   }
 
   // Check if the player has the initiative needed
   // to interact with a chest
-  if (currentPlayer.currentStats.actions <= 0) {
+  if (currentPlayer.actor.currentStats.actions <= 0) {
     tiredSound()
     return true
   }
 
-  currentPlayer.currentStats.actions--
+  currentPlayer.actor.currentStats.actions--
   gameState.openInventory = chest.attributes
 
   return true
@@ -121,14 +119,14 @@ async function interactDoor(): Promise<boolean> {
   }
 
   // To interact is needed to be rect adjacent
-  if (!currentPlayer.position.isRectAdjacent(door.position)) {
+  if (!currentPlayer.actor.position.isRectAdjacent(door.position)) {
     return false
   }
 
   // If the door does not need key we open the door inmediatly
   if (!door.attributes.keyName) {
-    if (currentPlayer.currentStats.actions > 0) {
-      currentPlayer.currentStats.actions--
+    if (currentPlayer.actor.currentStats.actions > 0) {
+      currentPlayer.actor.currentStats.actions--
       door.attributes.isOpen = true
       doorUnlockSound()
     } else {
@@ -139,13 +137,13 @@ async function interactDoor(): Promise<boolean> {
 
   // To open the door the player needs the key
   const { keyName } = door.attributes
-  if (currentPlayer.items.some((item) => item.name === keyName)) {
-    if (currentPlayer.currentStats.actions > 0) {
+  if (currentPlayer.actor.items.some((item) => item.name === keyName)) {
+    if (currentPlayer.actor.currentStats.actions > 0) {
       // Open the door with key
       door.attributes.isOpen = true
       // Remove key from player inventory
-      removeItemByName(currentPlayer, keyName)
-      gameState.currentPlayer!.currentStats.actions--
+      removeItemByName(currentPlayer.actor, keyName)
+      gameState.currentPlayer!.actor.currentStats.actions--
       doorUnlockSound()
     } else {
       tiredSound()
@@ -170,13 +168,13 @@ async function playerMove(): Promise<boolean> {
     return false
   }
 
-  const path = await getCharacterPathTo(player, gameState.cursorPosition)
+  const path = await getCharacterPathTo(player.actor, gameState.cursorPosition)
 
   if (!path) {
     return false
   }
 
-  await walkTo(player, path.slice(1))
+  await walkTo(player.actor, path.slice(1))
 
   return true
 }
@@ -214,7 +212,7 @@ export async function attackMonster(): Promise<boolean> {
   const player = gameState.currentPlayer!
 
   // Check if the player has actions to attack
-  if (player.currentStats.actions <= 0) {
+  if (player.actor.currentStats.actions <= 0) {
     return false
   }
 
@@ -224,21 +222,21 @@ export async function attackMonster(): Promise<boolean> {
     return false
   }
 
-  const attackPlan = await createAttackPlan(player, monster)
+  const attackPlan = await createAttackPlan(player.actor, monster)
 
   if (!attackPlan) {
     return false
   }
 
-  await walkTo(player, attackPlan.path)
+  await walkTo(player.actor, attackPlan.path)
 
-  if (player.currentStats.actions <= 0) {
+  if (player.actor.currentStats.actions <= 0) {
     tiredSound()
     return false
   }
 
-  player.currentStats.actions--
-  await combat(player, monster)
+  player.actor.currentStats.actions--
+  await combat(player.actor, monster)
   return true
 }
 
@@ -246,7 +244,7 @@ export async function shootMonster(): Promise<boolean> {
   const player = gameState.currentPlayer!
 
   // Check if the player have the ability of shoot arrows
-  if (player.currentStats.aim <= 0) {
+  if (player.actor.currentStats.aim <= 0) {
     return false
   }
 
@@ -257,13 +255,13 @@ export async function shootMonster(): Promise<boolean> {
   }
 
   // Check if the player has actions to shoot
-  if (player.currentStats.actions <= 0) {
+  if (player.actor.currentStats.actions <= 0) {
     tiredSound()
     return false
   }
 
   // Check if the monster is near enough to shoot
-  if (monster.position.distanceTo(player.position) > SHOOT_DISTANCE) {
+  if (monster.position.distanceTo(player.actor.position) > SHOOT_DISTANCE) {
     return false
   }
 
@@ -271,8 +269,8 @@ export async function shootMonster(): Promise<boolean> {
   const visionSystem = createVisionSystem()
   if (
     !visionSystem.hasLineOfSight(
-      player.position.x,
-      player.position.y,
+      player.actor.position.x,
+      player.actor.position.y,
       monster.position.x,
       monster.position.y,
     )
@@ -280,12 +278,12 @@ export async function shootMonster(): Promise<boolean> {
     return false
   }
 
-  player.currentStats.actions--
+  player.actor.currentStats.actions--
 
   // Shoot monster
   await projectileTo({
     id: Symbol(),
-    from: player,
+    from: player.actor,
     target: monster,
     type: "arrow",
   })
@@ -297,7 +295,7 @@ export async function magickAttack(): Promise<boolean> {
   const player = gameState.currentPlayer!
 
   // Check if the player have magic ability
-  if (player.currentStats.magic <= 0) {
+  if (player.actor.currentStats.magic <= 0) {
     return false
   }
 
@@ -308,13 +306,13 @@ export async function magickAttack(): Promise<boolean> {
   }
 
   // Check if the player has actions to do magic
-  if (player.currentStats.actions <= 0) {
+  if (player.actor.currentStats.actions <= 0) {
     tiredSound()
     return false
   }
 
   // Check if the monster is near enough to shoot
-  if (monster.position.distanceTo(player.position) > SHOOT_DISTANCE) {
+  if (monster.position.distanceTo(player.actor.position) > SHOOT_DISTANCE) {
     return false
   }
 
@@ -322,8 +320,8 @@ export async function magickAttack(): Promise<boolean> {
   const visionSystem = createVisionSystem()
   if (
     !visionSystem.hasLineOfSight(
-      player.position.x,
-      player.position.y,
+      player.actor.position.x,
+      player.actor.position.y,
       monster.position.x,
       monster.position.y,
     )
@@ -331,11 +329,11 @@ export async function magickAttack(): Promise<boolean> {
     return false
   }
 
-  player.currentStats.actions--
+  player.actor.currentStats.actions--
 
   await projectileTo({
     id: Symbol(),
-    from: player,
+    from: player.actor,
     target: monster,
     type: "fireball",
   })
@@ -362,7 +360,7 @@ export function createPlayerActor(
     id: playerId,
     type: "player",
     sprite: sprite,
-    isAlive: false,
+    isAlive: true,
     name: "",
     position: new Vec2(0, 0),
     offset: new Vec2(0, 0),

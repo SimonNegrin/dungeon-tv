@@ -1,25 +1,16 @@
 <script lang="ts">
-  import { onMount } from "svelte"
   import CrtScreen from "./CrtScreen.svelte"
   import PlayerBinding from "./PlayerBinding.svelte"
   import PlayerPreview from "./PlayerPreview.svelte"
   import type { IPlayerConnection } from "./types"
-
-  let {
-    onclick,
-  }: {
-    onclick: () => void
-  } = $props()
+  import { gameState } from "./state.svelte"
 
   let playerId: string = $state(crypto.randomUUID())
-  let players: IPlayerConnection[] = $state([])
   let wrapperWidth: number = $state(0)
   let landingScale = $derived(wrapperWidth / 736)
 
-  onMount(() => {})
-
   function onconnection(player: IPlayerConnection): void {
-    players.push(player)
+    gameState.players.push(player)
     playerId = crypto.randomUUID()
   }
 </script>
@@ -28,8 +19,6 @@
   <div class="landing-wrapper" bind:clientWidth={wrapperWidth}>
     <div
       class="landing"
-      {onclick}
-      onkeydown={onclick}
       role="button"
       tabindex="-1"
       style:--scale={landingScale}
@@ -38,7 +27,7 @@
         <div class="title">Six Rogues</div>
 
         <div class="players">
-          {#each players as player (player.actor.id)}
+          {#each gameState.players as player (player.actor.id)}
             <PlayerPreview {player} />
           {/each}
 

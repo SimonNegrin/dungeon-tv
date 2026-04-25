@@ -1,12 +1,10 @@
-import type { IGlobalState, IPlayer } from "./types"
+import type { IGlobalState } from "./types"
 import Vec2 from "./Vec2"
 import StageLoader from "./helpers/StageLoader"
 import { prefabsMap } from "./helpers/items"
 import { populateMonsters } from "./helpers/monsters"
 import { clearFogAt, createFogPositions } from "./helpers/fog"
 import { TURN_PLAYERS } from "./helpers/game"
-import { setBaseStat } from "./helpers/common"
-import { femaleHurtSound, maleHurtSound } from "./helpers/audio"
 
 // const gandalf: Player = {
 //   isAlive: true,
@@ -263,18 +261,22 @@ export const gameState = $state<IGlobalState>({
 export async function loadStage(stageName: string): Promise<void> {
   const stageLoader = new StageLoader(prefabsMap)
   const stage = await stageLoader.load(stageName)
+  const [firstPlayer] = gameState.players
+
+  // Set players spawn positions
+  firstPlayer.actor.position = new Vec2(2, 2)
 
   gameState.stage = stage
   gameState.fog = createFogPositions(stage)
   gameState.playerIndex = 0
-  gameState.currentPlayer = gameState.players[gameState.playerIndex]
-  gameState.centerActor = gameState.currentPlayer
+  gameState.currentPlayer = firstPlayer
+  gameState.centerActor = firstPlayer.actor
+  gameState.cursorPosition = firstPlayer.actor.position
   gameState.monsters = populateMonsters(gameState)
   gameState.turn = TURN_PLAYERS
-  gameState.cursorPosition = gameState.players[0].position
 
   // Clear fog at players positions
   gameState.players.forEach((player) => {
-    clearFogAt(player.position)
+    clearFogAt(player.actor.position)
   })
 }

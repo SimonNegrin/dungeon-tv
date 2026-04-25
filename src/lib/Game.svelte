@@ -30,7 +30,7 @@
           {#if gameState.openInventory && gameState.currentPlayer}
             <InventoryExchange
               leftInventory={gameState.openInventory}
-              rightInventory={gameState.currentPlayer}
+              rightInventory={gameState.currentPlayer.actor}
             />
           {/if}
         </div>

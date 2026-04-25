@@ -20,7 +20,7 @@
       class:left={side === "left"}
       class:right={side === "right"}
     >
-      <ActorStats actor={player} />
+      <ActorStats actor={player.actor} />
     </div>
   {/each}
 </div>

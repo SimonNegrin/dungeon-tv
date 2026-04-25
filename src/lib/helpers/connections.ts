@@ -1,13 +1,8 @@
+import { gameState, loadStage } from "../state.svelte"
 import type { IPlayerConnection, IPlayerPreset } from "../types"
 import { setBaseStat } from "./common"
 
 type PktHandler = (pkt: Uint8Array) => void
-
-export function addPlayerConnection(conn: IPlayerConnection): void {}
-
-export function disconnectPlayer(playerId: string): void {}
-
-export function getPlayerConnection(conn: IPlayerConnection): void {}
 
 export const PKT_GAMEPAD_STATE = 1
 export const PKT_MENU = 2
@@ -33,7 +28,7 @@ export function setupPlayerConnection(conn: IPlayerConnection): void {
 
 function createPlayerConfigHandler(conn: IPlayerConnection): PktHandler {
   return (pkt) => {
-    if (conn.isReady) {
+    if (conn.isWaiting || conn.isReady) {
       return
     }
     const decoder = new TextDecoder()
@@ -58,5 +53,13 @@ function createPlayerAcceptHandler(conn: IPlayerConnection): PktHandler {
 function createPlayerReadyHandler(conn: IPlayerConnection): PktHandler {
   return () => {
     conn.isReady = true
+
+    // If all players are ready start the game
+    if (!gameState.players.every((conn) => conn.isReady)) {
+      return
+    }
+
+    // Start game
+    loadStage("stage_2")
   }
 }

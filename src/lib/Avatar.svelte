@@ -4,11 +4,11 @@
   import { isEthereal, TILE_SIZE } from "./helpers/common"
   import SpriteMonster from "./sprites/SpriteMonster.svelte"
   import SpriteRogue from "./sprites/SpriteRogue.svelte"
-  import type { Actor } from "./types"
   import { debug, gameState } from "./state.svelte"
   import { TURN_PLAYERS } from "./helpers/game"
   import Health from "./Health.svelte"
   import { fade } from "svelte/transition"
+  import type { Actor } from "./types"
 
   let {
     actor,

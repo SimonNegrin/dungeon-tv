@@ -12,23 +12,22 @@
   let steps = $derived(
     updateSteps(
       gameState.cursorPath,
-      gameState.currentPlayer.currentStats.movement,
+      gameState.currentPlayer?.actor.currentStats.movement ?? 0,
     ),
   )
 
   $effect(() => {
-    if (gameState.freezePath) return
-    getCharacterPathTo(gameState.currentPlayer, gameState.cursorPosition).then(
-      (path) => {
-        if (!path) {
-          gameState.initiativeRequired = 0
-          gameState.cursorPath = []
-          return
-        }
-        gameState.initiativeRequired = Math.max(0, path.length - 1)
-        gameState.cursorPath = path
-      },
-    )
+    if (gameState.freezePath || !gameState.currentPlayer) return
+    getCharacterPathTo(
+      gameState.currentPlayer.actor,
+      gameState.cursorPosition,
+    ).then((path) => {
+      if (!path) {
+        gameState.cursorPath = []
+        return
+      }
+      gameState.cursorPath = path
+    })
   })
 
   function updateSteps(cursorPath: Vec2[], movement: number): Step[] {

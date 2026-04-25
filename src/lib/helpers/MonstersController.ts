@@ -69,15 +69,15 @@ export default class MonstersController {
     let monster: IMonster | undefined
     while ((monster = this.monstersPool.shift())) {
       for (const player of gameState.players) {
-        if (!player.isAlive) {
+        if (!player.actor.isAlive) {
           continue
         }
 
-        if (!this.monsterCanViewPlayer(monster, player)) {
+        if (!this.monsterCanViewPlayer(monster, player.actor)) {
           continue
         }
 
-        const path = await getCharacterPathTo(monster, player.position)
+        const path = await getCharacterPathTo(monster, player.actor.position)
 
         if (!path) {
           continue
@@ -96,7 +96,10 @@ export default class MonstersController {
       const attackPlans: AttackPlan[] = []
 
       for (const player of gameState.players) {
-        const attackPlan = await this.getAttackPlanForPlayer(monster, player)
+        const attackPlan = await this.getAttackPlanForPlayer(
+          monster,
+          player.actor,
+        )
         if (attackPlan) {
           attackPlans.push(attackPlan)
         }

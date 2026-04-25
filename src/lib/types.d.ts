@@ -34,14 +34,14 @@ export interface IGlobalState {
   hurts: Hurt[]
   fog: Vec2[]
   turn: Turn
-  playerIndex: number
-  currentPlayer?: IPlayer
-  centerActor?: Actor
   openInventory: Inventory | null
   freezePath: boolean
   cursorPosition: Vec2
   cursorPath: Vec2[]
-  players: IPlayer[]
+  playerIndex: number
+  currentPlayer?: IPlayerConnection
+  centerActor?: Actor
+  players: IPlayerConnection[]
   monsters: IMonster[]
 }
 

@@ -4,7 +4,10 @@
 </script>
 
 {#each gameState.players as player}
-  <Avatar actor={player} highlight={gameState.currentPlayer === player} />
+  <Avatar
+    actor={player.actor}
+    highlight={gameState.currentPlayer?.playerId === player.playerId}
+  />
 {/each}
 
 {#each gameState.monsters as moster}

@@ -126,7 +126,10 @@ export function getRectAdjacents(pos: Vec2): Vec2[] {
 }
 
 export function getAllAliveActors(): Actor[] {
-  return [...gameState.players, ...gameState.monsters].filter((actor) => {
+  return [
+    ...gameState.players.map((p) => p.actor),
+    ...gameState.monsters,
+  ].filter((actor) => {
     return actor.isAlive
   })
 }
