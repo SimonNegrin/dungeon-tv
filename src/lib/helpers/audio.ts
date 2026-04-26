@@ -5,6 +5,9 @@ type AudioOptions = {
 const preloaded = new Map<string, Promise<string>>()
 let stepRight = true
 
+export const playerReadySound = createAudioPreset("player_ready", {
+  volume: 0.2,
+})
 export const zipSound = createAudioPreset("zip", { volume: 0.2 })
 export const doorUnlockSound = createAudioPreset("door_unlock", { volume: 0.2 })
 export const doorLockedSound = createAudioPreset("door_locked", { volume: 0.2 })

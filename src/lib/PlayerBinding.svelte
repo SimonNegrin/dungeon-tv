@@ -122,7 +122,9 @@
   {#if $componentState === "CREATING_ROOM"}
     <div>Creando sala...</div>
   {:else if $componentState === "WAITING_PLAYER"}
-    <Qr content={gamepadUrl} size={100} />
+    <div class="qr-wrapper">
+      <Qr content={gamepadUrl} size={100} />
+    </div>
   {:else if $componentState === "SIGNALING"}
     <div>Conectando...</div>
   {:else if $componentState === "CONNECTED"}
@@ -139,5 +141,14 @@
     justify-content: center;
     align-items: center;
     color: #fff;
+  }
+  .qr-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    background-color: #222;
+    border: 2px outset #333;
   }
 </style>

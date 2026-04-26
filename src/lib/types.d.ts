@@ -247,6 +247,7 @@ export interface IPlayerPreset {
   defence: number
   aim: number
   magic: number
+  health: number
 }
 
 export interface IJoystickState {

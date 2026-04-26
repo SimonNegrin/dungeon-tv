@@ -12,12 +12,21 @@
   } = $props()
 </script>
 
-<div class="preset" class:ready={player.isWaiting}>
+<div
+  class="preset"
+  class:is-waiting={player.isWaiting}
+  class:ready={player.isReady}
+>
   <div class="header">
     <SpriteRogue name={player.actor.sprite} />
     <div class="name">{player.actor.name}</div>
   </div>
   <div class="stats">
+    <div class="stat">
+      <SpriteItem name="apple" scale={spriteScale} />
+      <div class="value">{player.actor.currentStats.health}</div>
+    </div>
+    <div></div>
     <div class="stat">
       <SpriteItem name="leather boots" scale={spriteScale} />
       <div class="value">{player.actor.currentStats.movement}</div>
@@ -48,16 +57,21 @@
 <style>
   .preset {
     width: 120px;
-    height: 120px;
+    height: 144px;
     background-color: #222;
     border: 2px outset #333;
     display: flex;
     flex-direction: column;
     justify-content: center;
 
+    &.is-waiting {
+      background-color: #f67009;
+      border-color: #fc882f;
+    }
+
     &.ready {
       background-color: #26c51b;
-      border-color: #26c51b;
+      border-color: #60e956;
     }
   }
   .header {
@@ -70,8 +84,8 @@
   }
   .stats {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(4, 1fr);
     gap: 4px;
     padding: 4px;
   }
@@ -79,7 +93,7 @@
     display: flex;
     justify-content: start;
     align-items: center;
-    padding: 0 4px;
+    /* padding: 0 4px; */
     background-color: #444;
     border: 2px inset #333;
     color: #ddd;

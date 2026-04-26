@@ -1,5 +1,6 @@
 import { gameState, loadStage } from "../state.svelte"
 import type { IGamepadState, IPlayerConnection, IPlayerPreset } from "../types"
+import { playerReadySound } from "./audio"
 import { setBaseStat } from "./common"
 import {
   moveCursorDown,
@@ -60,6 +61,7 @@ function createPlayerConfigHandler(conn: IPlayerConnection): PktHandler {
     setBaseStat("defence", preset.defence, conn.actor)
     setBaseStat("aim", preset.aim, conn.actor)
     setBaseStat("magic", preset.magic, conn.actor)
+    setBaseStat("health", preset.health, conn.actor)
   }
 }
 
@@ -71,7 +73,9 @@ function createPlayerAcceptHandler(conn: IPlayerConnection): PktHandler {
 
 function createPlayerReadyHandler(conn: IPlayerConnection): PktHandler {
   return async () => {
+    if (conn.isReady) return
     conn.isReady = true
+    playerReadySound()
 
     // If all players are ready start the game
     if (!gameState.players.every((conn) => conn.isReady)) {
@@ -82,15 +86,13 @@ function createPlayerReadyHandler(conn: IPlayerConnection): PktHandler {
     await loadStage("stage_2")
 
     // Send game start pkt to all players
-    const gameStartPkt = new Uint8Array(1)
-    gameStartPkt[0] = PKT_GAME_START
+    const gameStartPkt = new Uint8Array([PKT_GAME_START])
     gameState.players.forEach((conn) => {
-      conn.channel.send(gameStartPkt.buffer)
+      conn.channel.send(gameStartPkt)
     })
 
-    //Enable turn to the current player
-    const enableTurnPkt = new Uint8Array(1)
-    enableTurnPkt[0] = PKT_ENABLE_TURN
+    // Enable turn to the current player
+    const enableTurnPkt = new Uint8Array([PKT_ENABLE_TURN])
     gameState.currentPlayer!.channel.send(enableTurnPkt)
   }
 }
