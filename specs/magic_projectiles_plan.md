@@ -310,7 +310,7 @@ Completado: Sí
 
 ## Iteración 8 — Pulido (assets, coherencia visual, lectura)
 
-Completado: No
+Completado: Sí
 
 - Definir paleta canónica por “escuela” (arcano/hielo/fuego/veneno) y usarla en:
   - proyectil, impacto y overlay persistente

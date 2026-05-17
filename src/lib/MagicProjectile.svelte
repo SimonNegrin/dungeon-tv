@@ -15,9 +15,9 @@
   let animation: Animation
   let showBullet = $state(true)
   let variant = $derived(config.variant ?? "orb")
-  let bulletTint = $derived(config.tint ?? "var(--color-mild-yellow-white)")
+  let bulletTint = $derived(config.tint ?? "var(--vfx-arcane-projectile)")
   let impactTint = $derived(
-    config.impactTint ?? config.tint ?? "var(--color-gold-yellow)",
+    config.impactTint ?? config.tint ?? "var(--vfx-arcane-impact)",
   )
 
   onMount(magicShootSound)
@@ -65,6 +65,7 @@
         class:variant-bolt={variant === "bolt"}
         class:variant-shard={variant === "shard"}
         style:background-color={bulletTint}
+        style:color={bulletTint}
       ></div>
     </div>
   </div>

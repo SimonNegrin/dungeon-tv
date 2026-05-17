@@ -44,8 +44,8 @@ export const SPELLS = {
         target,
         type: "magic",
         variant: "orb",
-        tint: "var(--color-mild-yellow-white)",
-        impactTint: "var(--color-gold-yellow)",
+        tint: "var(--vfx-arcane-projectile)",
+        impactTint: "var(--vfx-arcane-impact)",
         onImpact(config) {
           const hits = attackRoll(
             config.from.currentStats.magic,
@@ -78,8 +78,8 @@ export const SPELLS = {
         target,
         type: "magic",
         variant: "orb",
-        tint: "#ff7a22",
-        impactTint: "#ffcc66",
+        tint: "var(--vfx-fire-projectile)",
+        impactTint: "var(--vfx-fire-impact)",
         onImpact(config) {
           const hits = attackRoll(
             config.from.currentStats.magic,
@@ -136,8 +136,8 @@ export const SPELLS = {
         target,
         type: "magic",
         variant: "bolt",
-        tint: "#ffdd33",
-        impactTint: "#fff19a",
+        tint: "var(--vfx-arcane-mind-projectile)",
+        impactTint: "var(--vfx-arcane-mind-impact)",
         onImpact(config) {
           const hits = attackRoll(
             config.from.currentStats.magic,
@@ -192,8 +192,8 @@ export const SPELLS = {
         target,
         type: "magic",
         variant: "shard",
-        tint: "#55ccff",
-        impactTint: "#88ddff",
+        tint: "var(--vfx-ice-projectile)",
+        impactTint: "var(--vfx-ice-impact)",
         onImpact(config) {
           const existing = [
             ...config.target.traits,
@@ -240,8 +240,8 @@ export const SPELLS = {
         target,
         type: "magic",
         variant: "bolt",
-        tint: "#aa55ff",
-        impactTint: "#cc88ff",
+        tint: "var(--vfx-arcane-bolt-projectile)",
+        impactTint: "var(--vfx-arcane-bolt-impact)",
         onImpact(config) {
           const hits = attackRoll(
             config.from.currentStats.magic,
@@ -274,8 +274,8 @@ export const SPELLS = {
         target,
         type: "magic",
         variant: "shard",
-        tint: "#55ccff",
-        impactTint: "#88ddff",
+        tint: "var(--vfx-ice-projectile)",
+        impactTint: "var(--vfx-ice-impact)",
         onImpact(config) {
           const hits = attackRoll(
             config.from.currentStats.magic,
@@ -308,8 +308,8 @@ export const SPELLS = {
         target,
         type: "magic",
         variant: "orb",
-        tint: "#44cc44",
-        impactTint: "#77ff77",
+        tint: "var(--vfx-poison-projectile)",
+        impactTint: "var(--vfx-poison-impact)",
         onImpact(config) {
           const hits = attackRoll(
             config.from.currentStats.magic,

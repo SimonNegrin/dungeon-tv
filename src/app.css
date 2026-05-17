@@ -53,6 +53,24 @@
   --color-text-primary: var(--color-mild-yellow-white);
   --color-text-secondary: var(--color-light-gray);
   --color-border: var(--color-dark-gray);
+  --vfx-arcane-projectile: var(--color-mild-yellow-white);
+  --vfx-arcane-impact: var(--color-gold-yellow);
+  --vfx-arcane-bolt-projectile: #aa55ff;
+  --vfx-arcane-bolt-impact: #cc88ff;
+  --vfx-arcane-mind-projectile: #ffdd33;
+  --vfx-arcane-mind-impact: #fff19a;
+  --vfx-arcane-mind-rgb: 255 255 100;
+  --vfx-ice-projectile: #55ccff;
+  --vfx-ice-impact: #88ddff;
+  --vfx-ice-rgb: 85 204 255;
+  --vfx-ice-soft-rgb: 200 240 255;
+  --vfx-fire-projectile: #ff7a22;
+  --vfx-fire-impact: #ffcc66;
+  --vfx-fire-hot-rgb: 255 100 30;
+  --vfx-fire-warm-rgb: 255 180 40;
+  --vfx-poison-projectile: #44cc44;
+  --vfx-poison-impact: #77ff77;
+  --vfx-poison-rgb: 68 204 68;
 
   font-family:
     var(--font-family-1),
