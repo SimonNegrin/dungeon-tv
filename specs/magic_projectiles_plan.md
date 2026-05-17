@@ -264,8 +264,10 @@ Completado: Sí
   - Los overlays no interfieren entre sí: `pointer-events: none`, posicionamiento absoluto independiente
 - **`MonstersController.ts`**:
   - `frozenThisTurn` → `statusBlockedThisTurn`
-  - `tickStatuses()` — itera todos los items con `metadata.statusId`, decrementa `turns`, elimina al expirar
-  - Solo `statusId === "frozen"` bloquea acciones (`statusBlockedThisTurn.add`); burning y confused son solo visuales por ahora
+  - `tickStatuses()` — itera todos los items con `metadata.statusId`, decrementa `turns`
+  - `statusId === "frozen"` bloquea acciones (`statusBlockedThisTurn.add`)
+  - `statusId === "burning"` aplica daño por turno
+  - `statusId === "confused"` altera el comportamiento (se mueve erráticamente y no ataca)
 
 ### Prioridad de apilamiento visual
 
@@ -286,7 +288,7 @@ Estados coexistentes se apilan limpiamente: frozen modifica el sprite con filtro
 
 ## Iteración 7 — Hechizos que aplican estados + mantenimiento por turno
 
-Completado: No
+Completado: Sí
 
 - Añadir hechizos nuevos en el registro `SPELLS` que apliquen estados duraderos:
   - Burn: aplica ardiendo + turnos (y opcional daño por turno)
@@ -295,6 +297,15 @@ Completado: No
   - decrementar/remover cada estado (como ya se hace con `statusId === "frozen"`)
 - Validación manual:
   - Efecto visual y efecto de gameplay expiran a la vez
+
+### Cambios realizados
+
+- **`spells.ts`**: añadidos `burn` y `confuse` como proyectiles mágicos que aplican `statusId` + `turns` al impactar (y refrescan duración si ya existe).
+- **`MonstersController.ts`**:
+  - `burning` aplica `damage(monster, 1)` al inicio del turno de monstruos.
+  - `confused` hace que el monstruo no ataque y se mueva aleatoriamente (hasta 2 pasos).
+  - Los estados que llegan a `turns <= 0` se eliminan al final del turno de monstruos para que VFX y gameplay expiren juntos.
+- **`stage_2/map.json`**: el primer cofre (`x:4, y:3`) incluye páginas para `burn` y `confuse` (3 usos) para test rápido.
 
 ## Iteración 8 — Pulido (assets, coherencia visual, lectura)
 

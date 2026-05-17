@@ -58,6 +58,120 @@ export const SPELLS = {
       })
     },
   },
+  burn: {
+    id: "burn",
+    name: "Quemadura",
+    type: "projectile",
+    requiresTarget: true,
+    range: SHOOT_DISTANCE,
+    requiresLineOfSight: true,
+    actionCost: 1,
+    consumesItem: true,
+    async cast({ caster, target }) {
+      if (!target) {
+        return
+      }
+
+      await projectileTo({
+        id: Symbol(),
+        from: caster,
+        target,
+        type: "magic",
+        variant: "orb",
+        tint: "#ff7a22",
+        impactTint: "#ffcc66",
+        onImpact(config) {
+          const hits = attackRoll(
+            config.from.currentStats.magic,
+            config.target.currentStats.defence,
+          )
+          if (hits <= 0) {
+            return
+          }
+
+          damage(config.target, hits)
+
+          const existing = [
+            ...config.target.traits,
+            ...config.target.items,
+          ].find((item) => {
+            return item.metadata?.statusId === "burning"
+          })
+
+          if (existing?.metadata) {
+            existing.metadata.turns = Math.max(3, existing.metadata.turns ?? 0)
+            return
+          }
+
+          config.target.traits.push({
+            sprite: "scroll",
+            name: "Ardiendo",
+            desc: "Recibe daño al inicio de su turno",
+            metadata: {
+              statusId: "burning" as const,
+              turns: 3,
+            },
+          })
+        },
+      })
+    },
+  },
+  confuse: {
+    id: "confuse",
+    name: "Confusión",
+    type: "projectile",
+    requiresTarget: true,
+    range: SHOOT_DISTANCE,
+    requiresLineOfSight: true,
+    actionCost: 1,
+    consumesItem: true,
+    async cast({ caster, target }) {
+      if (!target) {
+        return
+      }
+
+      await projectileTo({
+        id: Symbol(),
+        from: caster,
+        target,
+        type: "magic",
+        variant: "bolt",
+        tint: "#ffdd33",
+        impactTint: "#fff19a",
+        onImpact(config) {
+          const hits = attackRoll(
+            config.from.currentStats.magic,
+            config.target.currentStats.defence,
+          )
+          if (hits <= 0) {
+            return
+          }
+
+          const existing = [
+            ...config.target.traits,
+            ...config.target.items,
+          ].find((item) => {
+            return item.metadata?.statusId === "confused"
+          })
+
+          if (existing?.metadata) {
+            existing.metadata.turns = Math.max(2, existing.metadata.turns ?? 0)
+            return
+          }
+
+          config.target.traits.push({
+            sprite: "page",
+            name: "Confundido",
+            desc: "Se mueve erráticamente y no ataca",
+            metadata: {
+              statusId: "confused" as const,
+              turns: 2,
+            },
+          })
+        },
+      })
+    },
+  },
   freeze: {
     id: "freeze",
     name: "Congelación",

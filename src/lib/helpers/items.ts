@@ -517,6 +517,24 @@ const itemPrefabs: Item[] = [
     },
   },
   {
+    sprite: "scroll 2",
+    name: "Página de quemadura",
+    desc: "Aplica ardiendo durante 3 turnos",
+    metadata: {
+      spellId: "burn",
+      uses: 3,
+    },
+  },
+  {
+    sprite: "page",
+    name: "Página de confusión",
+    desc: "Aplica confusión durante 2 turnos",
+    metadata: {
+      spellId: "confuse",
+      uses: 3,
+    },
+  },
+  {
     sprite: "tome",
     name: "Tomo arcano",
     desc: "Otorga habilidad mágica",

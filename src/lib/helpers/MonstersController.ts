@@ -1,22 +1,30 @@
 import {
   createAttackPlan,
   createVisionSystem,
+  getRandomFromArray,
   STEP_TIME,
   TIME_AFTER_ATTACK,
   VIEW_DISTANCE,
   waitTime,
 } from "./common"
 import { gameState } from "../state.svelte"
-import type { AttackPlan, IMonster, IPlayer } from "../types"
+import type { AttackPlan, IMonster, IPlayer, Item } from "../types"
 import Vec2 from "../Vec2"
 import { walkSound } from "./audio"
-import { getRectAdjacentActors, getCharacterPathTo } from "./stage"
-import { combat, physicAttack } from "./combat"
+import {
+  createGrid,
+  getRectAdjacentActors,
+  getRectAdjacents,
+  getCharacterPathTo,
+} from "./stage"
+import { combat, damage, physicAttack } from "./combat"
 
 export default class MonstersController {
   private monstersPool: IMonster[] = []
   private visionSystem = createVisionSystem()
   private statusBlockedThisTurn = new Set<string>()
+  private statusConfusedThisTurn = new Set<string>()
+  private expiredStatusItems: Array<{ monster: IMonster; item: Item }> = []
 
   async execute(): Promise<void> {
     gameState.ignoreInput = true
@@ -25,6 +33,7 @@ export default class MonstersController {
     this.loadMonstersPool()
     await this.attackPhase()
     await this.movePhase()
+    this.cleanupExpiredStatuses()
     gameState.ignoreInput = false
   }
 
@@ -41,6 +50,8 @@ export default class MonstersController {
 
   private tickStatuses(): void {
     this.statusBlockedThisTurn.clear()
+    this.statusConfusedThisTurn.clear()
+    this.expiredStatusItems = []
 
     for (const monster of gameState.monsters) {
       if (!monster.isAlive) continue
@@ -48,13 +59,20 @@ export default class MonstersController {
       const statusItems = [...monster.traits, ...monster.items].filter(
         (item) => {
           const m = item.metadata
-          return !!(m && typeof m.turns === "number" && m.turns > 0 && m.statusId)
+          return !!(
+            m &&
+            typeof m.turns === "number" &&
+            m.turns > 0 &&
+            m.statusId
+          )
         },
       )
 
       for (const item of statusItems) {
         const m = item.metadata!
         const isFrozen = m.statusId === "frozen"
+        const isBurning = m.statusId === "burning"
+        const isConfused = m.statusId === "confused"
 
         m.turns = m.turns! - 1
 
@@ -62,20 +80,38 @@ export default class MonstersController {
           this.statusBlockedThisTurn.add(monster.id)
         }
 
-        if (m.turns <= 0) {
-          const inTraits = monster.traits.indexOf(item)
-          if (inTraits !== -1) {
-            monster.traits.splice(inTraits, 1)
-            continue
-          }
+        if (isConfused) {
+          this.statusConfusedThisTurn.add(monster.id)
+        }
 
-          const inItems = monster.items.indexOf(item)
-          if (inItems !== -1) {
-            monster.items.splice(inItems, 1)
+        if (isBurning) {
+          damage(monster, 1)
+          if (!monster.isAlive) {
+            break
           }
+        }
+
+        if (m.turns <= 0) {
+          this.expiredStatusItems.push({ monster, item })
         }
       }
     }
+  }
+
+  private cleanupExpiredStatuses(): void {
+    for (const { monster, item } of this.expiredStatusItems) {
+      const inTraits = monster.traits.indexOf(item)
+      if (inTraits !== -1) {
+        monster.traits.splice(inTraits, 1)
+        continue
+      }
+
+      const inItems = monster.items.indexOf(item)
+      if (inItems !== -1) {
+        monster.items.splice(inItems, 1)
+      }
+    }
+    this.expiredStatusItems = []
   }
 
   private async attackPhase(): Promise<void> {
@@ -109,6 +145,11 @@ export default class MonstersController {
   private async movePhase(): Promise<void> {
     let monster: IMonster | undefined
     while ((monster = this.monstersPool.shift())) {
+      if (this.statusConfusedThisTurn.has(monster.id)) {
+        await this.confusedMove(monster)
+        continue
+      }
+
       for (const player of gameState.players) {
         if (!player.actor.isAlive) {
           continue
@@ -134,6 +175,9 @@ export default class MonstersController {
   private async getAttackPlan(): Promise<AttackPlan | undefined> {
     for (let i = 0; i < this.monstersPool.length; i++) {
       const monster = this.monstersPool[i]
+      if (this.statusConfusedThisTurn.has(monster.id)) {
+        continue
+      }
       const attackPlans: AttackPlan[] = []
 
       for (const player of gameState.players) {
@@ -264,6 +308,55 @@ export default class MonstersController {
       walkSound()
       monster.currentStats.movement--
     }
+  }
+
+  private async confusedMove(monster: IMonster): Promise<void> {
+    const maxSteps = Math.min(monster.currentStats.movement, 2)
+
+    for (let i = 0; i < maxSteps; i++) {
+      if (monster.currentStats.movement <= 0) {
+        break
+      }
+
+      const adjacentPlayers = getRectAdjacentActors(monster.position, "player")
+      for (const adjacentPlayer of adjacentPlayers) {
+        await physicAttack(adjacentPlayer, monster)
+        await waitTime(TIME_AFTER_ATTACK)
+      }
+
+      if (!monster.isAlive) {
+        break
+      }
+
+      const next = this.getRandomValidAdjacentStep(monster)
+      if (!next) {
+        break
+      }
+
+      monster.position = next
+      await waitTime(STEP_TIME)
+      walkSound()
+      monster.currentStats.movement--
+    }
+  }
+
+  private getRandomValidAdjacentStep(monster: IMonster): Vec2 | undefined {
+    const grid = createGrid(monster)
+    if (!grid) {
+      return
+    }
+
+    const steps = getRectAdjacents(monster.position).filter((pos) => {
+      const line = grid[pos.y]
+      const cell = line?.[pos.x]
+      return cell === 0
+    })
+
+    if (!steps.length) {
+      return
+    }
+
+    return getRandomFromArray(steps)
   }
 
   private restoreMonstersStats(): void {
