@@ -175,33 +175,47 @@ export const SPELLS = {
   freeze: {
     id: "freeze",
     name: "Congelación",
-    type: "effect",
+    type: "projectile",
     requiresTarget: true,
     range: SHOOT_DISTANCE,
     requiresLineOfSight: true,
     actionCost: 1,
     consumesItem: true,
-    async cast({ target }) {
+    async cast({ caster, target }) {
       if (!target) {
         return
       }
 
-      const existing = [...target.traits, ...target.items].find((item) => {
-        return item.metadata?.statusId === "frozen"
-      })
+      await projectileTo({
+        id: Symbol(),
+        from: caster,
+        target,
+        type: "magic",
+        variant: "shard",
+        tint: "#55ccff",
+        impactTint: "#88ddff",
+        onImpact(config) {
+          const existing = [
+            ...config.target.traits,
+            ...config.target.items,
+          ].find((item) => {
+            return item.metadata?.statusId === "frozen"
+          })
 
-      if (existing?.metadata) {
-        existing.metadata.turns = Math.max(2, existing.metadata.turns ?? 0)
-        return
-      }
+          if (existing?.metadata) {
+            existing.metadata.turns = Math.max(2, existing.metadata.turns ?? 0)
+            return
+          }
 
-      target.traits.push({
-        sprite: "scroll",
-        name: "Congelado",
-        desc: "No puede actuar",
-        metadata: {
-          statusId: "frozen" as const,
-          turns: 2,
+          config.target.traits.push({
+            sprite: "scroll",
+            name: "Congelado",
+            desc: "No puede actuar",
+            metadata: {
+              statusId: "frozen" as const,
+              turns: 2,
+            },
+          })
         },
       })
     },

@@ -151,8 +151,8 @@ Completado: Sí
 - **`types.d.ts`**: añadido `onImpact?: (config: IProjectileConfig) => void` a `IProjectileConfig`.
 - **`ProjectileArrow.svelte`**: eliminados imports de `attackRoll`/`damage`; `ontarget()` ahora solo llama `config.onImpact?.(config)` + emite `shootCompleted`.
 - **`ProjectileMagicFireball.svelte`**: eliminados imports de `attackRoll`/`damage`; `ontarget()` ahora solo llama `config.onImpact?.(config)` + sonido + animación de explosión + emite `shootCompleted`.
-- **`players.ts` (`shootMonster`)**: pasa `onImpact` con `attackRoll(aim, defence)` → `damage()`.
-- **`spells.ts` (`SPELLS.magic_projectile.cast`)**: pasa `onImpact` con `attackRoll(magic, defence)` → `damage()`.
+- **`players.ts`** **(`shootMonster`)**: pasa `onImpact` con `attackRoll(aim, defence)` → `damage()`.
+- **`spells.ts`** **(`SPELLS.magic_projectile.cast`)**: pasa `onImpact` con `attackRoll(magic, defence)` → `damage()`.
 
 Los componentes de proyectil son ahora **puramente visuales**. La lógica de daño/efecto reside en el caller (hechizo o acción de jugador), permitiendo reutilizar el mismo componente visual con distintos efectos.
 
@@ -182,6 +182,7 @@ Completado: Sí
 - **`spells.ts`**: `SPELLS.magic_projectile` ahora usa `type: "magic"` + `variant: "orb"`.
 
 Para alternar entre looks basta cambiar `variant`:
+
 ```typescript
 // orb (default, fuego arcano)
 projectileTo({ type: "magic", variant: "orb", tint: "#ffaa00", ... })
@@ -209,11 +210,11 @@ Completado: Sí
 
 - **`spells.ts`**: añadidos 3 hechizos nuevos que usan el componente genérico `MagicProjectile` con distintas variantes y colores:
 
-| Hechizo | `variant` | `tint` | `impactTint` | Apariencia |
-|---|---|---|---|---|
-| `magic_bolt` | `"bolt"` | `#aa55ff` | `#cc88ff` | Rayo morado alargado con glow |
-| `magic_shard` | `"shard"` | `#55ccff` | `#88ddff` | Rombo cian/blanco (esquirla de hielo) |
-| `magic_poison` | `"orb"` | `#44cc44` | `#77ff77` | Orbe verde pulsante (veneno) |
+| Hechizo        | `variant` | `tint`    | `impactTint` | Apariencia                            |
+| -------------- | --------- | --------- | ------------ | ------------------------------------- |
+| `magic_bolt`   | `"bolt"`  | `#aa55ff` | `#cc88ff`    | Rayo morado alargado con glow         |
+| `magic_shard`  | `"shard"` | `#55ccff` | `#88ddff`    | Rombo cian/blanco (esquirla de hielo) |
+| `magic_poison` | `"orb"`   | `#44cc44` | `#77ff77`    | Orbe verde pulsante (veneno)          |
 
 - **`stage_2/map.json`**: primer cofre (`x:4, y:3`) contiene ahora 3 páginas mágicas, una por variante:
   - Página de rayo arcano → `magic_bolt` (3 usos)
@@ -318,3 +319,28 @@ Completado: No
   - Proyectiles con distintos colores se ven correctamente
   - Estados de varios turnos siempre marcan al enemigo y desaparecen al expirar
   - El flujo de menú/casting no cambia: solo mejora VFX/feedback
+
+## Iteración 9 — Freeze con proyectil visual (telegraph + consistencia)
+
+Completado: Sí
+
+- Objetivo:
+  - El hechizo `freeze` debe mostrar un proyectil al lanzarse (igual que el resto de hechizos a distancia) y aplicar el estado `frozen` al impactar.
+- Cambios técnicos:
+  - `spells.ts`:
+    - Cambiar `SPELLS.freeze.cast()` para usar `projectileTo(...)` en lugar de ser solo `type: "effect"`.
+    - Usar `type: "magic"` + `variant: "shard"` (o un look equivalente) con paleta fría:
+      - `tint`: cian/blanco (p. ej. `#55ccff` o `var(--color-ice-*)` si existe)
+      - `impactTint`: azul/cian más intenso para el impacto
+    - Pasar `onImpact` que aplique/refresh del trait de estado:
+      - Si el target ya tiene `metadata.statusId === "frozen"`, refrescar `turns` al máximo (o sobrescribir a la nueva duración) para evitar duplicados.
+      - Si no existe, añadir el trait/item con `metadata.statusId = "frozen"` + `turns = N`.
+    - Mantener requisitos y coste actuales del hechizo (rango, línea de visión, `actionCost`, `consumesItem` si aplica).
+  - VFX:
+    - Reutilizar `MagicProjectile.svelte` para el proyectil en vuelo y el impacto (ya soporta `tint`/`impactTint`).
+    - (Opcional) Ajustar el impacto para que “lea” como hielo (p. ej. keyframes/escala/blur) sin introducir assets nuevos si no es necesario.
+- Validación manual:
+  - Al lanzar `freeze`, se ve un proyectil viajando del caster al objetivo y un impacto al llegar.
+  - El target queda marcado con overlay de congelado durante `turns` y el estado expira correctamente (VFX y gameplay a la vez).
+  - Si `freeze` se lanza sobre un target ya congelado, la duración se refresca sin acumular múltiples traits duplicados.
+  - `projectileTo(...)` sigue resolviendo y limpiando el proyectil (se emite `shootCompleted` y no quedan proyectiles “colgados”).
