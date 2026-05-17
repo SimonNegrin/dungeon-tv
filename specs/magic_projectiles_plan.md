@@ -8,7 +8,7 @@ Mejorar el sistema de proyectiles mágicos para soportar múltiples animaciones/
 
 - Pipeline de proyectiles: `projectileTo` emite `events.shoot` y `Projectiles.svelte` monta el componente según `projectilesMap`.
 - Hechizos: `castSpell(...)` resuelve y ejecuta `SPELLS[spellId].cast(...)`.
-- Estado “Congelado” ya existe como trait con `metadata.frozen=true` + `turns`, y el turno de monstruos lo consume/decrementa.
+- Estado “Congelado” ya existe como trait con `metadata.statusId="frozen"` + `turns`, y el turno de monstruos lo consume/decrementa.
 
 ## Iteración 0 — Inventario técnico (sin cambios de gameplay)
 
@@ -21,7 +21,7 @@ Completado: Sí
 - `IProjectileConfig` — `id: Symbol`, `from: Actor`, `target: Actor`, `type: ProjectileType`, `tint?: string`, `impactTint?: string`. Ya soporta los campos de color base.
 - `ProjectileType` = `"arrow" | "fireball"` — union type; añadir nuevos tipos requiere extender aquí.
 - `ProjectileComponent` = `Component<{ config: IProjectileConfig }>` — interfaz estándar para componentes de proyectil.
-- `ItemMetadata` — ya tiene `frozen?: boolean`, `turns?: number`, `ethereal?: boolean`, `magic?: boolean`, `grantsMagic?: boolean`, `spellId?: string`, `spellPower?: number`. No tiene campos para `burning`, `confused`, etc.
+- `ItemMetadata` — estados temporales se modelan con `statusId?: "frozen" | "burning" | "confused"` + `turns?: number` (en lugar de flags booleanos por estado).
 
 #### Mapa de proyectiles (`src/lib/helpers/combat.ts`)
 
@@ -80,24 +80,24 @@ Completado: Sí
 - `shootMonster()` en `players.ts` → `projectileTo({ type: "arrow" })` — sin tint.
 - `magickAttack()` en `players.ts` → `castSpell({ spellId: "magic_projectile" })`.
 - `SPELLS.magic_projectile.cast()` en `spells.ts` → `projectileTo({ type: "fireball", tint: "var(--color-mild-yellow-white)", impactTint: "var(--color-gold-yellow)" })`.
-- `SPELLS.freeze.cast()` en `spells.ts` → añade trait `frozen` al target, **sin proyectil visual** (es `type: "effect"`).
+- `SPELLS.freeze.cast()` en `spells.ts` → añade trait con `metadata.statusId="frozen"` al target, **sin proyectil visual** (es `type: "effect"`).
 
 ### Punto natural para overlays persistentes en enemigos
 
 #### `Avatar.svelte` (ya tiene el patrón)
 
 - Patrón existente para **frozen**:
-  1. Helper en `common.ts`: `isFrozen(character)` busca `metadata.frozen === true` en traits+items.
+  1. Helper en `common.ts`: `isFrozen(character)` busca `metadata.statusId === "frozen"` en traits+items.
   2. En `Avatar.svelte`: `let frozen = $derived(isFrozen(actor))`.
-  3. Clase CSS `.frozen` + `<div class="frozen-overlay">` condicional.
+  3. Clase CSS `.frozen` + overlay condicional (componente `FrozenOverlay`).
   4. Overlay usa `radial-gradient`, `mix-blend-mode: screen`, `box-shadow`, animación `frozen-shimmer`.
 - **Extensión natural**: mismo patrón para burning, confused, etc. — nuevo helper, nueva clase CSS, nuevo overlay div.
 - El overlay **no interfiere** con el sprite (usa `pointer-events: none`, `position: absolute`, `inset: 0`).
 
-#### `MonstersController.tickFrozen()` en `MonstersController.ts`
+#### `MonstersController.tickStatuses()` en `MonstersController.ts`
 
-- Ya decrementa `turns` del trait frozen y lo elimina al expirar.
-- **Punto de extensión**: generalizar `tickFrozen()` → `tickStatuses()` que itere sobre una lista de estados (frozen, burning, confused…) decrementando `turns` y eliminando al expirar.
+- Ya decrementa `turns` del trait `statusId="frozen"` y lo elimina al expirar.
+- **Punto de extensión**: `tickStatuses()` itera estados por `statusId`, decrementa `turns` y elimina al expirar.
 
 ### API mínima definida para VFX
 
@@ -239,8 +239,7 @@ Completado: Sí
 Completado: Sí
 
 - Estandarizar metadata para estados temporales: ✅
-  - Flags por estado en `ItemMetadata` (`burning`, `confused`) + `turns` (compatibilidad)
-  - Opción escalable: `statusId: "frozen" | "burning" | "confused"` + `turns` (preferida)
+  - Enfoque escalable: `statusId: "frozen" | "burning" | "confused"` + `turns`
 - Implementar overlays por estado en `Avatar.svelte`: ✅
   - Frozen: tint azul + escarcha (ya existente, mantenido)
   - Burning: glow naranja/rojo pulsante (`burning-pulse` 600ms alternate)
@@ -250,26 +249,23 @@ Completado: Sí
 
 ### Cambios realizados
 
-- **`types.d.ts`**: añadidos a `ItemMetadata`:
-  - `burning?: boolean` — flag de compatibilidad
-  - `confused?: boolean` — flag de compatibilidad
-  - `statusId?: "frozen" | "burning" | "confused"` — enfoque escalable (preferido para nuevos hechizos)
+- **`types.d.ts`**: `ItemMetadata` usa `statusId?: "frozen" | "burning" | "confused"` para estados temporales (sin flags booleanos por estado).
 - **`common.ts`**:
-  - `isFrozen()` actualizado para detectar también `statusId === "frozen"`
+  - `isFrozen()` detecta `statusId === "frozen"`
   - `isBurning()` — nuevo helper
   - `isConfused()` — nuevo helper
   - `getActorStatuses()` — nuevo helper que devuelve array de estados activos
 - **`Avatar.svelte`**: tres overlays independientes con prioridad visual:
-  - `.frozen` / `.frozen-overlay` (z-index: 1) — azul, escarcha
-  - `.burning` / `.burning-overlay` (z-index: 2) — naranja/rojo, pulso borroso, `inset: -4px` para glow exterior
-  - `.confused` / `.confused-overlay` (z-index: 3) — estrellas amarillas rotando, `inset: -8px` para orbitar alrededor
+  - `.frozen` + `FrozenOverlay` (z-index: 1) — azul, escarcha
+  - `.burning` + `BurningOverlay` (z-index: 2) — naranja/rojo, pulso borroso, `inset: -4px` para glow exterior
+  - `.confused` + `ConfusedOverlay` (z-index: 3) — estrellas amarillas rotando, `inset: -8px` para orbitar alrededor
   - `.confused` en sprite-wrapper → animación wobble lateral
   - `.burning` en sprite-wrapper → `saturate(1.3) brightness(1.1)`
   - Los overlays no interfieren entre sí: `pointer-events: none`, posicionamiento absoluto independiente
 - **`MonstersController.ts`**:
   - `frozenThisTurn` → `statusBlockedThisTurn`
-  - `tickFrozen()` → `tickStatuses()` — itera todos los items con metadata de estado, decrementa `turns`, elimina al expirar
-  - Solo frozen bloquea acciones (`statusBlockedThisTurn.add`); burning y confused son solo visuales por ahora
+  - `tickStatuses()` — itera todos los items con `metadata.statusId`, decrementa `turns`, elimina al expirar
+  - Solo `statusId === "frozen"` bloquea acciones (`statusBlockedThisTurn.add`); burning y confused son solo visuales por ahora
 
 ### Prioridad de apilamiento visual
 
@@ -296,7 +292,7 @@ Completado: No
   - Burn: aplica ardiendo + turnos (y opcional daño por turno)
   - Confuse: aplica confundido + turnos (y altera el comportamiento del monstruo)
 - Extender el controlador de turnos de monstruos para:
-  - decrementar/remover cada estado (como ya se hace con frozen)
+  - decrementar/remover cada estado (como ya se hace con `statusId === "frozen"`)
 - Validación manual:
   - Efecto visual y efecto de gameplay expiran a la vez
 

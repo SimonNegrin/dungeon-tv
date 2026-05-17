@@ -123,9 +123,6 @@ export interface ItemMetadata {
   grantsMagic?: boolean
   spellId?: string
   spellPower?: number
-  frozen?: boolean
-  burning?: boolean
-  confused?: boolean
   statusId?: "frozen" | "burning" | "confused"
 }
 

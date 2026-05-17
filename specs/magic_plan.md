@@ -157,7 +157,7 @@ Implementación: `castSpell(...)` en `src/lib/helpers/spells.ts` + integración 
   - Requiere target (monstruo)
   - Efecto sugerido: aplicar un estado “frozen” por N turnos que impide actuar al monstruo
 
-Nota: la implementación del estado puede apoyarse en `traits` con `metadata.turns`, y el controlador de turnos de monstruos debería decrementar turnos y saltarse la acción si está congelado.
+Nota: la implementación del estado puede apoyarse en `traits` con `metadata.statusId` + `metadata.turns`, y el controlador de turnos de monstruos debería decrementar turnos y saltarse la acción si `statusId === "frozen"`.
 
 Implementación:
 - “Proyectil mágico”: `src/lib/helpers/spells.ts` (hechizo `magic_projectile`)
@@ -187,7 +187,7 @@ Implementación:
    - Helper `canCastMagic(actor)` en `src/lib/helpers/common.ts`.
    - Helper `getMagicMenuItems(actor)` para construir la lista del pergamino.
 2. **Extender metadata de items** — Implementado
-   - `ItemMetadata`: `grantsMagic`, `spellId`, `spellPower`, `frozen` (además de `uses`, `turns`, `range`).
+   - `ItemMetadata`: `grantsMagic`, `spellId`, `spellPower`, `statusId` (además de `uses`, `turns`, `range`).
    - UI: `ItemStats` muestra “Habilidad mágica” y “Hechizo: {spellId}”.
 3. **Crear items de hechizo en prefabs** — Implementado parcial
    - Añadido “Pergamino de congelación” (`spellId="freeze"`, `uses=3`).
@@ -201,7 +201,7 @@ Implementación:
 6. **Implementar el pipeline de casting** — Implementado
    - `castSpell(...)` centraliza validaciones, coste de acciones, LoS/rango, ejecución y consumo de usos.
 7. **Implementar “congelación”** — Implementado
-   - Hechizo `freeze` aplica trait “Congelado” con `metadata.frozen=true` y `turns`.
+   - Hechizo `freeze` aplica trait “Congelado” con `metadata.statusId="frozen"` y `turns`.
    - Turno de monstruos: si está congelado, pierde su turno y se decrementa/elimina el efecto.
 8. **Sincronizar disponibilidad de magia con el gamepad** — Implementado
    - Sync incluye `canCastMagic` + `inGame` y se envía en varios momentos (connect/config/accept/start/reconnect).

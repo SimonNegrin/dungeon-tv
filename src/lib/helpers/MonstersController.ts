@@ -48,21 +48,13 @@ export default class MonstersController {
       const statusItems = [...monster.traits, ...monster.items].filter(
         (item) => {
           const m = item.metadata
-          if (!m || typeof m.turns !== "number" || m.turns <= 0) {
-            return false
-          }
-          return (
-            m.frozen === true ||
-            m.burning === true ||
-            m.confused === true ||
-            m.statusId !== undefined
-          )
+          return !!(m && typeof m.turns === "number" && m.turns > 0 && m.statusId)
         },
       )
 
       for (const item of statusItems) {
         const m = item.metadata!
-        const isFrozen = m.frozen === true || m.statusId === "frozen"
+        const isFrozen = m.statusId === "frozen"
 
         m.turns = m.turns! - 1
 

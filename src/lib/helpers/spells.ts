@@ -73,7 +73,7 @@ export const SPELLS = {
       }
 
       const existing = [...target.traits, ...target.items].find((item) => {
-        return item.metadata?.frozen === true
+        return item.metadata?.statusId === "frozen"
       })
 
       if (existing?.metadata) {
@@ -86,7 +86,7 @@ export const SPELLS = {
         name: "Congelado",
         desc: "No puede actuar",
         metadata: {
-          frozen: true,
+          statusId: "frozen" as const,
           turns: 2,
         },
       })

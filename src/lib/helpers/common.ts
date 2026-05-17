@@ -143,19 +143,19 @@ export function isEthereal(character: ICharacter): boolean {
 
 export function isFrozen(character: ICharacter): boolean {
   return [...character.traits, ...character.items].some((item) => {
-    return item.metadata?.frozen === true || item.metadata?.statusId === "frozen"
+    return item.metadata?.statusId === "frozen"
   })
 }
 
 export function isBurning(character: ICharacter): boolean {
   return [...character.traits, ...character.items].some((item) => {
-    return item.metadata?.burning === true || item.metadata?.statusId === "burning"
+    return item.metadata?.statusId === "burning"
   })
 }
 
 export function isConfused(character: ICharacter): boolean {
   return [...character.traits, ...character.items].some((item) => {
-    return item.metadata?.confused === true || item.metadata?.statusId === "confused"
+    return item.metadata?.statusId === "confused"
   })
 }
 
